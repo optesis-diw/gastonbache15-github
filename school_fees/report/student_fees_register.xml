@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<odoo>
+    <template id="student_fees_register">
+        <t t-call="web.html_container">
+            <!-- Ajout de la balise meta pour l'encodage UTF-8 -->
+            <meta charset="UTF-8"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!--diw-->
+                        <table style="width: 100%">
+
+                            <div class="text-center" style="font-size:20px;height:40px; solid;width:100%;border: 1px solid">
+                             <p style="text-align:center;">
+                             <strong>Registre de paiement : </strong>
+                             <span t-field="o.name"></span>
+                             </p>
+                            </div>
+                            
+                             <br />
+                            
+                            <tr>
+                                <td style="width: 33%; text-align: left; padding: 0;">
+                                    <p style="text-align:left; margin: 0;">
+                                    <strong>Number :</strong>
+                                    <span t-field="o.number"></span></p>
+                                </td>
+                                <td style="width: 33%; text-align: left; padding: 0;"></td>
+                                <td style="width: 33%; text-align: left; padding: 0;">
+                                    <p style="text-align:left; margin: 0;">
+                                    <strong>Date:</strong>
+                                    <span t-esc="time.strftime('%Y-%m-%d')"></span></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 33%; text-align: left; padding: 0;">
+                                    <p style="text-align:left; margin: 0;">
+                                        <strong>For the month of :</strong>
+                                        <span t-esc="get_month(o.date)"></span>
+                                    </p>
+                                </td>
+                                <td style="width: 33%; text-align: left; padding: 0;"></td>
+                                <td style="width: 33%; text-align: left; padding: 0;">
+                                  
+                                </td>
+                            </tr>
+                        </table> 
+                       
+                        <!--diw-->
+                        <br />
+                        <table width="100%" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <td width="5%" style="font-family: 'Helvetica';font-size: 18px;" align="center">
+                                        <p>#</p>
+                                    </td>
+                                    <td width="50%" align="left" style="font-family: 'Helvetica';font-size: 18px;">
+                                        <p>Student Name</p>
+                                    </td>
+                                    <td align="right" width="45%" style="font-family: 'Helvetica';font-size: 18px;">
+                                        <p>Total</p>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="o.line_ids" t-as="l">
+                                    <t t-set="counter" t-value="counter+1"/>
+                                    <tr>
+                                        <td>
+                                            <span><t t-esc="counter"></t></span>
+                                        </td>
+                                        <td width="5%" align="center" style="font-family: 'Helvetica';font-size: 16px;">
+                                        </td>
+                                        <td width="50%" align="left" style="font-family: 'Helvetica';font-size: 16px;">
+                                            <span t-field="l.student_id.name"></span>
+                                        </td>
+                                        <td align="right" width="45%" style="font-family: 'Helvetica';font-size: 16px;">
+                                            <span t-esc="l.total"></span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <table width="100%">
+                            <tr>
+                                
+                                <td width="10%" align="left" style="font-family: 'Helvetica';font-size: 16px;">
+                                    <p>Total Fees : </p>
+                                </td>
+                                <td align="right" width="10%" style="font-family: 'Helvetica';font-size: 16px;">
+                                    <p t-esc="o.total_amount"></p>
+                                </td>
+                                <td width="80%"></td>
+                            </tr>
+                        </table>
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <!-- Signature -->
+                        <div class="col-4 pull-right">
+                           <br/><br/><br/><br/><br/><br/>
+                            <p>Principal,</p>
+                            <span style="font-family: 'Helvetica';font-size: 16px;">Signature</span>
+                            <br />
+                        </div>
+                       
+                            
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

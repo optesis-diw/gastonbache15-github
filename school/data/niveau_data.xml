@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Élémentaire -->
+        <record id="standard_N_cp1" model="standard.standard">
+            <field name="sequence">1</field>
+            <field name="name">CP1</field>
+            <field name="code">Code_CP1</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <record id="standard_N_cp2" model="standard.standard">
+            <field name="sequence">2</field>
+            <field name="name">CP2</field>
+            <field name="code">Code_CP2</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <record id="standard_N_ce1" model="standard.standard">
+            <field name="sequence">3</field>
+            <field name="name">CE1</field>
+            <field name="code">Code_CE1</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <record id="standard_N_ce2" model="standard.standard">
+            <field name="sequence">4</field>
+            <field name="name">CE2</field>
+            <field name="code">Code_CE2</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <record id="standard_N_cm1" model="standard.standard">
+            <field name="sequence">5</field>
+            <field name="name">CM1</field>
+            <field name="code">Code_CM1</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <record id="standard_N_cm2" model="standard.standard">
+            <field name="sequence">6</field>
+            <field name="name">CM2</field>
+            <field name="code">Code_CM2</field>
+            <field name="medium_id" ref="medium_elementaire"/>
+        </record>
+
+        <!-- Collège -->
+        <record id="standard_N_6e" model="standard.standard">
+            <field name="sequence">7</field>
+            <field name="name">6e</field>
+            <field name="code">Code_6e</field>
+            <field name="medium_id" ref="medium_coll"/>
+        </record>
+
+        <record id="standard_N_5e" model="standard.standard">
+            <field name="sequence">8</field>
+            <field name="name">5e</field>
+            <field name="code">Code_5e</field>
+            <field name="medium_id" ref="medium_coll"/>
+        </record>
+
+        <record id="standard_N_4e" model="standard.standard">
+            <field name="sequence">9</field>
+            <field name="name">4e</field>
+            <field name="code">Code_4e</field>
+            <field name="medium_id" ref="medium_coll"/>
+        </record>
+
+        <!-- Secondaire Scientifique -->
+        <record id="standard_N_3e" model="standard.standard">
+            <field name="sequence">10</field>
+            <field name="name">3e</field>
+            <field name="code">Code_3e</field>
+            <field name="medium_id" ref="medium_coll"/>
+        </record>
+
+        <record id="standard_N_2nde_s" model="standard.standard">
+            <field name="sequence">11</field>
+            <field name="name">2nde S</field>
+            <field name="code">Code_2ndeS</field>
+            <field name="medium_id" ref="cycle_2ndS"/>
+        </record>
+
+        <record id="standard_N_1ere_s1" model="standard.standard">
+            <field name="sequence">15</field>
+            <field name="name">1ère S1</field>
+            <field name="code">Code_1èreS1</field>
+            <field name="medium_id" ref="cycle_TS1_1S1"/>
+        </record>
+
+        <record id="standard_N_1ere_s2" model="standard.standard">
+            <field name="sequence">16</field>
+            <field name="name">1ère S2</field>
+            <field name="code">Code_1èreS2</field>
+            <field name="medium_id" ref="cycle_TS2_1S2"/>
+        </record>
+
+        <record id="standard_N_terminale_s1" model="standard.standard">
+            <field name="sequence">19</field>
+            <field name="name">Terminale S1</field>
+            <field name="code">Code_t_S1</field>
+            <field name="medium_id" ref="cycle_TS1_1S1"/>
+        </record>
+
+        <record id="standard_N_terminale_s2" model="standard.standard">
+            <field name="sequence">20</field>
+            <field name="name">Terminale S2</field>
+            <field name="code">Code_t_S2</field>
+            <field name="medium_id" ref="cycle_TS2_1S2"/>
+        </record>
+
+        <!-- Secondaire Littéraire -->
+        <record id="standard_N_2nde_l" model="standard.standard">
+            <field name="sequence">12</field>
+            <field name="name">2nde L</field>
+            <field name="code">Code_2ndeL</field>
+            <field name="medium_id" ref="cycle_2ndL"/>
+        </record>
+
+        <record id="standard_N_1ere_l1" model="standard.standard">
+            <field name="sequence">13</field>
+            <field name="name">1ère L1</field>
+            <field name="code">Code_1ère_L1</field>
+            <field name="medium_id" ref="cycle_TL1_1L1"/>
+        </record>
+
+        <record id="standard_N_1ere_l2" model="standard.standard">
+            <field name="sequence">14</field>
+            <field name="name">1ère L2</field>
+            <field name="code">Code_1èreL2</field>
+            <field name="medium_id" ref="cycle_TL2_1L2"/>
+        </record>
+
+        <record id="standard_N_terminal_l1" model="standard.standard">
+            <field name="sequence">17</field>
+            <field name="name">Terminal L1</field>
+            <field name="code">Code_t_L1</field>
+            <field name="medium_id" ref="cycle_TL1_1L1"/>
+        </record>
+
+        <record id="standard_N_terminal_l2" model="standard.standard">
+            <field name="sequence">18</field>
+            <field name="name">Terminal L2</field>
+            <field name="code">Code_t_L2</field>
+            <field name="medium_id" ref="cycle_TL2_1L2"/>
+        </record>
+
+       
+    </data>
+</odoo>

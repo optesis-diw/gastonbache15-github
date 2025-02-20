@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+
+      <!-- Élémentaire -->
+        <record id="medium_elementaire" model="standard.medium">
+            <field name="sequence">1</field>
+            <field name="name">Élémentaire</field>
+            <field name="code">ELEM</field>
+            <field name="description">Niveau élémentaire d'éducation.</field>
+        </record>
+
+        <!-- Collége -->
+        <record id="medium_coll" model="standard.medium">
+            <field name="sequence">2</field>
+            <field name="name">Collége</field>
+            <field name="code">Col</field>
+            <field name="description">Niveau Collége</field>
+        </record>
+
+        <!-- Secondaire -->
+
+        <!-- Littéraire -->
+        <record id="cycle_TL2_1L2" model="standard.medium">
+            <field name="sequence">1</field>
+            <field name="name">TL2 et 1ère L2</field>
+            <field name="code">TL2_1L2</field>
+            <field name="description">Cycle Littéraire 2.</field>
+        </record>
+
+        <record id="cycle_TL1_1L1" model="standard.medium">
+            <field name="sequence">2</field>
+            <field name="name">TL1 et 1ère L1</field>
+            <field name="code">TL1_1L1</field>
+            <field name="description">Cycle Littéraire 1.</field>
+        </record>
+
+        <record id="cycle_2ndL" model="standard.medium">
+            <field name="sequence">3</field>
+            <field name="name">2nd L</field>
+            <field name="code">2nd_L</field>
+            <field name="description">Deuxième année Littéraire.</field>
+        </record>
+
+        <!-- Scientifique -->
+        <record id="cycle_TS2_1S2" model="standard.medium">
+            <field name="sequence">4</field>
+            <field name="name">TS2 et 1ère S2</field>
+            <field name="code">TS2_1S2</field>
+            <field name="description">Cycle Scientifique 2.</field>
+        </record>
+
+        <record id="cycle_TS1_1S1" model="standard.medium">
+            <field name="sequence">5</field>
+            <field name="name">TS1 et 1ère S1</field>
+            <field name="code">TS1_1S1</field>
+            <field name="description">Cycle Scientifique 1.</field>
+        </record>
+
+        <record id="cycle_2ndS" model="standard.medium">
+            <field name="sequence">6</field>
+            <field name="name">2nd S</field>
+            <field name="code">2nd_S</field>
+            <field name="description">Deuxième année Scientifique.</field>
+        </record>
+
+    </data>
+</odoo>

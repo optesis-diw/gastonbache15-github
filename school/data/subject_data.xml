@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Domaines -->
+    <!-- Domaine "Langue" -->
+    <record id="domaine_langue" model="domaine.subject">
+        <field name="name">Langue</field>
+    </record>
+
+    <!-- Domaine "Mathématiques" -->
+    <record id="domaine_maths" model="domaine.subject">
+        <field name="name">Mathématiques</field>
+    </record>
+
+    <!-- Domaine "Sciences" -->
+    <record id="domaine_sciences" model="domaine.subject">
+        <field name="name">Sciences</field>
+    </record>
+
+    <!-- Domaine "Histoire et Géographie" -->
+    <record id="domaine_histoire_geographie" model="domaine.subject">
+        <field name="name">Histoire et Géographie</field>
+    </record>
+
+    <!-- Domaine "Art" -->
+    <record id="domaine_art" model="domaine.subject">
+        <field name="name">Art</field>
+    </record>
+
+    <!-- Domaine "SPORTIVE" -->
+    <record id="domaine_sportive" model="domaine.subject">
+        <field name="name">Sportive</field>
+    </record>
+
+    <!-- Matières pour Cycle 1 -->
+    <record id="subject_matiere_cycle1_francais" model="subject.subject">
+        <field name="name">Français</field>
+        <field name="code">FR</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_langue"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+    
+    <record id="subject_anglais" model="subject.subject">
+        <field name="name">Anglais</field>
+        <field name="code">ENg</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_langue"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_espa" model="subject.subject">
+        <field name="name">Espagnol</field>
+        <field name="code">code_esp</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">10</field>
+        <field name="domaine_subject" ref="domaine_langue"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_phylo" model="subject.subject">
+        <field name="name">Philosophie</field>
+        <field name="code">phylo</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_langue"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_phylo" model="subject.subject">
+        <field name="name">Histoire Geographie</field>
+        <field name="code">h_g</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_langue"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <!-- Matière "Mathématiques" associée au domaine "Mathématiques" -->
+    <record id="subject_maths" model="subject.subject">
+        <field name="name">Math</field>
+        <field name="code">MT001</field>
+        <field name="coefficient">4</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_maths"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <!-- Matière "Physique" associée au domaine "Mathématiques" -->
+    <record id="subject_physique" model="subject.subject">
+        <field name="name">Science physique</field>
+        <field name="code">PH001</field>
+        <field name="coefficient">3</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_sciences"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_matiere_svt" model="subject.subject">
+        <field name="name">Sciences</field>
+        <field name="code">SC_C1</field>
+        <field name="coefficient">2</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_sciences"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_matiere_ep" model="subject.subject">
+        <field name="name">Éducation physique</field>
+        <field name="code">SC_ep</field>
+        <field name="coefficient">1</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_sportive"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_matiere_dessin" model="subject.subject">
+        <field name="name">Dessin</field>
+        <field name="code">SC_dessin</field>
+        <field name="coefficient">1</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_art"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+
+    <record id="subject_matiere_ré" model="subject.subject">
+        <field name="name">Récitation</field>
+        <field name="code">SC_reci</field>
+        <field name="coefficient">1</field>
+        <field name="maximum_marks">20</field>
+        <field name="minimum_marks">0</field>
+        <field name="domaine_subject" ref="domaine_art"/>
+        <field name="is_practical">True</field> <!-- Ajout du champ is_practical -->
+    </record>
+</odoo>

@@ -1,0 +1,110 @@
+<odoo>
+    
+
+     <record id="report_sheet_qweb" model="ir.actions.report">
+            <field name="name">Rapport feuille de présence</field>
+            <field name="model">daily.attendance</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">school_attendance.report_attendance_sheet</field>
+            <field name="report_file">school_attendance.report_attendance_sheet</field>
+            <field name="binding_model_id" ref="school_attendance.model_daily_attendance"/>
+            <field name="binding_type">report</field>
+        </record>
+
+  
+<template id="report_attendance_sheet">
+    <t t-call="web.html_container">
+        <!-- Ajout de la balise meta pour l'encodage UTF-8 -->
+        <meta charset="UTF-8"/>
+        <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+            <div class="page">
+                        
+                <t t-foreach="o" t-as="result">
+                            
+                   <table style="width: 100%">
+
+                     <div class="text-center" style="font-size:20px;height:40px; solid;width:100%;border: 1px solid">
+                         <p style="text-align:center;">
+                             <strong>Rapport feuille de présence</strong>
+                           
+                         </p>
+                        </div>
+                        <br/> 
+                    
+                    <tr>
+                        <td style="width: 33%; text-align: left; padding: 0;">
+                            <p style="text-align:left; margin: 0;"><strong>Nom de l'enseignant: </strong>
+                            <span t-field="result.user_id"></span></p>
+                        </td>
+                        <td style="width: 33%; text-align: center; padding: 0;"></td>
+                        <td style="width: 33%; text-align: right; padding: 0;">
+                            <p style="text-align:right; margin: 0;"><strong>Ecole: </strong>
+                            <span t-field="result.standard_id.school_id"></span></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 33%; text-align: left; padding: 0;">
+                            <p style="text-align:left; margin: 0;"><strong>Date: </strong>
+                            <span t-field="result.date"></span></p>
+                        </td>
+                        <td style="width: 33%; text-align: center; padding: 0;"></td>
+                        <td style="width: 33%; text-align: right; padding: 0;">
+                            <p style="text-align:right; margin: 0;"><strong>Classe: </strong>
+                            <span t-field="result.standard_id"></span></p>
+                        </td>
+                    </tr>
+                </table>    
+            </t>  
+            <br/> 
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th align="center" style="font-family: 'Helvetica'; font-size: 18px; border: 2px solid black; padding: 0;">ETUDIANT</th>
+                        <th align="center" style="font-family: 'Helvetica'; font-size: 18px; border: 2px solid black; padding: 0;">ETAT</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="result.student_ids" t-as="line">
+                        <tr>
+                            <td align="center" style="font-family: 'Helvetica'; font-size: 18px; border: 2px solid black; padding: 0;">
+                                <t t-esc="line.stud_id.name"/>
+                            </td>
+                            <td align="center" style="font-family: 'Helvetica'; font-size: 18px; border: 2px solid black; padding: 0;">
+                                <t t-if="line.is_present"><span>P</span></t>
+                                <t t-if="not line.is_present"><span>A</span></t>
+                            </td>
+                           
+                        </tr>
+                    </t>
+                    
+                </tbody>
+            </table>
+
+          <br/> 
+          <br/> 
+   
+             <table  width="50%">
+                    <tr>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;">TOTAL DES ETUDIANTS</td>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;"  t-esc="result.total_student"></td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;">ETUDIANTS PRESENTS</td>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;"  t-esc="result.total_presence"></td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;">ETUDIANTS ABSENTS</td>
+                        <td align="center" style="font-size: 14px; border: 2px solid black; padding: 0;" t-esc="result.total_absent"></td>
+                    </tr>
+             </table>
+        </div>
+    </t>
+    </t>
+    </t>
+</template>
+
+    
+</odoo>

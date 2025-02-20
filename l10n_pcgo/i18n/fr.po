@@ -1,0 +1,60 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* kzm_accounting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-08 16:09+0000\n"
+"PO-Revision-Date: 2017-09-08 16:09+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,name:kzm_accounting.account_full_reconcile_action
+#: model:ir.ui.menu,name:kzm_accounting.menu_full_reconcile_action
+msgid "Account Full Reconcile"
+msgstr "Références de lettrage "
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,name:kzm_accounting.account_payment_method_action
+#: model:ir.ui.menu,name:kzm_accounting.menu_payment_method_action
+msgid "Account Payment Method"
+msgstr "Méthodes de paiements "
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,name:kzm_accounting.account_reconcile_method_action
+#: model:ir.ui.menu,name:kzm_accounting.menu_reconcile_method_action
+msgid "Account Reconcile Method"
+msgstr "Models de lettrage"
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,help:kzm_accounting.action_all_partner_form
+msgid "Click to add a contact in your address book."
+msgstr "Cliquer pour ajouter un contact dans le carnet d'adresses."
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,help:kzm_accounting.action_all_partner_form
+msgid "Odoo helps you easily track all activities related to\n"
+"				a customer: discussions, history of business opportunities,\n"
+"				documents, etc."
+msgstr "Odoo helps you easily track all activities related to\n"
+"				a customer: discussions, history of business opportunities,\n"
+"				documents, etc."
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,name:kzm_accounting.action_all_partner_form
+#: model:ir.ui.menu,name:kzm_accounting.menu_all_partner_action
+msgid "Partners"
+msgstr "Tous les tiers"
+
+#. module: kzm_accounting
+#: model:ir.actions.act_window,name:kzm_accounting.action_account_type_form
+#: model:ir.ui.menu,name:kzm_accounting.menu_account_type_action
+msgid "Account Types"
+msgstr "Types de compte"

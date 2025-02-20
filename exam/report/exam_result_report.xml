@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+     <record id="paperformat_bulletin" model="report.paperformat">
+            <field name="name">Bulletin Paper</field>
+            <field name="default" eval="True" />
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">32</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">20</field> <!-- Ajuster l'espacement de l'en-tête -->
+            <field name="dpi">90</field>
+        </record>
+    
+   <!--
+    <template id="external_layout_standard_custom" inherit_id="web.external_layout_standard" priority="20">
+        <xpath expr="//div[@class='row']" position="replace">
+            <div class="row">
+                <table width="100%">
+                    <tr>
+                        <td style="width: 33%; text-align: left;">
+                            <strong>IA RUFISQUE</strong><br/>
+                            <strong>IEF SANGALKAM</strong><br/>
+                            <strong>GS GASTON BACHELARD</strong>
+                        </td>
+                        <td style="width: 33%; text-align: right;">
+                            <strong>Année Scolaire: </strong>
+                            <span t-field="o.year_date_start_s"/><span t-field="o.year_date_stop_s"/><br/>
+                            <strong>Session: </strong><span t-field="o.session"/><br/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </xpath>
+    </template>
+       -->
+
+    <template id="exam_result_report">
+        <t t-call="web.html_container">
+            <!-- Ajout de la balise meta pour l'encodage UTF-8 -->
+            <meta charset="UTF-8"/>
+            <t t-foreach="docs" t-as="o">
+              
+                <div class="page">
+
+                    <!-- En-tête personnalisé -->
+                <div class="header" style="text-align: center; padding: 10px; border-bottom: 1px solid black;">
+                    <table width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 33%; text-align: left;">
+                                <strong>IA RUFISQUE</strong><br />
+                                <strong>IEF SANGALKAM</strong><br />
+                                <strong>GS GASTON BACHELARD</strong>
+                            </td>
+                            <td style="width: 33%; text-align: center;">
+                                <t t-if="o.company_id">
+                                    <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="max-height: 50px;" alt="Logo"/>
+                                </t>
+                                
+                            </td>
+                            <td style="width: 33%; text-align: right;">
+                                <strong>Année Scolaire: </strong>
+                                <span t-field="o.year_date_start_s" /> -
+                                <span t-field="o.year_date_stop_s" /><br />
+                                <strong>Session: </strong><span t-field="o.session" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <br />
+
+                         <meta charset="UTF-8"/>
+                        <t t-foreach="o" t-as="result">
+                         <table width="100%">
+                               
+                         <div class="text-center" style="font-size:20px;height:40px; solid;width:100%;border: 1px solid">
+                         <p style="text-align:center;">
+                             <strong>Bulletin de notes : </strong>
+                            <span t-field="result.s_exam_ids.name"></span>
+                         </p>
+                        </div>
+                               <br/>    
+                               
+                                <tr>
+                                    <td style="width: 33%; text-align: left;"> 
+                                      <p style="text-align:left;"><strong>Prénom et Nom: </strong>
+                                        <span t-field="result.student_id"></span>
+                                      </p>
+                                    </td>
+                                   
+                                    <td style="width: 33%; text-align: center;"> 
+                                    </td>
+                                    <td style="width: 33%; text-align: right;"> 
+                                      <p style="text-align:right;"><strong>Ecole: </strong>
+                                        <span t-field="result.school_id"></span>
+                                      </p>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="width: 33%; text-align: left;"> 
+                                      <p style="text-align:left;"><strong>Né(le) </strong>
+                                        <span t-field="result.student_id.date_of_birth"></span>
+                                      </p>
+                                    </td>
+                                    <td style="width: 33%; text-align: center;"> 
+                                        <p style="text-align:center;"><strong>à </strong>
+                                        <span t-field="result.student_id.lieu_naiss"></span>
+                                      </p>
+                                    </td>
+                                    <td style="width: 33%; text-align: right;">
+                                       <p style="text-align:right;"><strong>Classe:</strong>
+                                           <span t-field="result.standard_id"></span>
+                                       </p>
+                                    </td>
+                                </tr>
+                                  <tr>
+                                    <td style="width: 33%; text-align: left;"> 
+                                      <p style="text-align:left;"><strong>Matricule</strong>
+                                        <span t-field="result.student_id.reg_code"></span>
+                                      </p>
+                                    </td>
+                                    <td style="width: 33%; text-align: center;"> 
+                                        <p style="text-align:center;"><strong>Nbre d'éléves : </strong>
+                                        <span t-field="result.standard_id.capacity"></span>
+                                      </p>
+                                    </td>
+                                    <td style="width: 33%; text-align: right;">
+                                       <p style="text-align:right;"><strong>Class redoublée :</strong>
+                                           <span  >normale</span>
+                                       </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br />
+                            
+                             <table width="100%" style="border-collapse: collapse; table-layout: fixed;">
+                                <thead>
+                                      <tr>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Displine</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Devoir</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Comp</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Moy/20</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Coef</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Moy*</b>
+                                        </td>
+                                       
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>T.H</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Rang</b>
+                                        </td>
+                                           <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Grade</b>
+                                        </td>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="get_result_detail(result.result_ids,result)" t-as="sub_res_info">
+                                        <tr>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('subject')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('devoir')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('composition')"></span>
+                                            </td>
+                                             <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('moyenne_provisoire')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('coefficient')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('obt_marks')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span>TH</span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('rang')"></span>
+                                            </td>
+                                            <td align="center"
+                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
+                                                <span t-esc="sub_res_info.get('grade')"></span>
+                                            </td>
+                                           
+                                        </tr>
+                                    </t>
+                                </tbody>
+
+                   
+
+                                <tr>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;">Total</td>
+                                    <td align="center" style=";font-size: 16px;border: 2px solid black;" colspan="3"></td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.somme_coef"></td>
+                                    <td align="center" style=";font-size: 16px;border: 2px solid black;" t-esc="result.somme_obtain_marks"></td>
+                                    <td align="center" style=";font-size: 16px;border: 2px solid black;"></td>
+                                    <td align="center" style=";font-size: 16px;border: 2px solid black;" >Absences</td>
+                                    <td align="center" style=";font-size: 16px;border: 2px solid black;" t-esc="result.absences"></td>
+                                    
+                                </tr>
+                                
+                                <tr>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;">Moyenne</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" colspan="2" t-esc="result.moyenne">/20</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" >Rang</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.rang"></td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" >Retards</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.retards"></td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" >Abs Tot</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;">10</td>
+                                </tr>
+                            </table>
+
+                    
+                         <table style="width: 100%; border-collapse: collapse;">
+                         <tr>
+                            <td style="border-left: 1px solid black;  border-bottom: 1px solid black;">Blâme</td>
+                            <td style=" border-bottom: 1px solid black;"></td>
+                            <td style=" border-bottom: 1px solid black;">Avertissement</td>
+                            <td style="border-bottom: 1px solid black;"></td>
+                            <td style=" border-bottom: 1px solid black;">Tableau d'honneur</td>
+                            <td style=" border-bottom: 1px solid black;"></td>
+                            <td style=" border-bottom: 1px solid black;">Encouragement</td>
+                            <td style=" border-bottom: 1px solid black;"></td>
+                            <td style=" border-bottom: 1px solid black; border-right: 1px solid black;">Félicitations</td>
+                       </tr>
+                       </table>
+
+                    <br/>
+                    <br/>
+
+
+                    <table width="100%" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr>
+                         
+            
+                    <td style="font-size:14px;height:20px;border: 1px solid;width:50%">
+                        <div style="padding: 5px; height:40px;">
+                         <p style="text-align:left;">
+                                <span>Décision du Conseil</span>
+                            </p>
+                        </div>  
+                    </td>
+
+                        
+                    <td style="width:20%"></td>
+                    <td style="width:50%"></td>
+                    </tr>
+                   </table>         
+                     <table width="100%" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr>
+                        <td style="font-size:14px;height:20px;border: 1px solid;width:30%">
+                        
+                     
+                       
+                        <div style="border-bottom: 1px solid black; padding: 5px; height:40px;">
+                            <p style="text-align:left;">
+                                <span>Admis(e) en classe supérieure</span>
+                            </p>
+                        </div>
+                        
+                        <div style="border-bottom: 1px solid black; padding: 5px; height:40px;">
+                            <p style="text-align:left;">
+                                <span>Autorisé(e) à redoubler</span>
+                            </p>
+                        </div>
+                        <div style=" padding: 5px; height:40px;">
+                            <p style="text-align:left;">
+                                <span>Exclusion</span>
+                            </p>
+                        </div>
+                    </td>
+            
+                    <td style="font-size:14px;height:20px;border: 1px solid;width:20%">
+                       <div style="border-bottom: 1px solid black; padding: 5px; height:40px;">
+                          <p style="text-align:center;">
+                            
+                        </p>
+                        </div>
+                        
+                        
+                        
+                        <div style="border-bottom: 1px solid black; padding: 5px; height:40px;">
+                            <p style="text-align:center;">
+                                <span> </span>
+                            </p>
+                        </div>
+                        <div style=" padding: 5px; height:40px;">
+                            <p style="text-align:center;">
+                                <span> </span>
+                            </p>
+                        </div>
+                    </td>
+
+                        
+                        <td style="width:20%"></td>
+                        <td style="font-size:14px;height:70px;border: 1px solid;width:50%">
+                            <div >
+                                <p style="text-align:left;"><strong>Moy 1éme sem....... </strong>
+                                    <span t-if="result.moyenne_prem_semester" t-field="result.moyenne_prem_semester"></span>
+                                </p>
+                            </div>
+                            <div >
+                                <p style="text-align:left;"><strong>Moy 2éme sem....... </strong>
+                                    <span t-if="result.moyenne_second_semester" t-field="result.moyenne_second_semester"></span>
+                                </p>
+                            </div>
+                            <div >
+                                <p style="text-align:left;"><strong>Moyenne annuel....... </strong>
+                                    <span t-field="result.moyenne_annuel" t-if="result.moyenne_annuel"></span>
+                                </p>
+                            </div>
+                            <div >
+                                <p style="text-align:left;"><strong>Rang....... </strong>
+                                    <span t-field="result.rang"></span>
+                                </p>
+                            </div>
+                        </td>
+                        </tr>
+                      </table>
+
+                            
+                        </t>
+                    </div>
+                
+            </t>
+        </t>
+    </template>
+
+    <!--add domainse sur les Bulletin de notes du
+exam-->
+   <!--
+    <template id="exam_result_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure" />
+                        <br/>
+                        <br/>
+                        <t t-foreach="o" t-as="result">
+                            <table width="100%">
+                               
+                                     <div class="text-center" style="font-size:20px;height:60px; solid;width:60%;border: 1px solid; margin:auto">
+                         <span> Bulletin de notes du</span><br/>
+ <span t-field="o.s_exam_ids.name"></span>
+                        </div>
+                               <br/>    
+                              
+                                <tr>
+                                 <td style="font-family: 'Helvetica';font-size: 16px;"> 
+                                      <p style="text-align:left;"><strong>Ecole: </strong>
+                                        <span t-field="result.school_id"></span>
+                                      </p>
+                                    </td>
+                                    <td style="font-family: 'Helvetica';font-size: 16px;"> 
+                                    </td>
+                                    <td style="font-family: 'Helvetica';font-size: 16px;">
+                                       <p style="text-align:right;"><strong>Année scolaire:</strong>
+                                           <span t-field="result.student_id.year.name"></span>
+                                       </p>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="font-family: 'Helvetica';font-size: 16px;"> 
+                                      <p style="text-align:left;"><strong>Prénom et Nom: </strong>
+                                        <span t-field="result.student_id"></span>
+                                      </p>
+                                    </td>
+                                    <td style="font-family: 'Helvetica';font-size: 16px;"> 
+                                        <p style="text-align:center;"><strong>Enseignant: </strong>
+                                        <span t-field="result.enseignant"></span>
+                                      </p>
+                                    </td>
+                                    <td style="font-family: 'Helvetica';font-size: 16px;">
+                                       <p style="text-align:right;"><strong>Classe:</strong>
+                                           <span t-field="result.standard_id"></span>
+                                       </p>
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                            <br />
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>DOMAINES</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>ACTIVITES</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>NOTES/</b>
+                                        </td>
+                                     
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>COMPOSITIONS</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>Revaluation Marks</b>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  <t t-foreach="domaine_list" t-as="domaine">
+                                    <tr>
+                                        <td align="center"
+                                                style="border: 1px solid;">
+                                            <t t-esc="domaine['mm_domaine_sub']"/>
+                                        </td>
+                                        
+                                        <td align="center" style="border: 1px solid;">
+                                            <t t-foreach="result_test" t-as="subject">
+                                               <t t-if="domaine['mm_domaine_sub'] == subject['domaine_lie_suj']"> 
+                                                <div align="center"
+                                                style="border: 1px solid;"><t t-esc="subject['subject']"/>
+                                                </div>
+                                               </t>    
+                                            </t>
+                                        </td>
+                                        <td align="center" style="border: 1px solid;">
+                                            <t t-foreach="result_test" t-as="subject">
+                                                <t t-if="domaine['mm_domaine_sub'] == subject['domaine_lie_suj']"> 
+                                                    <div align="center"
+                                                    style="border: 1px solid;"><t t-esc="subject['max_mark']"/></div>
+                                                </t>    
+                                            </t>
+                                        </td>
+                                        
+                                        
+                                        <td align="center" style="border: 1px solid;">
+                                            <t t-foreach="result_test" t-as="subject">
+                                                <t t-if="domaine['mm_domaine_sub'] == subject['domaine_lie_suj']"> 
+                                                    <div align="center"
+                                                    style="border: 1px solid;"><t t-esc="subject['obt_marks']"/></div>
+                                                </t>    
+                                            </t>
+                                        </td>
+                                        <td align="center" style="border: 1px solid;">
+                                            <t t-foreach="result_test" t-as="subject">
+                                                <t t-if="domaine['mm_domaine_sub'] == subject['domaine_lie_suj']"> 
+                                                    <div align="center"
+                                                    style="border: 1px solid;"><t t-esc="subject['reval_marks']"/></div>
+                                                </t>    
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                                    
+                                     <tr>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>TOTAL</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                       <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                     
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                             <span t-field="result.total"></span>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>MOYENNE</b>
+                                        </td>
+                                       <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                     
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <p>
+                                                <span t-field="result.moyenne"></span><strong>/10</strong>
+                                              </p>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            <b>MOYENNE CLASSE</b>
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                        </td>
+                                     
+                                        <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                           <p>
+                                                <span t-field="result.moyenne"></span><strong>/10</strong>
+                                              </p>
+                                        </td>
+                                       <td align="center"
+                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
+                                            
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                            <br/>
+                             <br/>
+                            
+                            <table width="100%">
+                                
+                                <tr>
+                                  <td style="font-size:14px;height:20px;border: 1px solid;width:30%">
+                                       <p style="text-align:center"><strong>Résultat:</strong>
+                                           <span t-field="result.result"></span>
+                                       </p>
+                                    </td> 
+                                    <td style="width:20%"> 
+                                    </td>
+                                   
+                                 <td style="font-size:14px;height:70px;border: 1px solid;width:50%"> 
+                                      <p style="text-align:center;margin-top:-1%;text-decoration: underline;"> Observations du conseil de classe,
+                                      </p>
+                                    </td>
+                                    
+                                </tr>
+                               
+                       
+                        </table>  
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    -->
+</odoo>

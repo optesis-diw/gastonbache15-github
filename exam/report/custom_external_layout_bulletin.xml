@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+
+        <!-- Template for external view -->
+       <!-- <template id="exam_external_view">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+       
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+            </t>
+
+            <t t-call="exam.header_footer"/>
+        </template>
+
+   
+        <template id="header_footer">
+            <table width="100%" >
+                <tr>
+                    <td style="width: 33%; text-align: left;">
+                        <strong>IA RUFISQUE</strong><br/>
+                        <strong>IEF SANGALKAM</strong><br/>
+                        <strong>GS GASTON BACHELARD</strong>
+                    </td>
+                    <td style="width: 33%; text-align: center;">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 50px;" alt="Logo"/>
+                    </td>
+                    <td style="width: 33%; text-align: right;">
+                        <strong>Année Scolaire: </strong><span t-field="o.annee_scolaire"/><br/>
+                        <strong> </strong><span t-field="o.session"/><br/>
+                    </td>
+                </tr>
+            </table>
+        </template>
+        -->
+
+        
+    </data>
+</odoo>
