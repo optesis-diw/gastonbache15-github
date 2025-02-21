@@ -28,9 +28,10 @@
              'views/report_view.xml',
              #'views/template_view.xml',
              'views/identity_card.xml',
-             'data/niveau_data.xml',
              'data/cycle_data.xml',
              'data/subject_gaston.xml',
+             'data/niveau_data.xml',
+             
              ],
     'demo': ['demo/school_demo.xml'],
     'installable': True,
