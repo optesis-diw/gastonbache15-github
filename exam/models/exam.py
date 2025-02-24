@@ -1210,7 +1210,7 @@ class ExamSubject(models.Model):
         "EPS": 1,
         "Éducation Artistique / Dessin / Art Plastique": 1,
         "Éducation Musicale (Récitation / Chant)": 1,
-        "Arabe / Éducation Religieuse": 1,
+        "Arabe": 1,
         "Anglais M": 1,
     },
     "Collége": {
