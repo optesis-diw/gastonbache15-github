@@ -1195,7 +1195,7 @@ class ExamSubject(models.Model):
 
 
 
-    coefficient = fields.Integer("Coefficient", compute="_compute_coefficient", readonly=True)
+    coefficient = fields.Integer("Coefficient", compute="_compute_coefficient", readonly=False)
 
     COEFFICIENTS = {
     "Élémentaire": {
