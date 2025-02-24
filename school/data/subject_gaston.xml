@@ -48,11 +48,7 @@
     <field name="minimum_marks">0</field>
 </record>
 
-<record id="subject_eps" model="subject.subject">
-    <field name="name">Éducation Physique et Sportive (EPS)</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
-</record>
+
 
 <record id="subject_art" model="subject.subject">
     <field name="name">Éducation Artistique / Dessin / Art Plastique</field>

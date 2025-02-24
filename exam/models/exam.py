@@ -1207,7 +1207,7 @@ class ExamSubject(models.Model):
         "Découverte du Monde - Compétence": 1,
         "Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)": 1,
         "Éducation au Développement Durable - Compétence": 1,
-        "Éducation Physique et Sportive (EPS)": 1,
+        "EPS": 1,
         "Éducation Artistique / Dessin / Art Plastique": 1,
         "Éducation Musicale (Récitation / Chant)": 1,
         "Arabe / Éducation Religieuse": 1,
