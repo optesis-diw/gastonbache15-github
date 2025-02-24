@@ -1211,7 +1211,7 @@ class ExamSubject(models.Model):
         "Éducation Artistique / Dessin / Art Plastique": 1,
         "Éducation Musicale (Récitation / Chant)": 1,
         "Arabe": 1,
-        "Anglais M": 1,
+        "Anglais": 1,
     },
     "Collége": {
         "Expression Ecrite / Rédaction / Dissertation": 2,
