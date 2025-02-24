@@ -17,7 +17,7 @@ class SchoolTeacher(models.Model):
     standard_id = fields.Many2one('school.standard',
                                   "Responsabilité de la classe académique",
                                   help="Standard for which the teacher\
-                                  responsible for.")
+                                  responsible for.", required=True)
     
     stand_id = fields.Many2one('standard.standard', "Course",
                                related="standard_id.standard_id", store=True)

@@ -631,7 +631,7 @@ class DailyAttendanceStudentRemark(models.TransientModel):
                     head_fmt,
                 )
                 sheet.merge_range(
-                    1, 29, 1, 34, "Classe:" + str(rec.course_id.standard_id.name), head_fmt
+                    1, 29, 1, 34, "Classe:" + str(rec.course_id.name), head_fmt
                 )
                 sheet.merge_range(
                     1, 20, 1, 28, "key P=Present, A=Absent", head_fmt
@@ -698,7 +698,7 @@ class DailyAttendanceStudentRemark(models.TransientModel):
                         """
                             SELECT
                                 id,
-                                medium_id
+                                standard_id
                             FROM
                                 student_student
                             WHERE
