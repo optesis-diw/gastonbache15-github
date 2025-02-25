@@ -102,8 +102,9 @@ class StudentFeesRegister(models.Model):
     fees_structure = fields.Many2one(
         "student.fees.structure", "Fees Structure", help="Fee structure"
     )
+    
     standard_id = fields.Many2one(
-        "standard.standard", "Class", help="Enter student standard"
+        "school.standard", "Class", help="Enter student standard"
     )
 
     def fees_register_draft(self):
@@ -114,31 +115,33 @@ class StudentFeesRegister(models.Model):
         """Method to confirm payslip"""
         stud_obj = self.env["student.student"]
         slip_obj = self.env["student.payslip"]
-        school_std_obj = self.env["school.standard"]
         for rec in self:
             if not rec.journal_id:
                 raise ValidationError(_("Kindly, Select Account Journal!"))
             if not rec.fees_structure:
                 raise ValidationError(_("Kindly, Select Fees Structure!"))
-            school_std_rec = school_std_obj.search(
-                [("standard_id", "=", rec.standard_id.id)]
-            )
+
+            # Rechercher l'enregistrement de la classe dans school.standard
+            school_std_rec = rec.standard_id
+
+            # Rechercher les étudiants dans le standard
             students_rec = stud_obj.search(
                 [
-                    ("standard_id", "in", school_std_rec.ids),
+                    ("standard_id", "=", school_std_rec.id),
                     ("state", "=", "done"),
                 ]
             )
+
             for stu in students_rec:
                 old_slips_rec = slip_obj.search(
                     [("student_id", "=", stu.id), ("date", "=", rec.date)]
                 )
-                # Check if payslip exist of student
+                # Check if payslip exist for student
                 if old_slips_rec:
                     raise ValidationError(
                         _(
                             """
-There is already a Payslip exist for student: %s for same date.!"""
+There is already a Payslip exist for student: %s for same date!"""
                         )
                         % stu.name
                     )
@@ -158,11 +161,12 @@ There is already a Payslip exist for student: %s for same date.!"""
                     }
                     slip_rec = slip_obj.create(res)
                     slip_rec.onchange_student()
+
             # Calculate the amount
-            amount = 0
-            for data in rec.line_ids:
-                amount += data.total
+            amount = sum(data.total for data in rec.line_ids)
             rec.write({"total_amount": amount, "state": "confirm"})
+
+
 
 
 class StudentPayslipLine(models.Model):
