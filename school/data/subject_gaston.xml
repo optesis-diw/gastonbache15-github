@@ -68,11 +68,6 @@
     <field name="minimum_marks">0</field>
 </record>
 
-<record id="subject_anglais_moy" model="subject.subject">
-    <field name="name">Anglais M</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
-</record>
 
 
 <!--Pour collége et secondaire-->
