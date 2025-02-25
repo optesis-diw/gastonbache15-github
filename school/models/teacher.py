@@ -1,6 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class SchoolTeacher(models.Model):
@@ -18,8 +19,9 @@ class SchoolTeacher(models.Model):
     #lier un Teacher à plusieurs classes (standard_id)
     standard_id = fields.Many2many('school.standard',
                                 'school_teacher_standard_rel',
-                                'teacher_id', 'standard_id',
-                                "Classes Responsables",
+                                'teacher_id', #
+                                'standard', # 
+                                "Classes Responsables", 
                                 help="Les classes dont l'enseignant est responsable.")
     
     @api.constrains('standard_id')
@@ -30,9 +32,17 @@ class SchoolTeacher(models.Model):
 
 
 
+
     
-    stand_id = fields.Many2one('standard.standard', "Course",
-                               related="standard_id.standard_id", store=True)
+    stand_id = fields.Many2one('school.standard', "Course",
+                           compute="_compute_stand_id", store=True)
+
+    @api.depends('standard_ids')
+    def _compute_stand_id(self):
+        for rec in self:
+            rec.stand_id = rec.standard_ids[:1]  # Prend la première classe
+
+
     subject_id = fields.Many2many('subject.subject', 'subject_teacher_rel',
                                   'teacher_id', 'subject_id',
                                   'Course-Subjects')
@@ -50,14 +60,9 @@ class SchoolTeacher(models.Model):
                                   'Children') #Etudiant
     phone_numbers = fields.Char("Phone Number")
     work_location = fields.Char("Work Location")
+   
     
-    @api.constrains('standard_id')
-    def _check_same_school(self):
-        for rec in self:
-            schools = rec.standard_id.mapped('school_id')
-            if len(schools) > 1:
-                raise ValidationError("Toutes les classes doivent appartenir à la même école pour un enseignant.")
-            
+    
     @api.onchange('is_parent')
     def _onchange_isparent(self):
         if self.is_parent:
