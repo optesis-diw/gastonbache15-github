@@ -14,10 +14,22 @@ class SchoolTeacher(models.Model):
     employee_id = fields.Many2one('hr.employee', 'Employee ID',
                                   ondelete="cascade",
                                   delegate=True, required=True)
-    standard_id = fields.Many2one('school.standard',
-                                  "Responsabilité de la classe académique",
-                                  help="Standard for which the teacher\
-                                  responsible for.", required=True)
+    
+    #lier un Teacher à plusieurs classes (standard_id)
+    standard_id = fields.Many2many('school.standard',
+                                'school_teacher_standard_rel',
+                                'teacher_id', 'standard_id',
+                                "Classes Responsables",
+                                help="Les classes dont l'enseignant est responsable.")
+    
+    @api.constrains('standard_id')
+    def _check_standards(self):
+        for rec in self:
+            if not rec.standard_id:
+                raise ValidationError("L'enseignant doit être responsable d'au moins une classe.")
+
+
+
     
     stand_id = fields.Many2one('standard.standard', "Course",
                                related="standard_id.standard_id", store=True)

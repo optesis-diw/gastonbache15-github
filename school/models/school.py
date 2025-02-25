@@ -250,6 +250,11 @@ class SchoolStandard(models.Model):
     _description = 'School Standards'
     _rec_name = "name"
     
+    #relation inverse standard_id: récupérer tous les enseignants d'une classe 
+    teacher_ids = fields.Many2many('school.teacher',
+                               'school_teacher_standard_rel',
+                               'standard_id', 'teacher_id',
+                               "Enseignants")
 
     @api.depends('standard_id', 'school_id', 'division_id', 'medium_id',
                  'school_id')
