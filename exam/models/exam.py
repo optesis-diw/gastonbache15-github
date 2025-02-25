@@ -322,25 +322,28 @@ class ExamExam(models.Model):
     def check_date_exam(self):
         """Method to check constraint of exam start date and end date."""
         for rec in self:
+            # Vérification si start_date ou end_date est None
+            if not rec.start_date or not rec.end_date:
+                raise ValidationError(_("Start Date and End Date must be set!"))
+
+            # Vérification de l'ordre des dates
             if rec.end_date < rec.start_date:
-                raise ValidationError(
-                    _(
-                        """
-                    Exam end date should be greater than start date!"""
-                    )
-                )
-            #dates dans les calendrier doivent être comprises entre la date de début et la date de fin de l'exmen    
-            for line in rec.exam_schedule_ids: #horaire exam
-                if line.timetable_id: #calendrier
+                raise ValidationError(_("Exam end date should be greater than start date!"))
+
+            # Vérification des dates dans l'emploi du temps de l'examen
+            for line in rec.exam_schedule_ids:  # horaire exam
+                if line.timetable_id:  # calendrier
                     for tt in line.timetable_id.exam_timetable_line_ids:
-                        if not rec.start_date <= tt.exm_date <= rec.end_date:
+                        if not tt.exm_date:  # Vérifie si la date de l'examen est définie
+                            raise ValidationError(_("Exam schedule date must be set!"))
+                        if not (rec.start_date <= tt.exm_date <= rec.end_date):
                             raise ValidationError(
                                 _(
                                     """Invalid Exam Schedule!
-                \n\nExam Dates must be in between Start date and End date !
-                """
+                                    \n\nExam Dates must be in between Start date and End date !"""
                                 )
                             )
+                            
     #Validation Avertissement si les résultats de l'examen ne sont pas terminés "done"
     @api.constrains("active")
     def check_active(self):
