@@ -50,6 +50,14 @@ class SchoolTeacher(models.Model):
                                   'Children') #Etudiant
     phone_numbers = fields.Char("Phone Number")
     work_location = fields.Char("Work Location")
+    
+    @api.constrains('standard_id')
+    def _check_same_school(self):
+        for rec in self:
+            schools = rec.standard_id.mapped('school_id')
+            if len(schools) > 1:
+                raise ValidationError("Toutes les classes doivent appartenir à la même école pour un enseignant.")
+            
     @api.onchange('is_parent')
     def _onchange_isparent(self):
         if self.is_parent:
