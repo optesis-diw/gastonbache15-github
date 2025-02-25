@@ -34,13 +34,13 @@ class SchoolTeacher(models.Model):
 
 
     
-    stand_id = fields.Many2one('school.standard', "Course",
+    stand_id = fields.Many2one('school.standard', "Cours",
                            compute="_compute_stand_id", store=True)
 
-    @api.depends('standard_ids')
+    @api.depends('standard_id')
     def _compute_stand_id(self):
         for rec in self:
-            rec.stand_id = rec.standard_ids[:1]  # Prend la première classe
+            rec.stand_id = rec.standard_id[:1]  # Prend la première classe
 
 
     subject_id = fields.Many2many('subject.subject', 'subject_teacher_rel',
