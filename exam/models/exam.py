@@ -1,6 +1,9 @@
 # See LICENSE file for full copyright and licensing details.
+from odoo import models, fields, api, _
+import base64
+import logging
 
-from odoo import _, api, fields, models
+_logger = logging.getLogger(__name__)
 from odoo.exceptions import ValidationError
     
 class StudentStudent(models.Model):
