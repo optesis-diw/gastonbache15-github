@@ -414,6 +414,11 @@
                                                 <field name="standard_id"/>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td class="oe_kanban_title1" align="left" valign="middle">
+                                                <field name="session"/>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                                 <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger oe_kanban_color_border">
