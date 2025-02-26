@@ -24,6 +24,15 @@ def emailvalidation(email):
             return True
 
 
+
+class AccountMoveInherit(models.Model):
+    _inherit = 'account.move'
+
+    def _unlink_forbid_parts_of_chain(self):
+        """Surcharge pour désactiver la restriction de suppression des écritures comptables."""
+        return  # On ne lève plus d'erreur
+
+
 class AcademicYear(models.Model):
     '''Années académiques '''
     _name = "academic.year"
