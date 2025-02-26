@@ -1213,12 +1213,11 @@ class DailyAttendanceLine(models.Model):
             Si l'état de rec.standard_id est "validate".
             Ou si rec.standard_id.is_generate est False: exception
             """
-            if (rec.standard_id.state == "validate"
-                or not rec.standard_id.is_generate):
+            if (rec.standard_id.state == "validate"):
                 raise ValidationError(
                     _(
                      "Vous ne pouvez pas marquer comme absent,"
-                    "tant que la présence est en état de validation ou non  générer!"
+                    "tant que la présence est en état de validation !"
                     )
                 )
             rec.write({"is_present": False})

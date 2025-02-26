@@ -293,7 +293,7 @@ class SchoolStandard(models.Model):
         for rec in self:
             rec.remaining_seats = rec.capacity - rec.total_students
 
-    school_id = fields.Many2one('school.school', 'School')
+    school_id = fields.Many2one('school.school', 'School', required=True)
     standard_id = fields.Many2one(
     'standard.standard', string='Standard', required=True, domain="[('medium_id', '=', medium_id)]")
     
