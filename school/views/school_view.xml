@@ -187,7 +187,7 @@
                          <!--<field name="division_id" widget="selection" placeholder="Division"/>-->
                         <field name="medium_id" widget="selection" placeholder="Medium"/>
                         <field name="standard_id" widget="selection" placeholder="Standard"/>
-                       
+                        <field name="name" />
                         <field name="school_id" widget="selection" placeholder="School"/>
                         <field name="user_id" placeholder="Select Faculty Name"
                             widget="selection"/>
@@ -195,7 +195,7 @@
                         <field name="total_students"/>
                         <field name="remaining_seats"/>
                         <field name="class_room_id" options="{&quot;no_create&quot;: True}"/>
-                        <field name="name" />
+                        
                         <field name="total_no_subjects" invisible="1"/>
                     </group>
                     <notebook colspan="4">
@@ -349,22 +349,22 @@
             </search>
         </field>
     </record>
-    <!-- Tree View Of Student Ethnie-->
+    <!-- Tree View Of Student Caste -->
     <record id="view_student_caste_tree" model="ir.ui.view">
         <field name="name">student.caste.tree</field>
         <field name="model">student.cast</field>
         <field name="arch" type="xml">
-            <tree string="Ethnie Information" editable="bottom">
+            <tree string="Caste Information" editable="bottom">
                 <field name="name" placeholder="Enter Name"/>
             </tree>
         </field>
     </record>
-    <!-- Form View Of Student Ethnie-->
+    <!-- Form View Of Student Caste -->
     <record id="view_student_caste_form" model="ir.ui.view">
         <field name="name">student.caste.form</field>
         <field name="model">student.cast</field>
         <field name="arch" type="xml">
-            <form string="EthnieInformation">
+            <form string="Caste Information">
                 <sheet>
                     <group>
                         <field name="name" placeholder="Religion" />
@@ -373,9 +373,9 @@
             </form>
         </field>
     </record>
-    <!-- Action Of Form & Tree Views Of Student Ethnie-->
+    <!-- Action Of Form & Tree Views Of Student Caste -->
     <record id="action_student_cast_form_7" model="ir.actions.act_window">
-        <field name="name">Religion/Ethnie</field>
+        <field name="name">Religion/Caste</field>
         <field name="res_model">student.cast</field>
         <field name="view_mode">tree,form</field>
     </record>
@@ -643,6 +643,7 @@
             </tree>
         </field>
     </record>
+    
      <!-- Form View Of Standard journee Information-->
     <record id="view_standard_journee_form" model="ir.ui.view">
         <field name="name">form.journee</field>
@@ -1020,31 +1021,36 @@
     <menuitem id="menu_configuration" name="Configurations" parent="menu_ems" sequence="13" groups="group_school_administration" />
     <!-- MenuItem For Configurations->School Configurations -->
     <menuitem id="menu_school_config_form1" name="School Configurations" parent="menu_configuration" />
-    <menuitem id="menu_cast" name="Religion/Ethnie" parent="menu_school_config_form1" action="action_student_cast_form_7" />
-    <menuitem id="menu_sub_doc_type_sub_form" name="Document Type" parent="menu_school_config_form1" action="action_document_type_form" />
+    <!--commenté by diw-->
+    <!--<menuitem id="menu_cast" name="Religion/Ethnie" parent="menu_school_config_form1" action="action_student_cast_form_7" />
+    <menuitem id="menu_sub_doc_type_sub_form" name="Document Type" parent="menu_school_config_form1" action="action_document_type_form" /><!-->
     <menuitem id="submenu_sub_grade" name="Grade" parent="menu_school_config_form1" action="action_grade_master_form" />
     <menuitem id="submenu_sub_news" name="Noticeboard" parent="menu_school_config_form1" action="view_student_news" />
-    <menuitem id="mother_tongue_menu" name="Langue maternelle" parent="menu_school_config_form1" action="action_mother_toungue" groups="school.group_school_administration"/>
+   <!-- <menuitem id="mother_tongue_menu" name="Langue maternelle" parent="menu_school_config_form1" action="action_mother_toungue" groups="school.group_school_administration"/>-->
     <menuitem id="menu_school_school_sub_form" name="School" parent="menu_school_config_form1" action="action_school_school_form" />
     <!-- MenuItem For Configurations->Academic Years -->
     <menuitem id="menu_academic_year_form" name="Academic Years" parent="menu_configuration" />
     <menuitem id="menu_academic_year_sub_form" name="Years" parent="menu_academic_year_form" action="action_academic_year_form" />
     <menuitem id="menu_academic_month_form" name="Months" parent="menu_academic_year_form" action="action_academic_month_form" />
+    
+    
     <!-- MenuItem For Configurations->Standards= Niveau académique -->
     <menuitem id="menu_school_standard_form" name="Niveau académique" parent="menu_configuration" />
     <menuitem id="menu_sub_school_standard_form" name="Classes" parent="menu_school_standard_form" action="action_school_standard_form" />
     <menuitem id="menu_standard_standard_form" name="Niveau académique" parent="menu_school_standard_form" action="action_standard_standard_form" />
-    <menuitem id="menu_journee_form" name="scolarite" parent="menu_school_standard_form" action="action_standard_journee_form" sequence="9"/>
-    <menuitem id="menu_standard_division_form" name="Divisions" parent="menu_school_standard_form" action="action_standard_division_form" />
+    <!--<menuitem id="menu_journee_form" name="scolarite" parent="menu_school_standard_form" action="action_standard_journee_form" sequence="9"/>
+    <menuitem id="menu_standard_division_form" name="Divisions" parent="menu_school_standard_form" action="action_standard_division_form" />-->
     <menuitem id="menu_standard_medium_form" name="Medium" parent="menu_school_standard_form" action="action_standard_medium_form" />
     <menuitem id="menu_class_room" name="Salle de classe" parent="menu_school_standard_form" action="action_class_room"/>
     <!-- MenuItem For Configurations->Subject -->
     <menuitem id="menu_subject_subject_form" name="Subjects" parent="menu_configuration" sequence="10" />
     
-    <menuitem id="menu_subject_domaine_form" name="Domaine" parent="menu_subject_subject_form" action="action_subject_domaine_form" />
+    <!--<menuitem id="menu_subject_domaine_form" name="Domaine" parent="menu_subject_subject_form" action="action_subject_domaine_form" />-->
     
     <menuitem id="menu_subject_subject_sub_form" name="Subjects" parent="menu_subject_subject_form" action="action_subject_subject_form" />
-    <menuitem id="menu_subject_elective_form" name="Elective Subject(s)" parent="menu_subject_subject_form" action="action_elective_subject_form" />
+    <!--<menuitem id="menu_subject_elective_form" name="Elective Subject(s)" parent="menu_subject_subject_form" action="action_elective_subject_form" />-->
+    
+    
     <!-- Menuitem of alumni and terminate -->
     <menuitem id="menu_student_alumni" name="Alumni/Terminate" action="action_student_alumni" parent="admission_register" groups="school.group_school_administration,school.group_school_teacher" sequence="22"/>
     <menuitem
