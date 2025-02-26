@@ -20,7 +20,7 @@ class SchoolTeacher(models.Model):
     standard_id = fields.Many2many('school.standard',
                                 'school_teacher_standard_rel',
                                 'teacher_id', #
-                                'standard', # 
+                                'standard_id', # 
                                 "Classes Responsables", 
                                 help="Les classes dont l'enseignant est responsable.")
     

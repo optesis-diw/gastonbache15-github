@@ -253,7 +253,7 @@ class SchoolStandard(models.Model):
     #relation inverse standard_id: récupérer tous les enseignants d'une classe 
     teacher_ids = fields.Many2many('school.teacher',
                                'school_teacher_standard_rel',
-                               'standard', 'teacher_id',
+                               'standard_id', 'teacher_id',
                                "Enseignants")
     
 
