@@ -344,6 +344,8 @@ class AttendanceSheetLine(models.Model):
     _description = "Attendance Sheet Line"
     _name = "attendance.sheet.line"
     _order = "roll_no"
+    
+    
 
     roll_no = fields.Integer(
         "Roll Number", required=True, help="Roll Number of Student"
@@ -1217,7 +1219,7 @@ class DailyAttendanceLine(models.Model):
                 raise ValidationError(
                     _(
                      "Vous ne pouvez pas marquer comme absent,"
-                    "tant que la présence est en état de validation !"
+                    "tant que la présence est en état de validation!"
                     )
                 )
             rec.write({"is_present": False})

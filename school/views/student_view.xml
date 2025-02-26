@@ -57,6 +57,8 @@
                             <field name="standard_id" placeholder="Standard"  domain="[('school_id','=',school_id)]" widget="selection" attrs="{'readonly':[('state','in','alumni')]}"/>
                             <field name="division_id" placeholder="Division" invisible="1" widget="selection" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                             <field name="medium_id" placeholder="Medium"  widget="selection" attrs="{'readonly':[('state','in','alumni')]}"/>
+                            <field name="type_mens" placeholder="Mensualité complet" />
+                            
                              <!--<field name="mens_id" placeholder="Journée continu/Démi-journée" />
                             <field name="montant" />-->
                         </group>
@@ -296,7 +298,7 @@
                 <group expand="0" string="Group By..." colspan="12" col="10">
                     <filter name="class" string="Class" help="By Class" context="{'group_by':'standard_id'}" />
                     <filter name="gender" string="Gender" help="By Gender" context="{'group_by':'gender'}" />
-                    <!--<filter name="gender" string="Type de scolarite" context="{'group_by':'mens_id'}" />-->
+                    <filter name="gender" string="Type de scolarite" context="{'group_by':'type_mens'}" />
                     <filter name="year" string="Annee Academique" context="{'group_by':'year'}"/>
                     <filter name="name" string="Name" help="By Class" context="{'group_by':'student_name'}" />
                     <filter name="school" string="School" help="By School" context="{'group_by':'school_id'}" />
@@ -457,6 +459,7 @@
                             <field name="medium_id" placeholder="Medium" widget="selection" attrs="{'readonly':[('state','=','alumni')]}"/>
                             <field name="standard_id" placeholder="Class" domain="[('school_id','=',school_id),('medium_id','=',medium_id)]" widget="selection" attrs="{'readonly':[('state','=','alumni')]}"/>
                             <field name="division_id" placeholder="Division" widget="selection" attrs="{'readonly':[('state','=','alumni')]}" invisible="1"/>
+                             <field name="type_mens" placeholder="Mensualité complet" />
                             <!--<field name="mens_id" placeholder="Journée continu/Démi-journée" />
                             <field name="montant" />-->
                         </group>
