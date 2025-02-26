@@ -349,22 +349,22 @@
             </search>
         </field>
     </record>
-    <!-- Tree View Of Student Caste -->
+    <!-- Tree View Of Student Ethnie-->
     <record id="view_student_caste_tree" model="ir.ui.view">
         <field name="name">student.caste.tree</field>
         <field name="model">student.cast</field>
         <field name="arch" type="xml">
-            <tree string="Caste Information" editable="bottom">
+            <tree string="Ethnie Information" editable="bottom">
                 <field name="name" placeholder="Enter Name"/>
             </tree>
         </field>
     </record>
-    <!-- Form View Of Student Caste -->
+    <!-- Form View Of Student Ethnie-->
     <record id="view_student_caste_form" model="ir.ui.view">
         <field name="name">student.caste.form</field>
         <field name="model">student.cast</field>
         <field name="arch" type="xml">
-            <form string="Caste Information">
+            <form string="EthnieInformation">
                 <sheet>
                     <group>
                         <field name="name" placeholder="Religion" />
@@ -373,9 +373,9 @@
             </form>
         </field>
     </record>
-    <!-- Action Of Form & Tree Views Of Student Caste -->
+    <!-- Action Of Form & Tree Views Of Student Ethnie-->
     <record id="action_student_cast_form_7" model="ir.actions.act_window">
-        <field name="name">Religion/Caste</field>
+        <field name="name">Religion/Ethnie</field>
         <field name="res_model">student.cast</field>
         <field name="view_mode">tree,form</field>
     </record>
@@ -1020,7 +1020,7 @@
     <menuitem id="menu_configuration" name="Configurations" parent="menu_ems" sequence="13" groups="group_school_administration" />
     <!-- MenuItem For Configurations->School Configurations -->
     <menuitem id="menu_school_config_form1" name="School Configurations" parent="menu_configuration" />
-    <menuitem id="menu_cast" name="Religion/Caste" parent="menu_school_config_form1" action="action_student_cast_form_7" />
+    <menuitem id="menu_cast" name="Religion/Ethnie" parent="menu_school_config_form1" action="action_student_cast_form_7" />
     <menuitem id="menu_sub_doc_type_sub_form" name="Document Type" parent="menu_school_config_form1" action="action_document_type_form" />
     <menuitem id="submenu_sub_grade" name="Grade" parent="menu_school_config_form1" action="action_grade_master_form" />
     <menuitem id="submenu_sub_news" name="Noticeboard" parent="menu_school_config_form1" action="view_student_news" />
