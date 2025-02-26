@@ -1053,37 +1053,86 @@ class ExamResult(models.Model):
                 rec.rang = 0  # Aucun examen associé → rang = 0
                 
                     
-    moyenne_second_semester = fields.Float(string='Moyenne 2em Semester', compute='_compute_moyenne_semester')
+    moyenne_second_semester = fields.Float(string='Moyenne 2em Semester', compute='_compute_moyenne_semestre')
 
-    moyenne_prem_semester = fields.Float(string='Moyenne 1er Semester', compute='_compute_moyenne_semester')
+    moyenne_prem_semester = fields.Float(string='Moyenne 1er Semester', compute='_compute_moyenne_semestre')
 
-    moyenne_annuel = fields.Float(string='Moyenne A', compute='_compute_moyenne_semester')
+    moyenne_annuel = fields.Float(string='Moyenne A', compute='_compute_moyenne_semestre')
 
     
-    @api.depends('student_id', 'moyenne', 'session')
-    def _compute_moyenne_semester(self):
+    
+    
+
+    @api.depends('student_id', 'moyenne', 'session', 'annee_scolaire')
+    def _compute_moyenne_semestre(self):
         for record in self:
+            _logger.info(f"Calcul de la moyenne pour {record.student_id.name}, Session: {record.session}")
             if record.session == "premier_semestre":
                 record.moyenne_prem_semester = record.moyenne or 0.0
                 record.moyenne_second_semester = 0.0
                 record.moyenne_annuel = 0.0
+
+                _logger.info(f"Premier semestre détecté, moyenne: {record.moyenne_prem_semester}")
+
             elif record.session == "second_semestre":
-                premier_semester_results = self.env['exam.result'].search([
+                # Rechercher la moyenne du premier semestre
+                premier_semestre_result = self.env['exam.result'].search([
                     ('student_id', '=', record.student_id.id),
-                    ('annee_scolaire', '=', record.annee_scolaire.id)
+                    ('annee_scolaire', '=', record.annee_scolaire.id),
+                    ('session', '=', 'premier_semestre')
                 ], order="id desc", limit=1)
 
-                if premier_semester_results:
-                    record.moyenne_prem_semester = premier_semester_results.moyenne or 0.0
+                if premier_semestre_result:
+                    record.moyenne_prem_semester = premier_semestre_result.moyenne
+                    _logger.info(f"Moyenne du premier semestre trouvée: {record.moyenne_prem_semester}")
                 else:
                     record.moyenne_prem_semester = 0.0
+                    _logger.warning(f"Aucune moyenne trouvée pour le premier semestre de {record.student_id.name}")
 
                 record.moyenne_second_semester = record.moyenne or 0.0
                 record.moyenne_annuel = (record.moyenne_prem_semester + record.moyenne_second_semester) / 2.0
+
+                _logger.info(f"Moyenne annuelle calculée: {record.moyenne_annuel}")
+
             else:
                 record.moyenne_prem_semester = 0.0
                 record.moyenne_second_semester = 0.0
                 record.moyenne_annuel = 0.0
+
+    @api.constrains('student_id', 'session', 'annee_scolaire')
+    def _check_unique_session_per_year(self):
+        """Empêcher un élève d'avoir deux sessions identiques et forcer le second semestre si nécessaire"""
+        for record in self:
+            # Vérifier si une session identique existe déjà
+            existing_sessions = self.env['exam.result'].search([
+                ('student_id', '=', record.student_id.id),
+                ('annee_scolaire', '=', record.annee_scolaire.id),
+                ('session', '=', record.session),
+                ('id', '!=', record.id)  # Exclure l'enregistrement actuel
+            ])
+            if existing_sessions:
+                raise ValidationError(
+                    f"L'élève {record.student_id.name} a déjà une session '{dict(self.fields_get('session')['session']['selection'])[record.session]}' pour l'année scolaire {record.annee_scolaire.name}."
+                )
+
+            # Vérifier si un "premier_semestre" existe déjà
+            existing_premier_semestre = self.env['exam.result'].search([
+                ('student_id', '=', record.student_id.id),
+                ('annee_scolaire', '=', record.annee_scolaire.id),
+                ('session', '=', 'premier_semestre'),
+                ('id', '!=', record.id)
+            ], limit=1)
+
+            if existing_premier_semestre and record.session == 'premier_semestre':
+                raise ValidationError(
+                    f"L'élève {record.student_id.name} a déjà un 'Premier Semestre' pour l'année {record.annee_scolaire.name}. Il ne peut pas en avoir un deuxième !"
+                )
+
+            # Si l'élève a déjà un "premier_semestre", forcer la session en "second_semestre"
+            if existing_premier_semestre and record.session != 'second_semestre':
+                raise ValidationError(
+                    f"L'élève {record.student_id.name} a déjà un 'Premier Semestre'. Sa prochaine session doit être 'Second Semestre' !"
+                )
 
                      
 
