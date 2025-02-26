@@ -348,9 +348,9 @@ class SchoolStandard(models.Model):
                 raise ValidationError("La matière 'Philo' ne peut être ajoutée que pour les classes de niveau 'TL'.")
 
             # Vérification pour "Éco Fam"
-            if "Eco Fam" in subject_names and record.standard_id.name not in ["4e", "3e"]:
-  
-                raise ValidationError("La matière 'Eco Fam' ne peut être ajoutée que pour les classes de niveau '4ème' ou '3ème'.")
+            if "Eco Fam" in subject_names and record.standard_id.name not in ["5e","4e", "3e"]:
+      
+                raise ValidationError("La matière 'Eco Fam' ne peut être ajoutée que pour les classes de niveau'5ème' ou '4ème' ou '3ème'.")
 
             # Vérification pour Arabe et Espagnol si le cycle est "Collège"
             if record.medium_id.name == "Collége":
