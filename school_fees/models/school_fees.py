@@ -103,6 +103,8 @@ class StudentFeesRegister(models.Model):
         "student.fees.structure", "Fees Structure", help="Fee structure"
     )
     
+   
+
     standard_id = fields.Many2one(
         "school.standard", "Class", help="Enter student standard"
     )
@@ -165,7 +167,6 @@ There is already a Payslip exist for student: %s for same date!"""
             # Calculate the amount
             amount = sum(data.total for data in rec.line_ids)
             rec.write({"total_amount": amount, "state": "confirm"})
-
 
 
 
@@ -380,6 +381,7 @@ class StudentPayslip(models.Model):
             ("draft", "Draft"),
             ("confirm", "Confirm"),
             ("pending", "Pending"),
+            ("partial", "Partial"),
             ("paid", "Paid"),
         ],
         "State",
@@ -767,6 +769,9 @@ class AccountMove(models.Model):
                     if move.payment_state == 'paid':
                         move.trigger_payslip_update = True
                         move.student_payslip_id.write({'state': 'paid'})
+                    elif move.payment_state == 'partial':
+                        move.trigger_payslip_update = False
+                        move.student_payslip_id.write({'state': 'partial'})    
                     elif move.payment_state == 'not_paid':
                         move.trigger_payslip_update = False
                         move.student_payslip_id.write({'state': 'pending'})
@@ -878,6 +883,7 @@ class StudentFees(models.Model):
     _inherit = "student.student"
     
     
+    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité')
 
     def set_alumni(self):
         """Override method to raise warning when fees payment of student is

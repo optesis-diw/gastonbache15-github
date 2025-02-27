@@ -201,7 +201,7 @@ class StudentStudent(models.Model):
     gender = fields.Selection([('male', 'Garçon'), ('female', 'Fille')],
                               'Gender', states={'done': [('readonly', True)]})
     
-    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité')
+    
     
     mens_id = fields.Many2one('standard.journee', 'Type de mensualité')
     montant = fields.Float(related='mens_id.montant', store='True')

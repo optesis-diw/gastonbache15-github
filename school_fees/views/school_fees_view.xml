@@ -3,9 +3,7 @@
 
 <odoo>
 
-    
-    
-    <!--diw test-->
+ 
   
     <record id="view_payslip_update" model="ir.ui.view">
         <field name="name">account.move.update</field>
@@ -215,7 +213,7 @@
                             <field name="date" attrs="{'readonly':[('state','not in','draft')]}"/>
                         </group>
                         <group col="2" string="Standard Information">
-                            <field name="standard_id" placeholder="Standard" widget="selection" attrs="{'readonly':[('state','not in','draft')]}" readonly="1"/>
+                            <field name="standard_id" placeholder="Standard" widget="selection"  readonly="1"/>
                             <field name="division_id" placeholder="Division" widget="selection" attrs="{'readonly':[('state','not in','draft')]}" readonly="1"/>
                             <field name="medium_id" placeholder="Medium" widget="selection" attrs="{'readonly':[('state','not in','draft')]}" readonly="1"/>
                         </group>
@@ -261,7 +259,11 @@
                 <field name="student_id"/>
                 <field name="date"/>
                 <field name="register_id"/>
-                <field name="state" widget="badge" decoration-info="state in ('draft','pending')" decoration-success="state in ('confirm','paid')"/>
+               <field name="state" widget="badge"
+                decoration-info="state in ('draft','pending')"
+                decoration-warning="state in ('partial')"
+                decoration-success="state in ('confirm','paid')"/>
+
             </tree>
         </field>
     </record>
@@ -363,6 +365,7 @@
             </tree>
         </field>
     </record>
+    
     <!-- Search View Of Student Fees Register Information -->
     <record id="view_student_fees_register_search" model="ir.ui.view">
         <field name="name">student.fees.register.search</field>
@@ -424,7 +427,7 @@
 
 
     <!-- Inherited Form View Of Student -->
-    <record id="view_student_student_form2" model="ir.ui.view">
+    <record id="view_student_student_form1" model="ir.ui.view">
         <field name="name">student.student.form</field>
         <field name="model">student.student</field>
         <field name="inherit_id" ref="school.view_student_student_form_1"/>
@@ -437,6 +440,30 @@
                         <lable style="">Fees Receipt</lable>
                     </button>
                 </xpath>
+
+                 <xpath expr="//field[@name='standard_id']" position="after">  
+             <field name="type_mens" />
+            </xpath>
+
+
+            </data>
+        </field>
+    </record>
+
+
+     <record id="view_student_student_form2" model="ir.ui.view">
+        <field name="name">student.student.form</field>
+        <field name="model">student.student</field>
+        <field name="inherit_id" ref="school.view_student_student_form_2"/>
+        <field name="arch" type="xml">
+            <data>
+                
+
+                 <xpath expr="//field[@name='standard_id']" position="after">  
+             <field name="type_mens" />
+            </xpath>
+
+
             </data>
         </field>
     </record>
