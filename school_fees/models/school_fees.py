@@ -151,6 +151,11 @@ There is already a Payslip exist for student: %s for same date!"""
                     rec.number = self.env["ir.sequence"].next_by_code(
                         "student.fees.register"
                     ) or _("New")
+                    
+                    # Prendre la structure des frais de l'élève si elle est différente
+                    fees_structure_id = stu.type_mens.id if stu.type_mens else rec.fees_structure.id
+
+
                     res = {
                         "student_id": stu.id,
                         "register_id": rec.id,
@@ -159,7 +164,7 @@ There is already a Payslip exist for student: %s for same date!"""
                         "company_id": rec.company_id.id,
                         "currency_id": rec.company_id.currency_id.id or False,
                         "journal_id": rec.journal_id.id,
-                        "fees_structure_id": rec.fees_structure.id or False,
+                        "fees_structure_id": fees_structure_id or False,
                     }
                     slip_rec = slip_obj.create(res)
                     slip_rec.onchange_student()
@@ -332,25 +337,25 @@ class StudentPayslip(models.Model):
         ],"session", invisible="1")
     
     #
-
     fees_structure_id = fields.Many2one(
-        "student.fees.structure",
-        "Fees Structure",
+        "student.fees.structure", "Fees Structure",
         states={"paid": [("readonly", True)]},
-        help="Select fee structure",
+        help="Select fee structure",related="student_id.type_mens"
     )
+    
     standard_id = fields.Many2one(
-        "school.standard", "Class", help="Select school standard"
-    )
-    division_id = fields.Many2one(
-        "standard.division", "Division", help="Select standard division"
-    )
+        "school.standard", "Class", help="Select school standard")
+    
+    division_id = fields.Many2one("standard.division", "Division", help="Select standard division")
+    
     medium_id = fields.Many2one(
         "standard.medium", "Medium", help="Select standard medium"
     )
+    
     register_id = fields.Many2one(
         "student.fees.register", "Register", help="Select student fee register"
     )
+    
     name = fields.Char("Description", help="Payslip name")
     number = fields.Char(
         "Number",
