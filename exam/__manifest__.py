@@ -15,7 +15,7 @@
         "security/exam_security.xml",
         "security/ir.model.access.csv",
         "data/exam_sequence.xml",
-        #"views/exam_view.xml",
+        "views/exam_view.xml",
         "report/exam_result_report.xml",
         "report/additional_exam_report.xml",
         "report/result_information_report.xml",
