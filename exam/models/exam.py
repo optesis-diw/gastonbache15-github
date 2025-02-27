@@ -1541,3 +1541,10 @@ class AdditionalExamResult(models.Model):
                 The obtained marks should not extend maximum marks!"""
                 )
             )
+
+
+
+class StudentExam(models.Model):
+    _inherit = 'student.student'
+
+    type_mens = fields.Char(string="Type Mens")
