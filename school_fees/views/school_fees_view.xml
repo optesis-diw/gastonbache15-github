@@ -451,22 +451,6 @@
     </record>
 
 
-     <record id="view_student_student_form2_update" model="ir.ui.view">
-        <field name="name">student.student.form</field>
-        <field name="model">student.student</field>
-        <field name="inherit_id" ref="school.view_student_student_form_2"/>
-        <field name="arch" type="xml">
-            <data>
-                
-
-                 <xpath expr="//field[@name='standard_id']" position="after">  
-             <field name="type_mens" />
-            </xpath>
-
-
-            </data>
-        </field>
-    </record>
 
     <!-- memu Items for Fees -->
     <menuitem id="menu_fees" name="Fees" parent="school.menu_ems" groups="school.group_school_administration,school.group_school_student,school.group_school_parent" sequence="11"/>
