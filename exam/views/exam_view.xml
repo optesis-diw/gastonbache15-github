@@ -270,8 +270,8 @@
     </record>
 
     <!-- Menu Item Of Additional Exam -->
-    <menuitem id="additional_exam" name="Additional Exams" parent="menu_exam" sequence="103"/>
-    <menuitem id="menu_additional_exam_sub_form" name="Additional Exam" parent="additional_exam" action="action_additional_exam_form" sequence="104"/>
+    <!--<menuitem id="additional_exam" name="Additional Exams" parent="menu_exam" sequence="103"/>
+    <menuitem id="menu_additional_exam_sub_form" name="Additional Exam" parent="additional_exam" action="action_additional_exam_form" sequence="104"/>-->
 
     <!-- Tree View Of Result Information -->
     <record id="view_exam_result_tree" model="ir.ui.view">
@@ -595,7 +595,7 @@
     </record>
 
     <!-- Menu Item Of Additional Exam Result -->
-    <menuitem id="menu_additional_exam_result" name="Additional Exam Results" parent="additional_exam"
-              action="action_additional_exam_result_form01" sequence="105"/>
+   <!-- <menuitem id="menu_additional_exam_result" name="Additional Exam Results" parent="additional_exam"
+              action="action_additional_exam_result_form01" sequence="105"/>-->
 
 </odoo>
