@@ -192,14 +192,14 @@
         <field name="arch" type="xml">
             <form string="Student Payslip">
                 <header>
-                    <button name="payslip_confirm" class="fa fa-check" string="Confirm" states="draft" type="object" groups="school.group_school_administration"/>
-                    <button name="student_pay_fees" class="fa fa-share" string="Payment" states="confirm" type="object" groups="school.group_school_administration"/>
+                    <button name="payslip_confirm" class="fa fa-check" string="Confirm" states="draft" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
+                    <button name="student_pay_fees" class="fa fa-share" string="Payment" states="confirm" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
                     <field name="state" widget="statusbar" readonly="1"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="invoice_view" string="Invoice" icon="fa-pencil-square-o" widget="stateinfo" class="oe_stat_button"
-                            states="pending,paid" type="object" groups="school.group_school_administration"/>
+                            states="pending,paid" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
                     </div>
                     <h2>
                         <field name="student_id" placeholder="Student Name" colspan="4" attrs="{'readonly':[('state','not in','draft')]}"
@@ -300,7 +300,7 @@
         <field name="arch" type="xml">
             <form string="Student Fees Register">
                 <header>
-                    <button name="fees_register_confirm" type="object" class="fa fa-check" string="Confirm" states="draft" groups="school.group_school_administration"/>
+                    <button name="fees_register_confirm" type="object" class="fa fa-check" string="Confirm" states="draft" groups="school.group_school_administration,school.group_school_comptable"/>
                     <field name="state" widget="statusbar" readonly="1"/>
                 </header>
                 <sheet>
@@ -434,7 +434,7 @@
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//div[@name='buttons']" position="inside">
-                    <button name="%(action_stu_fees_form)d" type="action" class="oe_inline oe_stat_button" attrs="{'invisible':[('state', 'in', ['draft','terminate','alumni','cancel'])]}" groups="school.group_school_administration,school.group_school_student">
+                    <button name="%(action_stu_fees_form)d" type="action" class="oe_inline oe_stat_button" attrs="{'invisible':[('state', 'in', ['draft','terminate','alumni','cancel'])]}" groups="school.group_school_administration,school.group_school_comptable,school.group_school_student">
                         <img src="/school_fees/static/description/icon.png" alt="logo"
                             style="height:25px;width:50px;float:left;"/>
                         <lable style="">Fees Receipt</lable>
@@ -453,11 +453,11 @@
 
 
     <!-- memu Items for Fees -->
-    <menuitem id="menu_fees" name="Fees" parent="school.menu_ems" groups="school.group_school_administration,school.group_school_student,school.group_school_parent" sequence="11"/>
+    <menuitem id="menu_fees" name="Fees" parent="school.menu_ems" groups="school.group_school_administration,school.group_school_comptable,school.group_school_student,school.group_school_parent" sequence="11"/>
     <menuitem id="menu_student_payslip" name="Fees Receipts" parent="menu_fees" action="action_student_payslip_form"
-              groups="school.group_school_administration,school.group_school_student,school.group_school_parent" sequence="111"/>
+              groups="school.group_school_administration,school.group_school_comptable,school.group_school_student,school.group_school_parent" sequence="111"/>
     <menuitem id="menu_student_fees_register" name="Fees Registers" parent="menu_fees" action="action_student_fees_register_form"
-              groups="school.group_school_administration,school.group_school_student,-school.group_school_parent" sequence="112"/>
+              groups="school.group_school_administration,school.group_school_comptable,school.group_school_student,-school.group_school_parent" sequence="112"/>
     <menuitem id="menu_student_fees_structure_form" name="Fees" parent="school.menu_configuration"/>
     <menuitem id="menu_student_fees_structure_sub_form" name="Fees Structure" parent="menu_student_fees_structure_form"
               action="action_student_fees_structure_form"/>
