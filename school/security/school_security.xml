@@ -8,11 +8,27 @@
             <field name="sequence">22</field>
         </record>
 
+     
+
+
         <record id="group_school_administration" model="res.groups">
-            <field name="name">School Administrator</field>
+            <field name="name">Profil Partnerédagogie</field>
             <field name="category_id" ref="module_category_school"/>
             <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
         </record>
+
+         <record id="group_school_surveillant" model="res.groups">
+            <field name="name">Profil surveillant</field>
+            <field name="category_id" ref="module_category_school"/>
+           
+        </record>
+
+         <record id="group_school_comptable" model="res.groups">
+            <field name="name">Profil Comptable</field>
+            <field name="category_id" ref="module_category_school"/>
+        </record>
+
+
 
         <record id="group_school_teacher" model="res.groups">
             <field name="name">School Teacher</field>

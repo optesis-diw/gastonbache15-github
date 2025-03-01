@@ -106,7 +106,7 @@
 
         <menuitem id="menu_res_partner_form" name="Parents" parent="menu_students_parents"
             action="action_school_parent_form" sequence="33"
-            groups="school.group_school_administration,school.group_school_student,school.group_school_teacher,school.group_school_parent"/>
+            groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant,school.group_school_student,school.group_school_teacher,school.group_school_parent"/>
 
     </data>
 </odoo>

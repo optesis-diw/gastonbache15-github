@@ -147,7 +147,7 @@
 
         <menuitem id="teacher_profile_menu" name="Teachers" action="action_school_teacher_form" 
                   parent="menu_students_parents" sequence="32"
-                  groups="school.group_school_administration,school.group_school_teacher"/>
+                  groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant,school.group_school_teacher"/>
 
     </data>
 </odoo>

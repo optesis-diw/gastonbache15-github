@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <form string="Student Information" create="false" delete="false">
                 <header>
-                   <!-- <button class="oe_highlight oe_stat_button" name="%(school.action_terminate_wizard)d" string="Terminate" type="action" icon="fa-ban" states="done" groups="school.group_school_administration" />-->
+                   <!-- <button class="oe_highlight oe_stat_button" name="%(school.action_terminate_wizard)d" string="Terminate" type="action" icon="fa-ban" states="done" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant" />-->
                     <button class="oe_stat_button" name="set_alumni" string="Alumni" type="object" icon="fa-archive" states="done" />
                     <button class="oe_stat_button" name="set_reactive" string="Reactiver" type="object" icon="fa-archive" states="alumni" />
                     <button class="oe_stat_button" icon="fa-check" name="admission_done" type="object" string="Done" states="draft" />
@@ -236,7 +236,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="History" groups="school.group_school_administration,school.group_school_teacher,school.group_school_parent,school.group_school_student">
+                        <page string="History" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant,school.group_school_teacher,school.group_school_parent,school.group_school_student">
                             <field name="history_ids" nolabel="1" colspan="4" readonly="1" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"
                                 options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}">
                                 <tree string="History">
@@ -394,7 +394,7 @@
                                 </div>
                                 <div class="oe_kanban_buttons_set oe_kanban_color_border oe_kanban_color_bglight oe_kanban_box_show_onclick">
                                     <div class="oe_kanban_left">
-                                        <a role="button" string="Edit" class="btn btn-sm btn-default fa fa-pencil" type="edit" groups="school.group_school_administration"/>
+                                        <a role="button" string="Edit" class="btn btn-sm btn-default fa fa-pencil" type="edit" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant"/>
                                         <a role="button" string="Change Color" icon="color-picker" type="color" name="color" />
                                     </div>
                                     <br class="oe_kanban_clear" />
@@ -413,7 +413,7 @@
         <field name="arch" type="xml">
             <form string="Admission Register">
                 <header>
-                   <!-- <button class="oe_highlight oe_stat_button" name="set_terminate" string="Terminate" type="object" icon="fa-ban" states="done" groups="school.group_school_administration"/>-->
+                   <!-- <button class="oe_highlight oe_stat_button" name="set_terminate" string="Terminate" type="object" icon="fa-ban" states="done" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant"/>-->
                     <button class="oe_stat_button" name="set_alumni" string="Alumni" type="object" icon="fa-archive" states="done" />
                    <button class="oe_stat_button" name="set_reactive" string="Reactiver" type="object" icon="fa-archive" states="alumni" />
                     <button class="oe_stat_button" icon="fa-check" name="admission_done" type="object" string="Done" states="draft" />
