@@ -67,6 +67,8 @@ class SchoolParent(models.Model):
             return parent_id
     
         # Créez l'utilisateur uniquement si l'email est fourni
+        """
+        #commenté y diw: pr empêcher la création automatique de l'utilisateur.
         email = parent_id.email
         if email:
             user_vals = {
@@ -80,6 +82,7 @@ class SchoolParent(models.Model):
         else:
             _logger.warning('Email non fourni pour le parent ID: %s', parent_id.id)
     
+        """
         return parent_id
 
 
