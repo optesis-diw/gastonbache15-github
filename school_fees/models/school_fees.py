@@ -14,7 +14,7 @@ class StudentFees(models.Model):
     _inherit = "student.student"
     
     
-    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité')
+    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité', required=True)
 
     def set_alumni(self):
         """Override method to raise warning when fees payment of student is
