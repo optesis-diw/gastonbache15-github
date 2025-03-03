@@ -88,7 +88,7 @@
             <field name="model_id" ref="model_student_student"/>
             <field name="global" eval="True"/>
             <field name="domain_force">[('company_id','=',user.company_id.id)]</field>
-            <field name="groups" eval="[(4, ref('group_school_teacher'))]"/>
+            <field name="groups" eval="[(4, ref('group_school_surveillant')), (4, ref('group_school_comptable')),(4, ref('group_school_teacher'))]"/>
         </record>
 
         <!-- Rule For Student Profile Record As A Parent -->
