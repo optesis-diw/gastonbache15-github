@@ -1029,7 +1029,8 @@
     <menuitem id="submenu_sub_grade" name="Grade" parent="menu_school_config_form1" action="action_grade_master_form" />
     <menuitem id="submenu_sub_news" name="Noticeboard" parent="menu_school_config_form1" action="view_student_news" />
    <!-- <menuitem id="mother_tongue_menu" name="Langue maternelle" parent="menu_school_config_form1" action="action_mother_toungue" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant"/>-->
-    <menuitem id="menu_school_school_sub_form" name="School" parent="menu_school_config_form1" action="action_school_school_form" />
+    <menuitem id="menu_school_school_sub_form" name="School" parent="menu_school_config_form1" action="action_school_school_form"
+     />
     <!-- MenuItem For Configurations->Academic Years -->
     <menuitem id="menu_academic_year_form" name="Academic Years" parent="menu_configuration" />
     <menuitem id="menu_academic_year_sub_form" name="Years" parent="menu_academic_year_form" action="action_academic_year_form" />
