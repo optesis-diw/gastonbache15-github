@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="0">
+    
+        <record id="medium_prescolaire" model="standard.medium">
+            <field name="sequence">0</field>
+            <field name="name">Préscolaire</field>
+            <field name="code">PRES</field>
+            <field name="description">Niveau préscolaire d'éducation.</field>
+        </record>
+
+
 
       <!-- Élémentaire -->
+
+        
         <record id="medium_elementaire" model="standard.medium">
             <field name="sequence">1</field>
             <field name="name">Élémentaire</field>
