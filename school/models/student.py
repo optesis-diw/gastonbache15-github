@@ -47,6 +47,7 @@ class StudentStudent(models.Model):
     message_follower_ids = fields.One2many('mail.followers', 'res_id', domain=[('res_model', '=', 'school.teacher')], string='Followers')
     activity_ids = fields.One2many('mail.activity', 'res_id', domain=[('res_model', '=', 'school.teacher')], string='Activities')
 
+        
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False,
                 access_rights_uid=None):
@@ -66,6 +67,7 @@ class StudentStudent(models.Model):
             args=args, offset=offset, limit=limit, order=order, count=count,
             access_rights_uid=access_rights_uid)
 
+
     @api.depends('date_of_birth')
     def _compute_student_age(self):
         '''Méthode de calcul de l'âge des étudiants'''
@@ -77,6 +79,8 @@ class StudentStudent(models.Model):
                 # Age should be greater than 0
                 if age_calc > 0.0:
                     rec.age = age_calc
+                else:
+                    rec.age = 0   
             else:
                 rec.age = 0
                 
@@ -92,44 +96,50 @@ class StudentStudent(models.Model):
            #     raise ValidationError(_('''Age of student should be greater
             #    than 5 years!'''))
 
+    
     @api.model
     def create(self, vals):
-        '''Méthode pour créer un utilisateur lors de la création d'un étudiant'''
+        '''Méthode pour créer un étudiant sans créer automatiquement un utilisateur'''
         if vals.get('pid', _('New')) == _('New'):
-            vals['pid'] = self.env['ir.sequence'
-                                   ].next_by_code('student.student'
-                                                  ) or _('New')
-        if vals.get('pid', False):
-            vals['login'] = vals['pid']
-            vals['password'] = vals['pid']
-        else:
-            raise except_orm(_('Error!'),
-                             _('''PID non valide
-                                 donc l'enregistrement ne sera pas sauvegardé.'''))
+            vals['pid'] = self.env['ir.sequence'].next_by_code('student.student') or _('New')
+
+        # Suppression de la création automatique de l'utilisateur
+        # if vals.get('pid', False):
+        #     vals['login'] = vals['pid']
+        #     vals['password'] = vals['pid']
+        # else:
+        #     raise except_orm(_('Error!'),
+        #                      _('''PID non valide donc l'enregistrement ne sera pas sauvegardé.'''))
+
         if vals.get('company_id', False):
             company_vals = {'company_ids': [(4, vals.get('company_id'))]}
             vals.update(company_vals)
+
         if vals.get('email'):
             school.emailvalidation(vals.get('email'))
+
+        # Création de l'étudiant
         res = super(StudentStudent, self).create(vals)
-        
+
         teacher = self.env['school.teacher']
         for data in res.parent_id:
-            teacher_rec = teacher.search([('stu_parent_id',
-                                           '=', data.id)])
+            teacher_rec = teacher.search([('stu_parent_id', '=', data.id)])
             for record in teacher_rec:
                 record.write({'student_id': [(4, res.id, None)]})
-        # Assign group to student based on condition
-        emp_grp = self.env.ref('base.group_user')
-        if res.state == 'draft':
-            admission_group = self.env.ref('school.group_is_admission')
-            new_grp_list = [admission_group.id, emp_grp.id]
-            res.user_id.write({'groups_id': [(6, 0, new_grp_list)]})
-        elif res.state == 'done':
-            done_student = self.env.ref('school.group_school_student')
-            group_list = [done_student.id, emp_grp.id]
-            res.user_id.write({'groups_id': [(6, 0, group_list)]})
+
+        # Suppression de l'affectation des groupes à l'utilisateur
+        # emp_grp = self.env.ref('base.group_user')
+        # if res.state == 'draft':
+        #     admission_group = self.env.ref('school.group_is_admission')
+        #     new_grp_list = [admission_group.id, emp_grp.id]
+        #     res.user_id.write({'groups_id': [(6, 0, new_grp_list)]})
+        # elif res.state == 'done':
+        #     done_student = self.env.ref('school.group_school_student')
+        #     group_list = [done_student.id, emp_grp.id]
+        #     res.user_id.write({'groups_id': [(6, 0, group_list)]})
+
         return res
+
 
     #@api.multi
     def write(self, vals):
@@ -172,10 +182,26 @@ class StudentStudent(models.Model):
                                      'family_contact_id',
                                      'Family Contact Detail',
                                      states={'done': [('readonly', True)]})
-    user_id = fields.Many2one('res.users', 'User ID', ondelete="cascade",
-                              required=True, delegate=True)
+    #user_id = fields.Many2one('res.users', 'User ID', ondelete="cascade",required=True, delegate=True)
+          
+    name = fields.Char(string="Name")
+            
+    street = fields.Char("Street")
+    
+    street2 = fields.Char("Street2")
+    
+    comment = fields.Text(string='Comment', help='Notes About Medical..')
+    
+    
+    color = fields.Integer("Color")  # Ajoute ce champ
+    email = fields.Char("Email")  # Ajoute ce champ
+    
+        
+
+                          
+    user_id = fields.Many2one('res.users', 'User ID')
     student_name = fields.Char('Student Name', related='user_id.name',
-                               store=True, readonly=True)
+                               store=True)
     pid = fields.Char('Student ID', required=True,
                       default=lambda self: _('New'),
                       help=' Numéro d\'identification personnel ')
@@ -202,9 +228,10 @@ class StudentStudent(models.Model):
                               'Gender', states={'done': [('readonly', True)]})
     
     
+     
+    mens_id = fields.Many2one('standard.journee', 'Type de mensualité', invisible=True)
+    montant = fields.Float(related='mens_id.montant', store='True', invisible=True)
     
-    mens_id = fields.Many2one('standard.journee', 'Type de mensualité')
-    montant = fields.Float(related='mens_id.montant', store='True')
     date_of_birth = fields.Date('BirthDate', required=True,
                                 states={'done': [('readonly', True)]})
     lieu_naiss = fields.Char('Lieu de Naissance')
