@@ -26,18 +26,6 @@ def emailvalidation(email):
 
 
 
-class AccountMoveOverride(models.Model):
-    _inherit = "account.move"
-
-    def _unlink_forbid_parts_of_chain(self):
-        """ Désactivé : Empêche l'erreur sur la suppression des écritures comptables """
-        pass
-
-    def _unlink_account_audit_trail_except_once_post(self):
-        """ Désactivé : Empêche l'erreur liée à l'audit comptable sur la suppression """
-        pass
-
-
 class AcademicYear(models.Model):
     '''Années académiques '''
     _name = "academic.year"
