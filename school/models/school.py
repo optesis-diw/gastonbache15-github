@@ -25,6 +25,16 @@ def emailvalidation(email):
 
 
 
+class AccountMoveOverride(models.Model):
+    _inherit = "account.move"
+
+    def _unlink_forbid_parts_of_chain(self):
+        """ Désactivé : Empêche l'erreur sur la suppression des écritures comptables """
+        pass
+
+    def _unlink_account_audit_trail_except_once_post(self):
+        """ Désactivé : Empêche l'erreur liée à l'audit comptable sur la suppression """
+        pass
 
 class AcademicYear(models.Model):
     '''Années académiques '''
@@ -252,7 +262,19 @@ class SchoolStandard(models.Model):
     _description = 'School Standards'
     _rec_name = "name"
     
-    #relation inverse standard_id: récupérer tous les enseignants d'une classe 
+   
+    """
+    @api.onchange('name')
+    def _onchange_amount(self):
+        if self.name :
+            return {
+                'warning': {
+                    'title': "Attention",
+                    'message': " veuillez vérifier.",
+                }
+            }
+    """  
+        
     teacher_ids = fields.Many2many('school.teacher',
                                'school_teacher_standard_rel',
                                'standard_id', 'teacher_id',
@@ -295,7 +317,7 @@ class SchoolStandard(models.Model):
 
     school_id = fields.Many2one('school.school', 'School', required=True)
     standard_id = fields.Many2one(
-    'standard.standard', string='Standard', required=True, domain="[('medium_id', '=', medium_id)]")
+    'standard.standard', string='Niveau', required=True, domain="[('medium_id', '=', medium_id)]")
     
     division_id = fields.Many2one('standard.division', 'Division')
     
@@ -349,15 +371,16 @@ class SchoolStandard(models.Model):
 
             # Vérification pour "Éco Fam"
             if "Eco Fam" in subject_names and record.standard_id.name not in ["5e","4e", "3e"]:
-      
+  
                 raise ValidationError("La matière 'Eco Fam' ne peut être ajoutée que pour les classes de niveau'5ème' ou '4ème' ou '3ème'.")
 
-            # Vérification pour Arabe et Espagnol si le cycle est "Collège"
-            if record.medium_id.name == "Collége":
-                arabic_present = "Arabe" in subject_names
-                spanish_present = "Espagnol" in subject_names
-                if arabic_present and spanish_present:
-                    raise ValidationError("Si le cycle est 'Collège', vous devez choisir entre 'Arabe' et 'Espagnol', mais pas les deux.")
+            # Vérification pour "PC"
+            if "PC" in subject_names and record.standard_id.name not in ["4e", "3e"]:
+  
+                raise ValidationError("La matière 'PC' ne peut être ajoutée que pour les classes de niveau '4ème' ou '3ème'.")
+
+ 
+        
 
             # Vérification pour Arabe et Espagnol en seconde S et Première S
             if record.standard_id.name in ["2nde S", "1ère S1", "1ère S2"]:
@@ -372,7 +395,7 @@ class SchoolStandard(models.Model):
                 pc_present = "PC" in subject_names
                 svt_present = "SVT" in subject_names
                 if pc_present and svt_present:
-                    raise ValidationError("Pour les niveaux 'TL2 et 1ère L2' et '2nd L', vous devez choisir entre 'PC' et 'SVT', mais pas les deux.")
+                    raise ValidationError("Pour les cycle 'TL2 et 1ère L2' et '2nd L', vous devez choisir entre 'PC' et 'SVT', mais pas les deux.")
 
 # @api.multi
 # def name_get(self):
@@ -442,8 +465,8 @@ class SubjectSubject(models.Model):
     
     name = fields.Char('Name', required=True)
     code = fields.Char('Code')
-    maximum_marks = fields.Integer("Maximum marks", default="10")
-    minimum_marks = fields.Integer("Minimum marks")
+    maximum_marks = fields.Float("Maximum marks", default="10")
+    minimum_marks = fields.Float("Minimum marks")
 
     @api.constrains("maximum_marks", "minimum_marks")
     def check_marks(self):
@@ -660,8 +683,8 @@ class AcademicSubject(models.Model):
     add_sub_id = fields.Many2one('student.previous.school', 'Add Subjects',
                                  invisible=True)
     name = fields.Char('Name', required=True)
-    maximum_marks = fields.Integer("Maximum marks")
-    minimum_marks = fields.Integer("Minimum marks")
+    maximum_marks = fields.Float("Maximum marks")
+    minimum_marks = fields.Float("Minimum marks")
 
 
 class StudentFamilyContact(models.Model):
@@ -724,10 +747,10 @@ class GradeLine(models.Model):
     _description = "Grades"
     _rec_name = 'grade'
 
-    from_mark = fields.Integer('From Marks', required=True,
-                               help='The grade will starts from this marks.')
-    to_mark = fields.Integer('To Marks', required=True,
-                             help='The grade will ends to this marks.')
+    from_mark = fields.Float('From Marks', required=True,
+                               help='The grade will starts from this marks.', default=10.0)
+    to_mark = fields.Float('To Marks', required=True,
+                             help='The grade will ends to this marks.', default=0.0)
     grade = fields.Char('Grade', required=True, help="Grade")
     sequence = fields.Integer('Sequence', help="Sequence order of the grade.")
     fail = fields.Boolean('Fail', help='If fail field is set to True,\

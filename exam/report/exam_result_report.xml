@@ -66,7 +66,7 @@
                                 <strong>Année Scolaire: </strong>
                                 <span t-field="o.year_date_start_s" /> -
                                 <span t-field="o.year_date_stop_s" /><br />
-                                <strong>Session: </strong><span t-field="o.session" />
+                                <!--<strong>Session: </strong>--><span t-field="o.session" />
                             </td>
                         </tr>
                     </table>
@@ -80,8 +80,8 @@
                                
                          <div class="text-center" style="font-size:20px;height:40px; solid;width:100%;border: 1px solid">
                          <p style="text-align:center;">
-                             <strong>Bulletin de notes : </strong>
-                            <span t-field="result.s_exam_ids.name"></span>
+                             <strong>BULLETIN DE NOTES</strong>
+                            <!--<span t-field="result.s_exam_ids.name"></span>-->
                          </p>
                         </div>
                                <br/>    
@@ -96,9 +96,9 @@
                                     <td style="width: 33%; text-align: center;"> 
                                     </td>
                                     <td style="width: 33%; text-align: right;"> 
-                                      <p style="text-align:right;"><strong>Ecole: </strong>
+                                      <!--<p style="text-align:right;"><strong>Ecole: </strong>
                                         <span t-field="result.school_id"></span>
-                                      </p>
+                                      </p>-->
                                     </td>
                                 </tr>
                                 
@@ -121,18 +121,18 @@
                                 </tr>
                                   <tr>
                                     <td style="width: 33%; text-align: left;"> 
-                                      <p style="text-align:left;"><strong>Matricule</strong>
+                                      <p style="text-align:left;"><strong>Matricule:</strong>
                                         <span t-field="result.student_id.reg_code"></span>
                                       </p>
                                     </td>
                                     <td style="width: 33%; text-align: center;"> 
-                                        <p style="text-align:center;"><strong>Nbre d'éléves : </strong>
-                                        <span t-field="result.standard_id.capacity"></span>
+                                        <p style="text-align:center;"><strong>Nbre d'élèves:</strong>
+                                        <span t-field="result.standard_id.total_students"></span>
                                       </p>
                                     </td>
                                     <td style="width: 33%; text-align: right;">
-                                       <p style="text-align:right;"><strong>Class redoublée :</strong>
-                                           <span  >normale</span>
+                                       <p style="text-align:right;"><strong>Classe redoublée:</strong>
+                                           <span t-field="result.class_redouble"></span>
                                        </p>
                                     </td>
                                 </tr>
@@ -167,10 +167,7 @@
                                             <b>Moy*</b>
                                         </td>
                                        
-                                        <td align="center"
-                                            style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
-                                            <b>T.H</b>
-                                        </td>
+                                       
                                         <td align="center"
                                             style="font-family: 'Helvetica';font-size: 16px;border: 2px solid black;">
                                             <b>Rang</b>
@@ -209,10 +206,7 @@
                                                 style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
                                                 <span t-esc="sub_res_info.get('obt_marks')"></span>
                                             </td>
-                                            <td align="center"
-                                                style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
-                                                <span>TH</span>
-                                            </td>
+                                            
                                             <td align="center"
                                                 style="font-family: 'Helvetica';font-size: 14px;border: 2px solid black;">
                                                 <span t-esc="sub_res_info.get('rang')"></span>
@@ -233,7 +227,7 @@
                                     <td align="center" style=";font-size: 16px;border: 2px solid black;" colspan="3"></td>
                                     <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.somme_coef"></td>
                                     <td align="center" style=";font-size: 16px;border: 2px solid black;" t-esc="result.somme_obtain_marks"></td>
-                                    <td align="center" style=";font-size: 16px;border: 2px solid black;"></td>
+
                                     <td align="center" style=";font-size: 16px;border: 2px solid black;" >Absences</td>
                                     <td align="center" style=";font-size: 16px;border: 2px solid black;" t-esc="result.absences"></td>
                                     
@@ -246,8 +240,8 @@
                                     <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.rang"></td>
                                     <td align="center" style=";font-size: 14px;border: 2px solid black;" >Retards</td>
                                     <td align="center" style=";font-size: 14px;border: 2px solid black;" t-esc="result.retards"></td>
-                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" >Abs Tot</td>
-                                    <td align="center" style=";font-size: 14px;border: 2px solid black;">10</td>
+                                    <td align="center" style=";font-size: 14px;border: 2px solid black;" ></td>
+                                    
                                 </tr>
                             </table>
 
@@ -334,28 +328,35 @@
 
                         
                         <td style="width:20%"></td>
-                        <td style="font-size:14px;height:70px;border: 1px solid;width:50%">
+                           <td style="font-size:14px;height:70px;border: 1px solid;width:50%">
                             <div >
                                 <p style="text-align:left;"><strong>Moy 1éme sem....... </strong>
                                     <span t-if="result.moyenne_prem_semester" t-field="result.moyenne_prem_semester"></span>
                                 </p>
                             </div>
-                            <div >
+                            <div t-if="result.session in ['second_semestre', 'troisieme_semestre']">
                                 <p style="text-align:left;"><strong>Moy 2éme sem....... </strong>
                                     <span t-if="result.moyenne_second_semester" t-field="result.moyenne_second_semester"></span>
                                 </p>
                             </div>
+                             <div t-if="result.session == 'troisieme_semestre'">
+                                <p style="text-align:left;"><strong>Moy 3éme sem....... </strong>
+                                    <span t-if="result.moyenne_troisieme_semester" t-field="result.moyenne_troisieme_semester"></span>
+                                </p>
+                            </div>
+                            <!--
                             <div >
                                 <p style="text-align:left;"><strong>Moyenne annuel....... </strong>
                                     <span t-field="result.moyenne_annuel" t-if="result.moyenne_annuel"></span>
                                 </p>
-                            </div>
+                            </div>-->
                             <div >
                                 <p style="text-align:left;"><strong>Rang....... </strong>
                                     <span t-field="result.rang"></span>
                                 </p>
                             </div>
                         </td>
+
                         </tr>
                       </table>
 

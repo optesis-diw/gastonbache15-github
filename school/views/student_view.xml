@@ -6,7 +6,9 @@
         <field name="name">student.student.form.1</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-            <form string="Student Information" create="false" delete="false">
+            <!--pour pouvoir fair l'import diw -->
+            <!--<form string="Student Information" create="false" delete="false">-->
+                <form string="Student Information" >
                 <header>
                    <!-- <button class="oe_highlight oe_stat_button" name="%(school.action_terminate_wizard)d" string="Terminate" type="action" icon="fa-ban" states="done" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant" />-->
                     <button class="oe_stat_button" name="set_alumni" string="Alumni" type="object" icon="fa-archive" states="done" />
@@ -45,8 +47,8 @@
                             <field name="school_id" placeholder="School" widget="selection" help="School of Student" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                         </group>
                          <group string="Informations sur l'élève">
-                            <field name="gender" placeholder="Gender" attrs="{'readonly':[('state','=','alumni')]}" required="1"/>
-                            <field name="date_of_birth" placeholder="Birthdate" attrs="{'readonly':[('state','=','alumni')]}"/>
+                            <field name="gender" placeholder="Gender" attrs="{'readonly':[('state','=','alumni')]}" />
+                            <field name="date_of_birth" placeholder="Birthdate" attrs="{'readonly':[('state','=','alumni')]}" required="0"/>
                             <field name="age" />
                             <field name="lieu_naiss"/>
                              <field name="street" class="o_address_street" placeholder="Rue..." attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
@@ -67,10 +69,10 @@
                             <div class="o_address_format">
                                 <field name="street" class="o_address_street" placeholder="Street..." attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="street2" class="o_address_street" placeholder="Street2..." attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
-                                <field name="city" placeholder="City" class="o_address_city" required="1" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
-                                <field name="state_id" domain="[('country_id','=',country_id)]" class="o_address_state" required="1" placeholder="State" options="{&quot;no_open&quot;: True}" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
+                                <field name="city" placeholder="City" class="o_address_city" required="0" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
+                                <field name="state_id" domain="[('country_id','=',country_id)]" class="o_address_state" required="0" placeholder="State" options="{&quot;no_open&quot;: True}" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
-                                <field name="country_id" placeholder="Country" class="o_address_country,oe_no_button" options="{&quot;no_open&quot;: True}" required="1" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country,oe_no_button" options="{&quot;no_open&quot;: True}" required="0" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                             </div>
                         </group>-->
                         <group>
@@ -133,8 +135,8 @@
                                     </group>
                                 </form>
                                 <tree string="Certifaicate" editable="top">
-                                    <field name="description" required="1" placeholder="Enter Description"/>
-                                    <field name="certi" required="1" placeholder="Upload Certi"/>
+                                    <field name="description" required="0" placeholder="Enter Description"/>
+                                    <field name="certi" required="0" placeholder="Upload Certi"/>
                                 </tree>
                             </field>
                         </page>
@@ -187,7 +189,7 @@
                       <!--  <page string="Award Info">
                             <field name="award_list" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',['alumni','terminate'])]}">
                                 <tree string="Reference" editable="top">
-                                    <field name="name" required="1" placeholder="Name"/>
+                                    <field name="name" required="0" placeholder="Name"/>
                                     <field name="description" placeholder="Description"/>
                                 </tree>
                                 <form string="Reference">
@@ -231,7 +233,7 @@
                                     </group>
                                 </form>
                                 <tree string="Remarks" editable="top">
-                                    <field name="name" required="1" placeholder="Enter Name"/>
+                                    <field name="name" required="0" placeholder="Enter Name"/>
                                     <field name="description" placeholder="Enter Description"/>
                                 </tree>
                             </field>
@@ -240,8 +242,8 @@
                             <field name="history_ids" nolabel="1" colspan="4" readonly="1" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"
                                 options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}">
                                 <tree string="History">
-                                    <field name="academice_year_id" required="1"/>
-                                    <field name="standard_id" required="1"/>
+                                    <field name="academice_year_id" required="0"/>
+                                    <field name="standard_id" required="0"/>
                                     <field name="percentage"/>
                                     <field name="result"/>
                                 </tree>
@@ -265,7 +267,9 @@
         <field name="name">student.student.tree.1</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-         <tree string="Student Information" create="false" delete="false">
+         <!--pour pouvoir fair l'import diw -->
+         <!--<tree string="Student Information" create="false" delete="false">-->
+         <tree string="Student Information">
                 <field name="pid" />
                 <field name="name" />
                 <field name="student_name" invisible="1" />
@@ -314,7 +318,7 @@
         <field name="name">Student KANBAN</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="standard_id" nocreate="1" create="false">
+            <kanban default_group_by="standard_id">
                 <field name="color"/>
                 <field name="id"/>
                 <field name="name"/>
@@ -438,15 +442,15 @@
                     </div>
                     <group>
                         <group string="School Information">
-                            <field name="school_id" placeholder="School Name" required="1"
+                            <field name="school_id" placeholder="School Name" required="0"
                                 attrs="{'readonly':[('state','=','alumni')]}" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
                             <field name="year" widget="selection" placeholder="Academic Year" readonly="1"/>
                             <field name="admission_date" placeholder="Admission Date" attrs="{'readonly':[('state','=','alumni')]}"/>
                             <field name="company_id" invisible="1"/>
                         </group>
                         <group string="Informations sur l'élève">
-                            <field name="gender" placeholder="Gender" attrs="{'readonly':[('state','=','alumni')]}" required="1"/>
-                            <field name="date_of_birth" placeholder="Birthdate" attrs="{'readonly':[('state','=','alumni')]}"/>
+                            <field name="gender" placeholder="Gender" attrs="{'readonly':[('state','=','alumni')]}" required="0"/>
+                            <field name="date_of_birth" placeholder="Birthdate" attrs="{'readonly':[('state','=','alumni')]}" required="0"/>
                             <field name="age" />
                             <field name="lieu_naiss"/>
                             <field name="street" placeholder="Rue..." class="o_address_street" attrs="{'readonly':[('state','=','alumni')]}"/>

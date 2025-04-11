@@ -51,10 +51,10 @@
                             <field name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact')]}"/>
                         </h1>
                     </div>
-                    <div>
+                   <!-- <div>
                         <label for="relation_id"/>
                         <field name="relation_id"/>
-                    </div>
+                    </div>-->
                     <group>
                         <group string="Postal Address" name="postal_address">
                             <label for="street" string="Address"/>

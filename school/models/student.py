@@ -1,3 +1,4 @@
+
 # See LICENSE file for full copyright and licensing details.
 
 import time
@@ -28,7 +29,6 @@ class StudentStudent(models.Model):
     company_id = fields.Many2one(
         "res.company",
         "Company",
-        required=True,
         change_default=True,
         readonly=True,
         default=lambda self: self.env.user.company_id,
@@ -39,7 +39,11 @@ class StudentStudent(models.Model):
             ("second_semestre", "2éme semestre"),
         ],"session", invisible="1")
     
+    
     #fin diw 
+    
+    partner_id = fields.Many2one('res.partner', string="Partner")
+
 
     
     # Champs pour la gestion des messages et des activités
@@ -99,11 +103,14 @@ class StudentStudent(models.Model):
     
     @api.model
     def create(self, vals):
-        '''Méthode pour créer un étudiant sans créer automatiquement un utilisateur'''
+        '''Méthode pour créer un étudiant sans créer automatiquement un utilisateur, mais en ajoutant un partenaire automatiquement si nécessaire'''
+
+        # Génération de l'ID unique pour l'étudiant
         if vals.get('pid', _('New')) == _('New'):
             vals['pid'] = self.env['ir.sequence'].next_by_code('student.student') or _('New')
 
         # Suppression de la création automatique de l'utilisateur
+        # Vous pouvez garder ou supprimer ces lignes en fonction de vos besoins spécifiques
         # if vals.get('pid', False):
         #     vals['login'] = vals['pid']
         #     vals['password'] = vals['pid']
@@ -111,24 +118,38 @@ class StudentStudent(models.Model):
         #     raise except_orm(_('Error!'),
         #                      _('''PID non valide donc l'enregistrement ne sera pas sauvegardé.'''))
 
+        # Vérification de l'existence du partner_id et création d'un partenaire si nécessaire
+        if not vals.get('partner_id'):
+            partner_vals = {
+                'name': vals.get('name', 'Nom de l\'étudiant inconnu'),
+                'email': vals.get('email'),
+                'phone': vals.get('contact_phone'),
+                # Vous pouvez ajouter d'autres champs de contact ici selon vos besoins
+            }
+            partner = self.env['res.partner'].create(partner_vals)
+            vals['partner_id'] = partner.id  # Lier le partenaire à l'étudiant
+
+        # Traitement de la société (company) si spécifié
         if vals.get('company_id', False):
             company_vals = {'company_ids': [(4, vals.get('company_id'))]}
             vals.update(company_vals)
 
+        # Validation de l'email
         if vals.get('email'):
             school.emailvalidation(vals.get('email'))
 
-        # Création de l'étudiant
+        # Création de l'étudiant avec les valeurs mises à jour
         res = super(StudentStudent, self).create(vals)
 
+        # Lier l'étudiant aux enseignants associés à son parent
         teacher = self.env['school.teacher']
         for data in res.parent_id:
             teacher_rec = teacher.search([('stu_parent_id', '=', data.id)])
             for record in teacher_rec:
                 record.write({'student_id': [(4, res.id, None)]})
 
-        # Suppression de l'affectation des groupes à l'utilisateur
-        # emp_grp = self.env.ref('base.group_user')
+        # Suppression de l'affectation automatique des groupes à l'utilisateur
+        # Vous pouvez garder cette logique si nécessaire en fonction de l'état de l'étudiant
         # if res.state == 'draft':
         #     admission_group = self.env.ref('school.group_is_admission')
         #     new_grp_list = [admission_group.id, emp_grp.id]
@@ -202,7 +223,7 @@ class StudentStudent(models.Model):
     user_id = fields.Many2one('res.users', 'User ID')
     student_name = fields.Char('Student Name', related='user_id.name',
                                store=True)
-    pid = fields.Char('Student ID', required=True,
+    pid = fields.Char('Student ID',
                       default=lambda self: _('New'),
                       help=' Numéro d\'identification personnel ')
     reg_code = fields.Char('Registration Code',
@@ -232,7 +253,7 @@ class StudentStudent(models.Model):
     mens_id = fields.Many2one('standard.journee', 'Type de mensualité', invisible=True)
     montant = fields.Float(related='mens_id.montant', store='True', invisible=True)
     
-    date_of_birth = fields.Date('BirthDate', required=True,
+    date_of_birth = fields.Date('BirthDate', required=False,
                                 states={'done': [('readonly', True)]})
     lieu_naiss = fields.Char('Lieu de Naissance')
     nationalite = fields.Many2one('res.contry', string ="Nationalité")
@@ -275,7 +296,7 @@ class StudentStudent(models.Model):
                               ('cancel', 'Cancel'),
                               ('alumni', 'Alumni')],
 
-                             'Status', readonly = True , default="draft")
+                             'Status', readonly = True , default="done")
 
     history_ids = fields.One2many('student.history', 'student_id', 'History')
     certificate_ids = fields.One2many('student.certificate', 'student_id',
@@ -405,3 +426,7 @@ class StudentStudent(models.Model):
            #            'student_code': student_code,
             #           'reg_code': registation_code})
         return True
+
+
+    
+    

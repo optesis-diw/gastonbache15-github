@@ -180,7 +180,7 @@
                             <field name="standard_id" readonly="1"/>
                         </group>
                     </group>
-                    <group col="4" colspan="4" string="Teacher Information">
+                    <group col="4" colspan="4" string="Surveillant Information">
                         <field name="teacher_id" options="{&quot;no_create&quot;: True}"
                                attrs="{'readonly':[('state','in',['approve','reject','toapprove'])]}" readonly="1"/>
                         <field name="attachments"
@@ -255,7 +255,7 @@
                     <separator string="Daily Attendance Sheet"/>
                     <group colspan="4" col="4">
                         <field name="user_id" placeholder="Select" 
-                               options="{&quot;no_create&quot;: True}" attrs="{'readonly':[('is_generate','!=', False)]}" required="1"/>
+                               options="{&quot;no_create&quot;: True}" attrs="{'readonly':[('is_generate','!=', False)]}" />
                         <field name="standard_id" widget="selection"  attrs="{'readonly':[('is_generate','!=', False)]}"/>
                         <field name="date" attrs="{'readonly':[('state','not in','draft')]}" required="1"/>
                         <field name="is_generate" invisible="1" />
@@ -404,11 +404,11 @@
 
     <menuitem id="menu_daily_attendances" name="Daily Attendance Sheets" parent="menu_attendance"
               action="action_daily_attendance_form"
-              groups="school.group_school_administration,school.group_school_surveillant,school.group_school_teacher" sequence="51"/>
+              groups="school.group_school_administration,school.group_school_surveillant,school.group_school_teacher" sequence="52"/>
     <!-- Menu of Student Leave Request -->
     <menuitem id="menu_student_leave_req" name="Student Leave Request" parent="menu_attendance"
               action="action_student_leave_form"
               groups="school.group_school_administration,school.group_school_surveillant,school.group_school_teacher,school.group_school_student,school.group_school_parent"
-              sequence="53"/>
+              sequence="51"/>
 
 </odoo>

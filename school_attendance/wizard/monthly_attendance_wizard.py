@@ -34,6 +34,8 @@ class DailyAttendanceStudentRemark(models.TransientModel):
     course_id = fields.Many2one(
         "school.standard", "Semesters", ondelete="restrict"
     )
+    
+    
     user_id = fields.Many2one("school.teacher", "Teacher")
     month = fields.Selection(
         [
@@ -196,62 +198,46 @@ class DailyAttendanceStudentRemark(models.TransientModel):
                 template_rec.send_mail(wizard.id, force_send=True)
         return True
 
-    def get_total_class(self, rec, teacher, subject):
+    import calendar
+
+    def get_total_class(self, rec, user, subject):
         total_class = 0
-        user = self.env["school.teacher"].search(
-            [("name", "=", teacher)], limit=1
-        )
-        subject = self.env["subject.subject"].search(
-            [("id", "=", subject)], limit=1
-        )
-        last_day_month = calendar.monthrange(
-            int(rec.academic_year_id.code), int(rec.month)
-        )[1]
-        start_date_str = (
-            str(int(rec.academic_year_id.code))
-            + "-"
-            + str(int(rec.month))
-            + "-01"
-        )
-        end_date_str = (
-            str(int(rec.academic_year_id.code))
-            + "-"
-            + str(int(rec.month))
-            + "-"
-            + str(last_day_month)
-            + " 23:00:00"
-        )
+        
+        # Récupération de l'utilisateur connecté
+        user = self.env["res.users"].search([("name", "=", user)], limit=1)
+        if not user:
+            user = self.env.user  # Si l'utilisateur n'est pas trouvé, on prend l'utilisateur connecté
+
+        # Vérification du sujet
+        subject = self.env["subject.subject"].search([("id", "=", subject)], limit=1)
+
+        # Calcul de la période du mois
+        last_day_month = calendar.monthrange(int(rec.academic_year_id.code), int(rec.month))[1]
+        start_date_str = f"{int(rec.academic_year_id.code)}-{int(rec.month)}-01"
+        end_date_str = f"{int(rec.academic_year_id.code)}-{int(rec.month)}-{last_day_month} 23:00:00"
+
+        # Exécution de la requête SQL
         self._cr.execute(
             """
-            SELECT
-                id
-            FROM
-                daily_attendance
-            WHERE
-                state = 'validate' and
-                standard_id = %s and
-                user_id = %s and
-                date >= %s and
-                date <= %s ORDER BY user_id,date
-                """,
+            SELECT COUNT(id)
+            FROM daily_attendance
+            WHERE state = 'validate'
+            AND standard_id = %s
+            AND user_id = %s
+            AND date >= %s
+            AND date <= %s
+            """,
             (rec.course_id.id, user.id, start_date_str, end_date_str),
         )
 
-        records = []
-        for record in self._cr.fetchall():
-            if record and record[0]:
-                records.append(record[0])
-            total_class += 1
-        total_class_att = {"total": total_class}
+        total_class = self._cr.fetchone()[0] or 0
 
-        class_str = ""
-        if total_class_att["total"] == 0:
-            class_str += "Total No. of Classes: "
-        else:
-            class_str += "Total No. of Combined Classes: "
-        if total_class_att["total"] != 0:
-            class_str += str(total_class_att["total"])
-        return (class_str, total_class_att)
+        total_class_att = {"total": total_class}
+        class_str = "Total No. of Combined Classes: " if total_class else "Total No. of Classes: "
+        class_str += str(total_class) if total_class else ""
+
+        return class_str, total_class_att
+
 
     def print_report(self):
         attch_obj = self.env["ir.attachment"]

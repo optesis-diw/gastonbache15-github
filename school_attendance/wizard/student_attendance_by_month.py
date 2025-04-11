@@ -117,5 +117,5 @@ unconfirm state!"""
             "form": data,
         }
         return self.env.ref(
-            "school_attendance.attendace_month_report"
+            "school_attendance.attendace_month_reports"
         ).report_action([], data=datas)

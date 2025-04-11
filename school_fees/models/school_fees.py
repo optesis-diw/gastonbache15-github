@@ -10,32 +10,6 @@ class ResPartner(models.Model):
     
     fichier_bin = fields.Binary(string="PDF File", attachment=True, help="Upload the binary file to convert.")
     
-class StudentFees(models.Model):
-    _inherit = "student.student"
-    
-    
-    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité', required=True)
-
-    def set_alumni(self):
-        """Override method to raise warning when fees payment of student is
-        remaining when student set to alumni state"""
-        student_payslip_obj = self.env["student.payslip"]
-        for rec in self:
-            student_fees_rec = student_payslip_obj.search(
-                [
-                    ("student_id", "=", rec.id),
-                    ("state", "in", ["confirm", "pending"]),
-                ]
-            )
-            if student_fees_rec:
-                raise ValidationError(
-                    _(
-                        """
-You cannot alumni student because payment of fees of student is remaining!"""
-                    )
-                )
-            return super(StudentFees, self).set_alumni()
-
   
 #fin diw
 class StudentFeesRegister(models.Model):
@@ -364,9 +338,7 @@ class StudentPayslip(models.Model):
     
     #
     fees_structure_id = fields.Many2one(
-        "student.fees.structure", "Fees Structure",
-        states={"paid": [("readonly", True)]},
-        help="Select fee structure",related="student_id.type_mens"
+        "student.fees.structure", "Fees Structure"
     )
     
     standard_id = fields.Many2one(
@@ -910,3 +882,28 @@ class AccountPayment(models.Model):
         return res
 
 
+class StudentFees(models.Model):
+    _inherit = "student.student"
+    
+    
+    type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité')
+
+    def set_alumni(self):
+        """Override method to raise warning when fees payment of student is
+        remaining when student set to alumni state"""
+        student_payslip_obj = self.env["student.payslip"]
+        for rec in self:
+            student_fees_rec = student_payslip_obj.search(
+                [
+                    ("student_id", "=", rec.id),
+                    ("state", "in", ["confirm", "pending"]),
+                ]
+            )
+            if student_fees_rec:
+                raise ValidationError(
+                    _(
+                        """
+You cannot alumni student because payment of fees of student is remaining!"""
+                    )
+                )
+            return super(StudentFees, self).set_alumni()

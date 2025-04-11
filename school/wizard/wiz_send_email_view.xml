@@ -28,7 +28,7 @@
         view_mode="form"
         target="new"
         binding_views="form"
-        groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant,school.group_school_teacher"
+        groups="school.group_school_administration,school.group_school_teacher"
         />
 
 </odoo>

@@ -89,7 +89,7 @@ class ReportMonthAttendace(models.AbstractModel):
                 group_data.append(
                     {
                         "user": att.user_id,
-                        "school_name": att.user_id.sudo().school_id.name,
+                        "school_name": att.standard_id.school_id,
                         "att_ids": [{"date": day_date, "att": [att]}],
                     }
                 )

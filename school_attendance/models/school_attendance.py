@@ -39,8 +39,12 @@ class AttendanceSheet(models.Model):
         help="Academic Year",
     )
     user_id = fields.Many2one(
-        "school.teacher", "Faculty", help="Select Teacher"
-    )
+    "res.users", "Utilisateur", help="Utilisateur actuellement connecté", 
+    default=lambda self: self.env.user,  # Définit l'utilisateur connecté par défaut
+    readonly=True
+)
+
+    
     attendance_type = fields.Selection(
         [("daily", "FullDay"), ("lecture", "Lecture Wise")], "Type"
     )
@@ -164,7 +168,7 @@ class StudentleaveRequest(models.Model):
         return {
             "roll_no": student.roll_no,
             "standard_id": student.standard_id.id,
-            "teacher_id": student.standard_id.user_id.id,
+            #"teacher_id": student.standard_id.user_id.id,
         }
 
     @api.model
@@ -230,7 +234,11 @@ class StudentleaveRequest(models.Model):
     )
     start_date = fields.Date("Start Date")
     end_date = fields.Date("End Date")
-    teacher_id = fields.Many2one("school.teacher", "Class Teacher")
+    teacher_id = fields.Many2one(
+        "res.users", "Utilisateur",
+        help="Select Surveillant",
+        states={"validate": [("readonly", True)]},default=lambda self: self.env.user)
+
     days = fields.Integer("Days", compute="_compute_days", store=True)
     reason = fields.Text("Reason for Leave")
 
@@ -351,7 +359,7 @@ class AttendanceSheetLine(models.Model):
         "Roll Number", required=True, help="Roll Number of Student"
     )
     standard_id = fields.Many2one("attendance.sheet", "Standard")
-    name = fields.Char("Student Name", required=True, readonly=True)
+    name = fields.Char("Student Name", readonly=True)
     one = fields.Boolean("1")
     two = fields.Boolean("2")
     three = fields.Boolean("3")
@@ -459,12 +467,13 @@ class DailyAttendance(models.Model):
     )
     
     #teacher
+    
+    
+    
     user_id = fields.Many2one(
-        "school.teacher",
-        "Faculty",
-        help="Select Teacher",
-        ondelete="restrict",
-        states={"validate": [("readonly", True)]},)
+        "res.users", "Utilisateur",
+        help="Select Surveillant",
+        states={"validate": [("readonly", True)]},default=lambda self: self.env.user)
 
     def print_attendance_report(self):
         return self.env.ref('school_attendance.report_attendance').report_action(self)
@@ -1230,7 +1239,6 @@ class DailyAttendanceLine(models.Model):
         for rec in self:
             if (
                 rec.standard_id.state == "validate"
-                or not rec.standard_id.is_generate
             ):
                 raise ValidationError(
                     _(

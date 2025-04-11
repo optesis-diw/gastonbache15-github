@@ -35,9 +35,10 @@
         <field name="arch" type="xml">
             <tree string="Exam Information">
                 <field name="name" select="1"/>
+                <field name="standard_id" string="Classe" />
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="write_date"/>
+                <field name="session" string="Session"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -53,6 +54,7 @@
                 <field name="name" string="Name"/>
                 <field name="start_date" string="Start Date"/>
                 <field name="end_date" string="End Date"/>
+                <field name="session" string="Session"/>
                 <newline />
                 <filter name="running" string="Running" domain="[('state','=','running')]" help="Exam is Running"/>
                 <filter name="uncomming" string="Upcoming" domain="[('state','=','draft')]" help="Exam is Upcoming"/>
@@ -61,6 +63,9 @@
                     <filter  name="date" string="Date" help="By Date" domain="[]" context="{'group_by':'start_date'}"/>
                     <filter name="state" string="State"
                             help="By State" domain="[]" context="{'group_by':'state'}"/>
+
+                            <filter name="session" string="Session"
+                            help="By session" domain="[]" context="{'group_by':'session'}"/>
                 </group>
             </search>
         </field>
@@ -88,13 +93,18 @@
                     <separator string="Exam Detail"/>
                     <group col="4" colspan="4" attrs="{'readonly': [('state','!=','draft')]}">
                         <separator colspan="4" col="4" />
-                        <field name="exam_code"/>
+                        
                         <field name="name" placeholder="Exam Name" attrs="{'readonly': [('state','!=','draft')]}"/>
-                        <field name="grade_system" required="1" attrs="{'readonly': [('state','!=','draft')]}" widget="selection"/>
+                        <field name="exam_code"/>
+                        <field name="standard_id" string="Classe" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        <field name="session"/>
+                        <field name="count_devoir" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        <field name="grade_system" string="Grade" required="1" attrs="{'readonly': [('state','!=','draft')]}" widget="selection"/>
                         <field name="academic_year" placeholder="Select Academic Year.." widget="selection" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
                         <field name="start_date" attrs="{'readonly': [('state','!=','draft')]}" placeholder="Start Date" required="1"/>
                         <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}" placeholder="End Date" required="1"/>
                     </group>
+                    <!--
                     <group col="4" colspan="4">
                         <notebook colspan="4" >
                             <page string="Class">
@@ -117,7 +127,7 @@
                             </page>
 
                         </notebook>
-                    </group>
+                    </group>-->
                     <group col="6" colspan="4" attrs="{'readonly': [('state','!=','draft')]}">
                         <field name="create_date" readonly="1" placeholder="Created Date" string="Exam Created Date"/>
                         <field name="write_date" readonly="1" placeholder="Last Update Date" string="Exam Update Date"/>
@@ -147,9 +157,14 @@
 
             <xpath expr="//sheet" position="before"> 
             <br/>
+            <!-- Rendre le champ visible mais en lecture seule -->
+            <field name="is_generate" readonly="1"/>
+
+            <!-- Condition améliorée pour s'assurer que le bouton devient invisible si is_generate est False -->
             <button name="action_generate_lines" type="object" string="Générer Matières" class="oe_highlight"
-            attrs="{'invisible':[('timetable_type','!=','exam')]}"/>
-            </xpath>
+                attrs="{'invisible': [('timetable_type', '!=', 'exam'), ('is_generate', '=', True)]}"/>
+        </xpath>
+
 
 
 
@@ -180,7 +195,7 @@
     <record id="action_exam_exam_form" model="ir.actions.act_window">
         <field name="name">Regular Exam</field>
         <field name="res_model">exam.exam</field>
-        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_mode">tree,form,calendar</field>
     </record>
 
     <!-- Menu Items Of Exam -->
@@ -287,6 +302,7 @@
                 <field name="result"/>
                 <field name="session"/>
                 <field name="rang"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -299,8 +315,8 @@
             <form string="Results" create="false">
                 <header>
                     <button name="result_confirm" class="oe_stat_button fa fa-check" string="Confirm" states="draft" type="object" groups="school.group_school_administration,school.group_school_teacher"/>
-                    <button name="result_re_evaluation" class="oe_stat_button fa fa-retweet" string="Re-Evaluation" states="confirm,re-access,re-access_confirm" type="object" groups="school.group_school_administration,school.group_school_teacher"/>
-                    <button name="re_evaluation_confirm" class="oe_stat_button fa fa-refresh" string="Re-Evaluation Confirm" states="re-evaluation" type="object" groups="school.group_school_administration,school.group_school_teacher"/>
+                    <button name="result_re_evaluation" invisible="1" class="oe_stat_button fa fa-retweet" string="Re-Evaluation" states="confirm,re-access,re-access_confirm" type="object" groups="school.group_school_administration,school.group_school_teacher"/>
+                    <button name="re_evaluation_confirm" invisible="1" class="oe_stat_button fa fa-refresh" string="Re-Evaluation Confirm" states="re-evaluation" type="object" groups="school.group_school_administration,school.group_school_teacher"/>
                     <button name="set_done" string="Mark as Done" type="object" class="fa fa-check-circle-o" aria-hidden="true" states="confirm,re-evaluation_confirm,re-access_confirm"/>
                     <field name="state" widget="statusbar"  statusbar_visible="draft,confirm,done" readonly="1" />
                 </header>
@@ -324,22 +340,50 @@
                         <field name="retards"/>
                         <field name="absences"/>
                         <field name="class_redouble"/>
-                        <field name="moyenne_prem_semester"/>
-                        <field name="moyenne_second_semester"/>
-                        <field name="moyenne_annuel"/>
+                        <field name="moyenne_prem_semester" />
+                        <field name="moyenne_second_semester"
+       attrs="{'invisible': [('session', 'not in', ['second_semestre', 'troisieme_semestre'])]}" />
+                        <field name="moyenne_troisieme_semester"
+       attrs="{'invisible': [('session', '!=', 'troisieme_semestre')]}" />
+                         
+                       <field name="moyenne_annuel"
+                            attrs="{
+                                'invisible': [
+                                    '|',  
+                                    '&amp;', 
+                                        ('niveau_id', 'in', ['CM1', 'CM2']),
+                                        ('session', '!=', 'troisieme_semestre'),
+                                    '&amp;', 
+                                        ('niveau_id', 'not in', ['CM1', 'CM2']),
+                                        ('session', '!=', 'second_semestre')
+                                ]
+                            }"
+                        />
+
+
+                       
+
+                
+                        <field name="note_maximale_grade"/>
+                        <field name="count_devoir" invisible="1"/>
 
                         
                       
                         
                     </group>
                     <field name="result_ids" nolabel="1" colspan="4">
-                        <tree string="Subjects" editable="bottom" create="false" delete="false">
-                            <field name="subject_id" placeholder="Select Subject" options="{'no_create': True, 'no_open': True}" readonly="1" required="1"/>
-                             <field name="dom_subject" placeholder="Select Subject" options="{'no_create': True, 'no_open': True}" readonly="1" required="1" invisible="1"/>
-                            <field name="coefficient" options="{'no_create': True, 'no_open': True}" attrs="{'readonly' : [('state','!=','draft')]}" required="1"/>
+                        <tree string="Subjects" editable="bottom" >
+                            <field name="subject_id" placeholder="Select Subject"  required="1"/>
+                             <field name="dom_subject" placeholder="Select Subject"  required="1" invisible="1"/>
+                            <field name="coefficient" options="{'no_create': True, 'no_open': True}" readonly="0"   required="1"/>
                             <field name="maximum_marks"  />
                             <field name="minimum_marks" readonly="1" />
-                            <field name="devoir" />
+                            <field name="count_devoir" invisible="1"/>
+                            <field name="niveau_id" invisible="1"/>
+                            <field name="devoir_1" attrs="{'invisible': [('niveau_id', 'in', ['CM1', 'CM2'])] }"/>
+                            <field name="devoir_2" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CM1', 'CM2']), ('count_devoir', '!=', 2)]}"/>
+                            <field name="devoir_3" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CM1', 'CM2']), ('count_devoir', '!=', 3)]}"/>
+                            <field name="devoir" attrs="{'invisible': [('niveau_id', 'in', ['CM1', 'CM2'])]}"/>
                             <field name="composition" />
                             <field name="moyenne_provisoire" readonly="1"/>
                             <field name="obtain_marks" />
@@ -348,6 +392,7 @@
                             <field name="rang" />
                              <field name="moyenne_prov_reeval" invisible="1"/>
                             <field name="marks_reeval" invisible="1" />
+                            <field name="note_maximale_grade"/>
                         </tree>
                         <form string="Subjects">
                             <group col="4">

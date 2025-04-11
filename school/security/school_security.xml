@@ -12,7 +12,7 @@
 
 
         <record id="group_school_administration" model="res.groups">
-            <field name="name">Profil Partnerédagogie</field>
+            <field name="name">Profil Pédagogie</field>
             <field name="category_id" ref="module_category_school"/>
             <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
         </record>
@@ -35,23 +35,20 @@
             <field name="category_id" ref="module_category_school"/>
         </record>
 
-        <!--diw:avec hidden ,masquer ces groupes afin qu'ils ne s'affichent pas lors de la création d'un utilisateur-->
+       
         <record id="group_school_student" model="res.groups">
             <field name="name">School Student</field>
             <field name="category_id" ref="module_category_school"/>
-            <field name="hidden">True</field>
         </record>
 
         <record id="group_school_parent" model="res.groups">
             <field name="name">Student Parent</field>
             <field name="category_id" ref="module_category_school"/>
-            <field name="hidden">True</field>
         </record>
 
         <record id="group_is_admission" model="res.groups">
             <field name="name">In Admission</field>
             <field name="category_id" ref="module_category_school"/>
-            <field name="hidden">True</field>
         </record>
         <!--diw-->
         

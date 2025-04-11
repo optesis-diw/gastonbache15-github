@@ -42,7 +42,7 @@
 
     <menuitem id="menu_monthly_attendances" name="Monthly Attendance Report"
         parent="school_attendance.menu_attendance" action="report_monthly"
-        sequence="51" />
+        sequence="53" />
         <!-- groups="school.group_school_administration" -->
 
 </odoo>

@@ -9,8 +9,6 @@
             <field name="medium_id" ref="medium_prescolaire"/>
         </record>
         <!-- Élémentaire -->
-        
-
         <record id="standard_N_cp1" model="standard.standard">
             <field name="sequence">1</field>
             <field name="name">CP1</field>

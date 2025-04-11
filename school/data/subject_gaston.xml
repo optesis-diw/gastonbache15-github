@@ -48,7 +48,11 @@
     <field name="minimum_marks">0</field>
 </record>
 
-
+<record id="subject_eps" model="subject.subject">
+    <field name="name">Éducation Physique et Sportive (EPS)</field>
+    <field name="maximum_marks">10</field>
+    <field name="minimum_marks">0</field>
+</record>
 
 <record id="subject_art" model="subject.subject">
     <field name="name">Éducation Artistique / Dessin / Art Plastique</field>
@@ -62,8 +66,22 @@
     <field name="minimum_marks">0</field>
 </record>
 
-<record id="subject_arabe" model="subject.subject">
+
+<record id="subject_eps_primaire" model="subject.subject">
+    <field name="name">Éducation Physique et Sportive</field>
+    <field name="maximum_marks">10</field>
+    <field name="minimum_marks">0</field>
+</record>
+
+
+<record id="subject_arabe_primaire" model="subject.subject">
     <field name="name">Arabe / Éducation Religieuse</field>
+    <field name="maximum_marks">10</field>
+    <field name="minimum_marks">0</field>
+</record>
+
+<record id="subject_anglais_primaire" model="subject.subject">
+    <field name="name">Anglais Primaire</field>
     <field name="maximum_marks">10</field>
     <field name="minimum_marks">0</field>
 </record>
@@ -90,7 +108,7 @@
 </record>
 
 <record id="subject_maths" model="subject.subject">
-    <field name="name">Math</field>
+    <field name="name">Maths</field>
     <field name="minimum_marks">0</field>
     <field name="maximum_marks">20</field>
 </record>
@@ -184,7 +202,7 @@
 </record>
 
 <record id="subject_lv2_o" model="subject.subject">
-    <field name="name">LV2  Oral</field>
+    <field name="name">LV1 Oral</field>
     <field name="minimum_marks">0</field>
     <field name="maximum_marks">20</field>
 </record>

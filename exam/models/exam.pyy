@@ -1,4 +1,3 @@
-
 # See LICENSE file for full copyright and licensing details.
 import logging
 
@@ -435,16 +434,15 @@ class ExamExam(models.Model):
                 record.max_to_mark = max_to_mark
             else:
                 record.max_to_mark = 0.0
-                
-                
-                 # Ajout d'un champ pour stocker la note maximale (to_mark)
+
+    # Ajout d'un champ pour stocker la note maximale (to_mark)
     max_to_mark = fields.Float(
         string="Max To Marks",
         compute="_compute_max_to_mark",
         store=True,
         help="Maximum 'To Marks' in the selected grade system"
     )
-    
+
     
     academic_year = fields.Many2one(
     'academic.year', 
@@ -543,7 +541,46 @@ class ExamExam(models.Model):
                     f"et l'année académique '{rec.academic_year.name}'. Veuillez choisir une autre session."
                 )
     
-          
+    """"
+    session = fields.Selection(
+    [
+        ("premier_semestre", "1er semestre"),
+        ("second_semestre", "2éme semestre"),
+        ("troisieme_semestre", "3éme semestre"),  # Ajout de la troisième session
+    ],
+    string="Session",
+    required=True,
+    readonly=False,
+    compute="_compute_session",
+    store=True,  # Stocker la valeur calculée en base de données
+)
+    
+    
+    @api.depends('academic_year', 'standard_id')
+    def _compute_session(self):
+       
+        result_obj = self.env["exam.result"]
+        for rec in self:
+            if not rec.standard_id or not rec.academic_year:
+                rec.session = "premier_semestre"  # Valeur par défaut
+                continue
+
+            # Rechercher les résultats existants pour cette classe et cette année académique
+            prev_results = result_obj.search([
+                ("standard_id", "=", rec.standard_id.id),
+                ("academic_year", "=", rec.academic_year.id),
+            ])
+
+            # Vérifier les sessions déjà utilisées pour cette classe et cette année
+            sessions = set(prev_results.mapped("session"))
+
+            if "premier_semestre" in sessions and "second_semestre" in sessions:
+                rec.session = "troisieme_semestre"
+            elif "premier_semestre" in sessions:
+                rec.session = "second_semestre"
+            else:
+                rec.session = "premier_semestre"
+    """            
     
     
     #cette méthode permet de générer des résultats d'examen pour chaque étudiant inscrit, en créant des enregistrements de résultat si nécessaire    
@@ -596,6 +633,7 @@ class ExamExam(models.Model):
                         "standard_id": student.standard_id.id,
                         "roll_no": student.roll_no,
                         "grade_system": rec.grade_system.id,
+                        "max_to_mark": rec.max_to_mark,
                         "result_ids": exam_line,
                         "session": rec.session,  # Utiliser la session calculée
                         "academic_year": rec.academic_year.id,
@@ -697,29 +735,27 @@ class ExamResult(models.Model):
     _inherit = ["mail.thread", "resource.mixin"]
     _rec_name = "roll_no"
     _description = "exam result Information"
-    
+
+    # Nouveau nom du champ (exemple : "Note maximale du barème")
+   
     # Nouveau nom du champ (exemple : "Note maximale du barème")
     note_maximale_grade = fields.Float(
-    string="Note maximale",
-    compute="_compute_note_maximale_grade",
-    store=True,
-    default=20.0
-)
+        string="Note maximale du barème",  # Nom affiché dans les vues
+        compute="_compute_note_maximale_grade",
+        store=True,
+        help="Note maximale (to_mark) du système de notation"
+    )
 
-    @api.depends('grade_system')
+    # Méthode de calcul renommée pour correspondre
+    @api.depends('grade_system', 'grade_system.grade_ids.to_mark')
     def _compute_note_maximale_grade(self):
-        """ Calculer la note maximale (to_mark) du grade system """
+        """Calcule la note maximale du barème (to_mark)"""
         for record in self:
             if record.grade_system:
-                # Accéder aux lignes de grade associées au système de grades
                 grade_lines = record.grade_system.grade_ids
-                # Trouver le maximum de `to_mark` parmi les lignes de grade
-                note_maximale_grade = max(grade_lines.mapped('to_mark'), default=20.0)
-                record.note_maximale_grade = note_maximale_grade
+                record.note_maximale_grade = max(grade_lines.mapped('to_mark'), default=0.0)
             else:
-                record.note_maximale_grade = 20.0
-                
-    
+                record.note_maximale_grade = 20.0    
 
     #add by diw yowit
     count_devoir = fields.Integer("Nombre de devoir") 
@@ -829,7 +865,16 @@ class ExamResult(models.Model):
                         
     """
 
+    grade_system = fields.Many2one(
+        "grade.master", "Grade System", help="Grade System selected"
+    )
 
+    max_to_mark = fields.Float(
+        string="Max To Marks",
+        store=True,
+        help="Maximum 'To Marks' in the selected grade system"
+    )
+  
     
 
     @api.onchange('total', 'result_ids.obtain_marks', 'result_ids.marks_reeval', 'result_ids.coefficient', 'result_ids.state')
@@ -837,18 +882,18 @@ class ExamResult(models.Model):
         """Méthode pour calculer la moyenne, le grade et le percentage en excluant certaines matières du calcul pondéré et en ajustant la moyenne"""
         niveaux_surérogatoire_eps = ["2nde S", "2nde L", "1ère L1", "1ère L2", "Terminal L1", "Terminal L2", "1ère S1", "1ère S2", "Terminale S1", "Terminale S2"]
         niveaux_surérogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
-
+        
         for result in self:
             moyenne_provisoire = 0.0
-            obtained_total = 0.0
-            somme_coef = 0.0
-            somme_maximum_marks = 0.0
-            nombre_matieres = 0
-
-            note_eps = None
-            note_e_a = None
+            obtained_total = 0.0  # Somme des notes obtenues (hors exclusions= sauf les matiéres surérogatoires)
+            somme_coef = 0.0  # Somme des coefficients (hors exclusions)
+            somme_maximum_marks = 0.0  # Somme des maximum_marks (hors exclusions)
+            nombre_matieres = 0  # Nombre total de matières (hors exclusions)
+            
+            note_eps = None #moyenne eps (seconde à la terminal)
+            note_e_a = None #moyenne Espagnol ou Arabe (2nde S et 1ère S)
             note_ec = None
-
+            
             result.somme_obtain_marks = 0.0
             result.somme_coef = 0.0
             result.grade = ""
@@ -859,23 +904,26 @@ class ExamResult(models.Model):
             for sub_line in result.result_ids:
                 obtain_marks = sub_line.obtain_marks
                 moyenne_provisoire = sub_line.moyenne_provisoire
-
+                
+                #On prend la moyenne provisoire pour les matières surérogatoires, car leurs coefficients sont 0.
                 if result.niveau_id.name in niveaux_surérogatoire_eps and sub_line.subject_id.name.lower() == "eps":
-                    note_eps = moyenne_provisoire or 0.0
-                    continue
-
+                    note_eps = moyenne_provisoire or 0.0  # Stocke la note EPS sur obtained_total
+                    continue  # On exclut EPS du calcul pondéré
+                
                 if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "espagnol":
-                    note_e_a = moyenne_provisoire or 0.0
-                    continue
-
+                    note_e_a = moyenne_provisoire or 0.0  # Stocke la note Espagnol / Arabe
+                    continue  # On exclut Espagnol / Arabe du calcul pondéré
+                
+                
                 if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "arabe":
-                    note_e_a = moyenne_provisoire or 0.0
-                    continue
+                    note_e_a = moyenne_provisoire or 0.0  # Stocke la note Espagnol / Arabe
+                    continue  # On exclut Espagnol / Arabe du calcul pondéré
 
+                
                 if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "ec":
-                    note_ec = moyenne_provisoire or 0.0
-                    continue
-
+                    note_ec = moyenne_provisoire or 0.0  # Stocke la note EC
+                    continue  # On exclut EC du calcul pondéré
+                
                 obtained_total += obtain_marks or 0.0
                 somme_coef += sub_line.coefficient or 0.0
                 somme_maximum_marks += sub_line.maximum_marks or 0.0
@@ -885,12 +933,15 @@ class ExamResult(models.Model):
             result.somme_obtain_marks = obtained_total
 
             if somme_coef > 0 and nombre_matieres > 0:
+                
+                # Ajustement avec EPS uniquement pour les niveaux concernés
                 if result.niveau_id.name in niveaux_surérogatoire_eps and note_eps is not None:
                     if note_eps > 10:
                         obtained_total += (note_eps - 10)
                     elif note_eps < 10:
                         obtained_total -= (10 - note_eps)
 
+                # Ajustement avec Espagnol / Arabe et EC uniquement pour les niveaux concernés
                 if result.niveau_id.name in niveaux_surérogatoire_langue:
                     if note_e_a is not None:
                         if note_e_a > 10:
@@ -901,21 +952,26 @@ class ExamResult(models.Model):
                     if note_ec is not None:
                         if note_ec > 10:
                             obtained_total += (note_ec - 10)
-                        elif note_ec < 10:
+                        elif note_ec < 10:  # Correction ici : on vérifie bien note_ec et pas note_eps
                             obtained_total -= (10 - note_ec)
 
+                # Mise à jour du total avec les matières surérogatoires
                 result.total = obtained_total
 
-                moyenne_total = obtained_total / somme_coef
-
-                maximum_marks_class = somme_maximum_marks / nombre_matieres
-
-                moyenne_norm = (moyenne_total * result.note_maximale_grade) / maximum_marks_class if maximum_marks_class > 0 else 0.0
-
+                
+                moyenne_total = obtained_total / somme_coef  # Moyenne pondérée classique
+                #si la moyenne de la classe est supérieure à 20
+                maximum_marks_class = somme_maximum_marks / nombre_matieres  # Moyenne maximale
+                
+                #la moyenne de la classe est > 20
+                moyenne_norm = (moyenne_total * 20) / maximum_marks_class if maximum_marks_class > 0 else 0.0
+                
                 result.moyenne = moyenne_norm
+                
+                # Calcul du percentage
+                result.percentage = (moyenne_norm / 20) * 100
 
-                result.percentage = (moyenne_norm / result.note_maximale_grade) * 100
-
+                # Attribution du grade
                 if result.grade_system:
                     grade_found = False
                     for grade_id in result.grade_system.grade_ids:
@@ -926,13 +982,13 @@ class ExamResult(models.Model):
                     if not grade_found:
                         result.grade = ""
 
-                result.result = "Pass" if result.moyenne >= (result.note_maximale_grade/2) else "Fail"
+                # Résultat final : Pass si moyenne >= 10
+                result.result = "Pass" if result.moyenne >= 10 else "Fail"
             else:
                 result.grade = ""
                 result.moyenne = 0.0
                 result.result = "Fail"
                 result.percentage = 0.0
-
 
 
 
@@ -1033,9 +1089,8 @@ class ExamResult(models.Model):
     active = fields.Boolean(
         "Active", default=True, help="Activate/Deactivate record"
     )
-    grade_system = fields.Many2one(
-        "grade.master", "Grade System", help="Grade System selected"
-    )
+
+   
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -1309,16 +1364,12 @@ class ExamSubject(models.Model):
 
 
                    
-    
-               
                         
     exam_id = fields.Many2one("exam.result", "Result", help="Select exam")
 
     s_exam_ids = fields.Many2one(related="exam_id.s_exam_ids")
     
     standard_subject = fields.Many2one(related="exam_id.standard_id")
-    
-    
     
     
      
@@ -1343,48 +1394,39 @@ class ExamSubject(models.Model):
     rang = fields.Integer(string='Rang', compute='_compute_rang')
 
     @api.onchange('moyenne_provisoire', 'exam_id', 'session')
-    @api.depends('moyenne_provisoire', 'exam_id', 'session', 's_exam_ids', 'standard_subject')
     def _compute_rang(self):
         for rec in self:
-            try:
-                if not rec.exam_id or not rec.s_exam_ids or not rec.standard_subject:
-                    rec.rang = 0
-                    continue
-                    
-                # Search for all relevant exam results
-                exam_results = self.env['exam.result'].search([
-                    ('s_exam_ids', '=', rec.s_exam_ids.id),
-                    ('standard_id', '=', rec.standard_subject.id)
-                ])
-                
-                _logger.info(f"Found {len(exam_results)} exam results for subject {rec.id}")
-                
-                if not exam_results:
-                    rec.rang = 0
-                    continue
-                    
-                # Get all subjects from these exam results
-                all_subjects = exam_results.mapped('result_ids').filtered(
-                    lambda x: x.subject_id.id == rec.subject_id.id
-                )
-                
-                # Sort by moyenne_provisoire
-                sorted_subjects = all_subjects.sorted(
-                    key=lambda s: s.moyenne_provisoire or 0, 
-                    reverse=True
-                )
-                
-                # Find current record's position
-                for idx, subject in enumerate(sorted_subjects, start=1):
-                    if subject.id == rec.id:
-                        rec.rang = idx
-                        break
+            if rec.exam_id:
+                if rec.s_exam_ids and rec.standard_subject:
+                    exam_results = self.env['exam.result'].search([
+                        ('s_exam_ids', '=', rec.s_exam_ids.id),
+                        ('standard_id', '=', rec.standard_subject.id),
+                        ('session', '=', rec.session)
+                    ])
+
+                    if exam_results:
+
+                        subject_results = {}
+
+                        for result in exam_results:
+                            for subject in result.result_ids:
+                                if subject.subject_id:
+                                    subject_id = subject.subject_id.id
+                                    if subject_id not in subject_results:
+                                        subject_results[subject_id] = []
+                                    subject_results[subject_id].append(subject)
+
+                        for subject_id, subjects in subject_results.items():
+                            sorted_subjects = sorted(subjects, key=lambda s: s.moyenne_provisoire or 0, reverse=True)
+                            for idx, subject in enumerate(sorted_subjects, start=1):
+                                subject.rang = idx
+                    else:
+                        rec.rang = 1
+                        
                 else:
                     rec.rang = 0
-                    
-            except Exception as e:
-                _logger.error(f"Error in computing rank for subject {rec.id}: {str(e)}")
-                rec.rang = 0
+
+    
     
     
     #diw coefficient = fields.Integer("Coefficient", default=1, related="subject_id.coefficient")
@@ -1413,11 +1455,11 @@ class ExamSubject(models.Model):
         "Découverte du Monde - Compétence": 1,
         "Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)": 1,
         "Éducation au Développement Durable - Compétence": 1,
-        "Éducation Physique et Sportive": 1,
+         "EPS": 1,
         "Éducation Artistique / Dessin / Art Plastique": 1,
         "Éducation Musicale (Récitation / Chant)": 1,
-        "Arabe / Éducation Religieuse": 1,
-        "Anglais Primaire": 1,
+        "Arabe": 1,
+        "Anglais": 1,
     },
     "Collége": {
         "Expression Ecrite / Rédaction / Dissertation": 2,
@@ -1447,7 +1489,7 @@ class ExamSubject(models.Model):
     },
     "TL1 et 1ère L1": {
         "Français": 6,
-        "LV1 Ecrit": 4,
+        "LV1 Écrit": 4,
         "LV1 Oral": 2,
         "Langue Vivante 2": 4,
         "Philo": 4,  # Seulement en Tle
@@ -1543,34 +1585,24 @@ class ExamSubject(models.Model):
     
     
    
-    niveau_id = fields.Char(
-         "niveau", help="Select Standard", related="exam_id.niveau_id.name"
-    ) #niveau
-    
-    
+
     @api.onchange("devoir", "composition")
     def _compute_moyenne_prov(self):
         for rec in self:
-            # Vérifier si le niveau est CM1 ou CM2
-            if rec.niveau_id in ["CM1", "CM2"]:
-                # Pour CM1/CM2, seule la composition compte
-                moyenne = rec.composition
+            if rec.devoir == 0 and rec.composition == 0:
+                rec.moyenne_provisoire = 1
             else:
-                # Pour les autres niveaux, calcul normal
                 moyenne = (rec.devoir + rec.composition) / 2
 
-            # Vérification des bornes
-            if moyenne > rec.maximum_marks:
-                raise ValidationError(
-                    f"La moyenne provisoire ({moyenne}) ne peut pas dépasser la note maximale ({rec.maximum_marks})."
-                )
-            
-            if moyenne < rec.minimum_marks:
-                raise ValidationError(
-                    f"La moyenne provisoire ({moyenne}) ne peut pas être inférieure à la note minimale ({rec.minimum_marks})."
-                )
+                # Vérification des bornes
+                if moyenne > rec.maximum_marks:
+                    raise ValidationError(f"La moyenne provisoire ({moyenne}) ne peut pas dépasser la note maximale ({rec.maximum_marks}).")
+                
+                if moyenne < rec.minimum_marks:
+                    raise ValidationError(f"La moyenne provisoire ({moyenne}) ne peut pas être inférieure à la note minimale ({rec.minimum_marks}).")
 
-            rec.moyenne_provisoire = moyenne
+                rec.moyenne_provisoire = moyenne
+
 
         
     obtain_marks = fields.Float("moyonne obtenue", group_operator="avg", compute="_compute_obtain_marks")
@@ -1613,54 +1645,48 @@ class ExamSubject(models.Model):
         "grade.line", "Grade", compute="_compute_grade_subject", help="Grade"
     )
     
-    note_maximale_grade = fields.Float(
-    string="Note maximale",
-    related="exam_id.note_maximale_grade",
-    store=True,
-    default=20.0
-)
-
+    # utilisée pr savoir le grade de étudiant pour chaque subjecthh
     @api.onchange("exam_id", "moyenne_provisoire", "marks_reeval")
     def _compute_grade_subject(self):
         """Méthode pour calculer le grade après réévaluation"""
         for rec in self:
-            rec.grade = False
-            rec.grade_line_id = False
+            rec.grade = False  # Assurer qu'une valeur est toujours assignée
+            rec.grade_line_id = False  
 
             if not rec.exam_id or not rec.exam_id.student_id:
-                continue
+                continue  # Sécurité : si pas d'examen ou d'étudiant, on passe
 
             grade_lines = rec.exam_id.grade_system.grade_ids
             if not grade_lines:
-                continue
+                continue  # Si aucun système de notation défini, on ignore
 
-            # Utiliser note_maximale_grade pour la normalisation
-            max_subject_mark = rec.subject_id.maximum_marks or rec.note_maximale_grade
-
-            if max_subject_mark != rec.note_maximale_grade:
-                moyenne_norm = (rec.moyenne_provisoire / max_subject_mark) * rec.note_maximale_grade
+            # Vérifier si l'échelle est différente de 20 pour normaliser
+            max_subject_mark = rec.subject_id.maximum_marks or 20 
+            
+            if max_subject_mark != 20:
+                moyenne_norm = (rec.moyenne_provisoire / max_subject_mark) * 20
+                
             else:
                 moyenne_norm = rec.moyenne_provisoire
 
-            # Trouver le grade correspondant
+            # Vérifier si la moyenne normalisée est dans la plage d'un grade
             for grade_id in grade_lines:
                 if grade_id.from_mark <= moyenne_norm <= grade_id.to_mark:
                     rec.grade = grade_id.grade
                     rec.grade_line_id = grade_id
-                    break
+                    break  # Dès qu'on trouve un grade correspondant, on sort
 
-            # Gestion de la moyenne de réévaluation
+            # Vérification de la moyenne de réévaluation
             if rec.marks_reeval:
-                if max_subject_mark != rec.note_maximale_grade:
-                    marks_reeval_norm = (rec.marks_reeval / max_subject_mark) * rec.note_maximale_grade
+                if max_subject_mark != 20:
+                    marks_reeval_norm = (rec.marks_reeval / max_subject_mark) * 20
                 else:
                     marks_reeval_norm = rec.marks_reeval
 
                 for grade_id in grade_lines:
                     if grade_id.from_mark <= marks_reeval_norm <= grade_id.to_mark:
-                        rec.grade_line_id = grade_id
-                        break
-
+                        rec.grade_line_id = grade_id  # Mettre à jour le grade si nécessaire
+                        break  
 
 
     @api.constrains(
