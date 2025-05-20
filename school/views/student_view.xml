@@ -7,8 +7,8 @@
         <field name="model">student.student</field>
         <field name="arch" type="xml">
             <!--pour pouvoir fair l'import diw -->
-            <!--<form string="Student Information" create="false" delete="false">-->
-                <form string="Student Information" >
+            <!--<form string="Student Information">-->
+                <form string="Student Information" create="false" delete="false" >
                 <header>
                    <!-- <button class="oe_highlight oe_stat_button" name="%(school.action_terminate_wizard)d" string="Terminate" type="action" icon="fa-ban" states="done" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant" />-->
                     <button class="oe_stat_button" name="set_alumni" string="Alumni" type="object" icon="fa-archive" states="done" />
@@ -268,8 +268,8 @@
         <field name="model">student.student</field>
         <field name="arch" type="xml">
          <!--pour pouvoir fair l'import diw -->
-         <!--<tree string="Student Information" create="false" delete="false">-->
-         <tree string="Student Information">
+         <!--<tree string="Student Information" >-->
+         <tree string="Student Information" create="false" delete="false">
                 <field name="pid" />
                 <field name="name" />
                 <field name="student_name" invisible="1" />
@@ -318,7 +318,7 @@
         <field name="name">Student KANBAN</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="standard_id">
+            <kanban default_group_by="standard_id" create="false" delete="false">
                 <field name="color"/>
                 <field name="id"/>
                 <field name="name"/>
@@ -415,7 +415,9 @@
         <field name="name">student.student.form.2</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-            <form string="Admission Register">
+           
+            <!--<form string="Admission Register">-->
+                <form string="Admission Register" create="false" delete="false" >
                 <header>
                    <!-- <button class="oe_highlight oe_stat_button" name="set_terminate" string="Terminate" type="object" icon="fa-ban" states="done" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant"/>-->
                     <button class="oe_stat_button" name="set_alumni" string="Alumni" type="object" icon="fa-archive" states="done" />
@@ -551,7 +553,7 @@
         <field name="name">student.student.tree.2</field>
         <field name="model">student.student</field>
         <field name="arch" type="xml">
-            <tree string="Admission Register">
+            <tree string="Admission Register" create="false" delete="false">
                 <field name="pid" />
                 <field name="name" />
                 <field name="student_name" invisible="1" />

@@ -12,6 +12,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">  
              <field name="trigger_payslip_update" invisible="1"/>
+               <field name="mois_paiement"/>
             </xpath>
         </field>
     </record>
@@ -199,7 +200,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="invoice_view" string="Invoice" icon="fa-pencil-square-o" widget="stateinfo" class="oe_stat_button"
-                            states="pending,paid" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
+                            states="pending,partial,paid" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
                     </div>
                     <h2>
                         <field name="student_id" placeholder="Student Name" colspan="4" attrs="{'readonly':[('state','not in','draft')]}"
@@ -304,6 +305,16 @@
                     <field name="state" widget="statusbar" readonly="1"/>
                 </header>
                 <sheet>
+                
+                 <div class="oe_button_box" name="button_box">
+                         <button name="action_view_payslips" string="Fiches de Paie" type="object" 
+                            class="oe_stat_button" icon="fa-money"
+                            attrs="{'invisible': [('state', '!=', 'confirm')]}"
+                             groups="school.group_school_teacher,school.group_school_administration"></button>
+                       
+                </div>
+                    
+              
                     <group string="Information" col="4" colspan="4">
                         <field name="name" placeholder="Name" attrs="{'readonly':[('state','not in','draft')]}"/>
                         <field name="number" readonly="1"/>
@@ -324,6 +335,7 @@
                                     <field name="name"/>
                                     <field name="number"/>
                                     <field name="student_id"/>
+                                    <field name="paid_amount"/>
                                     <field name="total"/>
                                     <field name="state"/>
                                 </tree>
@@ -336,6 +348,8 @@
                                             <field name="name" placeholder="Name"/>
                                             <field name="number"/>
                                             <field name="student_id" placeholder="Student Name"/>
+                                            <field name="paid_amount"/>
+                                            <field name="due_amount"/>
                                             <field name="total"/>
                                             <field name="journal_id" placeholder="Journal"/>
                                             <field name="company_id" placeholder="School Name"/>
@@ -344,6 +358,8 @@
                                 </form>
                             </field>
                             <group class="oe_subtotal_footer oe_right" colspan="2">
+                            
+                                 <field name="total_amount_paid" string="Total payé" />
                                 <field name="total_amount"/>
                             </group>
                         </page>

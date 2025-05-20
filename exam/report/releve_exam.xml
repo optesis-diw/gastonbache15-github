@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="batch_exam_qweb" model="ir.actions.report">
+        <field name="name">Relevé examen</field>
+        <field name="model">exam.exam</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="exam.model_exam_exam"/>
+        <field name="report_name">exam.exam_exam_batch</field>
+        <field name="report_file">exam.exam_exam_batch</field>
+    </record>
+
+    <template id="exam_exam_batch">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="exam">
+               
+            <!-- Ajout de la balise meta pour l'encodage UTF-8 -->
+                    <meta charset="UTF-8"/>
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <!-- En-tête -->
+                        <div style="margin-bottom: 10px;">
+                            <table width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 33%; text-align: left;">
+                                <strong>IA RUFISQUE</strong><br />
+                                <strong>IEF SANGALKAM</strong><br />
+                                <strong>GS GASTON BACHELARD</strong>
+                            </td>
+                            <td style="width: 33%; text-align: center;">
+                                <t t-if="exam.company_id">
+                                    <img t-if="exam.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(exam.company_id.logo)" style="max-height: 50px;" alt="Logo"/>
+                                </t>
+                                
+                            </td>
+                            <td style="width: 33%; text-align: right;">
+                                <strong>Année Scolaire: </strong>
+                                <span t-field="exam.year_date_start_s" /> -
+                                <span t-field="exam.year_date_stop_s" /><br />
+                                 <h3>Classe: <span t-field="exam.standard_id.name"/></h3>
+                                
+                                     <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">  
+                                        <t t-if="exam.session == 'second_semestre'">2e Semestre</t>
+                                        <t t-elif="exam.session == 'premier_semestre'">1er Semestre</t>
+                                        <t t-elif="exam.session == 'troisieme_semestre'">3e Semestre</t>
+                                     </t>
+
+                                      <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">  
+                                        <t t-if="exam.session == 'second_semestre'">2e Trimestre</t>
+                                        <t t-elif="exam.session == 'premier_semestre'">1er Trimestre</t>
+                                        <t t-elif="exam.session == 'troisieme_semestre'">3e Trimestre</t>
+                                     </t>
+                            </td>
+                        </tr>
+                    </table>
+                        </div>
+                   
+                <br />
+                        
+                        <!-- Tableau des résultats -->
+                        <t t-set="results" t-value="get_student_results(exam)"/>
+                        
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
+                            <!-- Première ligne: Liste des matières -->
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; font-weight: bold; width: 15%;">Liste des élèves</td>
+                                <t t-foreach="results['subjects']" t-as="subject">
+                                    <td t-if="exam.niveau_id.name not in ['CM1', 'CM2']" colspan="2" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                        <span t-esc="subject"/>
+                                    </td>
+                                    <td t-if="exam.niveau_id.name in ['CM1', 'CM2']" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                        <span t-esc="subject"/>
+                                    </td>
+                                </t>
+                                <!-- Colonne Moyenne -->
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                    Moyenne
+                                </td>
+                            </tr>
+                            
+                            <!-- Deuxième ligne: D et C pour chaque matière -->
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; font-weight: bold;">Prénom(S)
+                                </td>
+                                
+                                <t t-foreach="results['subjects']" t-as="subject">
+                                    <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">
+                                        <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">D</td>
+                                        <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">C</td>
+                                    </t>
+                                    <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">
+                                        <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">C</td>
+                                    </t>
+                                </t>
+                               
+                                <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                    Total
+                                </td>
+                            </tr>
+                            
+                            <!-- Lignes des étudiants -->
+                            <t t-foreach="results['students']" t-as="student">
+                                <tr>
+                                    <td style="border: 1px solid black; padding: 5px;">
+                                        <span t-esc="student['name']"/>
+                                    </td>
+                                    <t t-foreach="results['subjects']" t-as="subject">
+                                        <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">
+                                            <td style="border: 1px solid black; padding: 5px; text-align: center;">
+                                                <span t-esc="student['marks'][subject]['D']"/>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 5px; text-align: center;">
+                                                <span t-esc="student['marks'][subject]['C']"/>
+                                            </td>
+                                        </t>
+                                        <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">
+                                            <td style="border: 1px solid black; padding: 5px; text-align: center;">
+                                                <span t-esc="student['marks'][subject]['C']"/>
+                                            </td>
+                                        </t>
+                                    </t>
+                                    <!-- Affichage de la moyenne -->
+                                    <td align="center" style="border: 1px solid black; padding: 5px; text-align: center;">
+                                        <span t-esc="'%.2f' % student.get('moyenne', 0.0)"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        
+                       
+
+                      
+                      <!-- Ajoutez cette partie juste avant le pied de page -->
+                    <div style="margin-top: 20px; text-align: right; font-weight: bold;">
+                        Moyenne de la classe: <span t-esc="'%.2f' % results.get('moyenne_classe', 0.0)"/>
+                    </div>
+
+                    <!-- Pied de page -->
+                    <div style="margin-top: 30px; text-align: right; font-size: 9pt;">
+                        Généré le <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')"/>
+                    </div>
+
+                    </div>
+                </t>
+            
+        </t>
+    </template>
+
+</odoo>

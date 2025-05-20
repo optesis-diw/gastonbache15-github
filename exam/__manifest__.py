@@ -24,6 +24,8 @@
         "report/report_view.xml",
         "wizard/subject_result.xml",
         "wizard/batch_result.xml",
+
+	"report/releve_exam.xml",
     ],
     "demo": ["demo/exam_demo.xml"],
     "installable": True,

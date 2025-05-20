@@ -1,5 +1,4 @@
 # See LICENSE file for full copyright and licensing details.
-
 import time
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -33,6 +32,7 @@ class ReportAddExamResult(models.AbstractModel):
                     "grade": subject.grade or "",
                     "moyenne_provisoire": subject.moyenne_provisoire or "",
                     "coefficient": subject.coefficient or "",
+                    "maximum_marks": subject.maximum_marks or "",
                     
                 }
             )

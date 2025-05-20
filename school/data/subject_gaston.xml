@@ -13,13 +13,13 @@
 </record>
 
 <record id="subject_maths_ressources" model="subject.subject">
-    <field name="name">Math - Ressources</field>
+    <field name="name">Maths - Ressources</field>
     <field name="maximum_marks">40</field>
     <field name="minimum_marks">0</field>
 </record>
 
 <record id="subject_maths_competence" model="subject.subject">
-    <field name="name">Math - Compétence</field>
+    <field name="name">Maths - Compétence</field>
     <field name="maximum_marks">60</field>
     <field name="minimum_marks">0</field>
 </record>

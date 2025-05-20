@@ -369,34 +369,7 @@ class SchoolStandard(models.Model):
             if "Philo" in subject_names and record.standard_id.name not in ["Terminal L1", "Terminal L2", "Terminale S1", "Terminale S2"]:
                 raise ValidationError("La matière 'Philo' ne peut être ajoutée que pour les classes de niveau 'TL'.")
 
-            # Vérification pour "Éco Fam"
-            if "Eco Fam" in subject_names and record.standard_id.name not in ["5e","4e", "3e"]:
-  
-                raise ValidationError("La matière 'Eco Fam' ne peut être ajoutée que pour les classes de niveau'5ème' ou '4ème' ou '3ème'.")
-
-            # Vérification pour "PC"
-            if "PC" in subject_names and record.standard_id.name not in ["4e", "3e"]:
-  
-                raise ValidationError("La matière 'PC' ne peut être ajoutée que pour les classes de niveau '4ème' ou '3ème'.")
-
- 
-        
-
-            # Vérification pour Arabe et Espagnol en seconde S et Première S
-            if record.standard_id.name in ["2nde S", "1ère S1", "1ère S2"]:
-                arabic_present = "Arabe" in subject_names
-                spanish_present = "Espagnol" in subject_names
-                if arabic_present and spanish_present:
-                    raise ValidationError("En seconde S et Première S, vous devez choisir entre 'Arabe' et 'Espagnol', mais pas les deux.")
-
-    
-            # Vérification pour "PC" et "SVT" pour TL2, 1ère L2 et 2nd L
-            if record.medium_id.name in ["TL2 et 1ère L2", "2nd L"]:
-                pc_present = "PC" in subject_names
-                svt_present = "SVT" in subject_names
-                if pc_present and svt_present:
-                    raise ValidationError("Pour les cycle 'TL2 et 1ère L2' et '2nd L', vous devez choisir entre 'PC' et 'SVT', mais pas les deux.")
-
+            
 # @api.multi
 # def name_get(self):
 #   '''Method to display standard and division'''

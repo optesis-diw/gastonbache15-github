@@ -302,6 +302,7 @@
                 <field name="result"/>
                 <field name="session"/>
                 <field name="rang"/>
+                <field name="moyenne"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -334,9 +335,9 @@
                         <field name="standard_id" placeholder="Select Standard" widget="selection"
                                                 readonly="1" string="Class"/>
                         <field name="grade_system" required="1" widget="selection"
-                                                attrs="{'readonly' : [('state','!=','draft')]}"/>
-                          <field name="niveau_id"/>  
-                        <field name="session"/>
+                                                readonly="1"/>
+                          <field name="niveau_id" readonly="1"/>  
+                        <field name="session" readonly="1"/>
                         <field name="retards"/>
                         <field name="absences"/>
                         <field name="class_redouble"/>
@@ -372,7 +373,7 @@
                         
                     </group>
                     <field name="result_ids" nolabel="1" colspan="4">
-                        <tree string="Subjects" editable="bottom" >
+                        <tree string="Subjects" editable="bottom" create="false" delete="false" >
                             <field name="subject_id" placeholder="Select Subject"  required="1"/>
                              <field name="dom_subject" placeholder="Select Subject"  required="1" invisible="1"/>
                             <field name="coefficient" options="{'no_create': True, 'no_open': True}" readonly="0"   required="1"/>
@@ -418,6 +419,7 @@
                             <field name="moyenne"/>
                             <field name="grade"/>
                             <field name="result"/>
+                             <field name="moyenne_classe"/>      
                             <field name='active' invisible='1'/>
                         </group>
                     </group>

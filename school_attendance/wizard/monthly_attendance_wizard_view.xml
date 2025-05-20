@@ -24,8 +24,8 @@
                     <group>
                         <button class="oe_highlight" string="Generate .pdf" name="generate_attendance"
                             type="object" />
-                        <button class="oe_highlight" string="Generate .xlsx" name="print_report"
-                            type="object" groups="school.group_school_administration"/>
+                        <!-- diw: <button class="oe_highlight" string="Generate .xlsx" name="print_report"
+                            type="object" groups="school.group_school_administration"/>-->
                     </group>
                 </footer>
             </form>

@@ -53,6 +53,21 @@ class StudentFeesRegister(models.Model):
     
     #
 
+    total_amount_paid = fields.Float(
+        "Total", compute="_compute_total_paid", help="Montant total payé"
+    )
+    @api.depends("line_ids")
+    def _compute_total_paid(self):
+        """Method to compute total amount"""
+        for rec in self:
+            total_amt = 0.0
+            total_amt = sum(line.paid_amount for line in rec.line_ids)
+            rec.total_amount_paid = total_amt
+
+
+    total_amount = fields.Float(
+        "Total", compute="_compute_total_amount", help="Fee total amounts"
+    )
     @api.depends("line_ids")
     def _compute_total_amount(self):
         """Method to compute total amount"""
@@ -81,7 +96,7 @@ class StudentFeesRegister(models.Model):
         "Total", compute="_compute_total_amount", help="Fee total amounts"
     )
     state = fields.Selection(
-        [("draft", "Draft"), ("confirm", "Confirm")],
+        [("draft", "Brouillon"), ("confirm", "Confirmé")],
         "State",
         readonly=True,
         default="draft",
@@ -174,6 +189,21 @@ There is already a Payslip exist for student: %s for same date!"""
             rec.write({"total_amount": amount, "state": "confirm"})
 
 
+    def action_view_payslips(self):
+        """Ouvre la vue des fiches de paie liées à ce registre"""
+        self.ensure_one()
+        return {
+            'name': _('Fiches de Paie'),
+            'view_mode': 'tree,form',
+            'res_model': 'student.payslip',
+            'type': 'ir.actions.act_window',
+            'domain': [('register_id', '=', self.id)],
+            'context': {
+                'default_register_id': self.id,
+                'create': False,
+            },
+            'target': 'current',
+        }
 
 class StudentPayslipLine(models.Model):
     """Student PaySlip Line"""
@@ -381,11 +411,11 @@ class StudentPayslip(models.Model):
     total = fields.Monetary("Total", readonly=True, help="Total Amount")
     state = fields.Selection(
         [
-            ("draft", "Draft"),
-            ("confirm", "Confirm"),
-            ("pending", "Pending"),
-            ("partial", "Partial"),
-            ("paid", "Paid"),
+            ("draft", "Brouillon"),
+            ("confirm", "Confirmé"),
+            ("pending", "En attente"),
+            ("partial", "Partiel"),
+            ("paid", "Payé"),
         ],
         "State",
         readonly=True,
@@ -764,11 +794,20 @@ class AccountMove(models.Model):
 
     trigger_payslip_update = fields.Boolean(compute='_compute_trigger_payslip_update')
 
-    @api.depends('payment_state')
+    @api.depends('payment_state', 'amount_total', 'amount_residual')
     def _compute_trigger_payslip_update(self):
         for move in self:
             if move.student_payslip_id:
                 try:
+                    # Mettre à jour les montants dans le payslip
+                    paid_amount = move.amount_total - move.amount_residual
+                    move.student_payslip_id.write({
+                        'paid_amount': paid_amount,
+                        'due_amount': move.amount_residual,
+                        'total': move.amount_total
+                    })
+                    
+                    # Mettre à jour l'état du payslip
                     if move.payment_state == 'paid':
                         move.trigger_payslip_update = True
                         move.student_payslip_id.write({'state': 'paid'})
@@ -781,11 +820,9 @@ class AccountMove(models.Model):
                     else:
                         move.trigger_payslip_update = False
                 except Exception as e:
-                    raise ValidationError(_('Failed to update payslip state: %s') % str(e))
+                    raise ValidationError(_('Failed to update payslip: %s') % str(e))
             else:
-                # If there is no student_payslip_id, reset trigger_payslip_update to False
-                move.trigger_payslip_update = False
-
+                move.trigger_payslip_update = False    
 
       
     #fin diw
@@ -832,6 +869,39 @@ class AccountMove(models.Model):
             ("second_semestre", "2éme semestre"),
         ],"session", invisible="1")
     
+    mois_paiement = fields.Char(
+        "Mois de paiement",
+        readonly=True,
+        compute='_compute_mois_paiement',
+        store=True,
+        help="Mois de paiement extrait de la date du student.payslip (format: janvier, février...)"
+    )
+
+    @api.depends('student_payslip_id.date')
+    def _compute_mois_paiement(self):
+        # Import de la librairie locale pour les mois en français
+        from datetime import datetime
+        month_names = {
+            1: "janvier",
+            2: "février",
+            3: "mars",
+            4: "avril",
+            5: "mai",
+            6: "juin",
+            7: "juillet",
+            8: "août",
+            9: "septembre",
+            10: "octobre",
+            11: "novembre",
+            12: "décembre"
+        }
+        
+        for move in self:
+            if move.student_payslip_id and move.student_payslip_id.date:
+                month_num = move.student_payslip_id.date.month
+                move.mois_paiement = month_names.get(month_num, "")
+            else:
+                move.mois_paiement = False
     #
 
 

@@ -337,6 +337,8 @@ class ExamExam(models.Model):
     _name = "exam.exam"
     _description = "Exam Information"
 
+    
+
     """
     @api.constrains("start_date", "end_date")
     def check_date_exam(self):
@@ -363,8 +365,44 @@ class ExamExam(models.Model):
                                     \n\nExam Dates must be in between Start date and End date !"
                                 )
                             )
-    """                       
-                            
+    """     
+
+    niveau_id = fields.Many2one(
+        "standard.standard", "niveau", help="Select Standard", related="standard_id.standard_id"
+    ) #niveau
+    
+    #pour entete rapport
+    company_id = fields.Many2one(
+        "res.company",
+        "Company",
+        required=True,
+        change_default=True,
+        readonly=True,
+        default=lambda self: self.env.user.company_id,
+        help="Related company",
+    )
+
+    year_date_start_s = fields.Char(string="Year Date Start", compute='_compute_year_date_start')
+    year_date_stop_s = fields.Char(string="Year Date Stop", compute='_compute_year_date_stop')
+
+    @api.depends('academic_year.date_start')
+    def _compute_year_date_start(self):
+        for record in self:
+            if record.academic_year and record.academic_year.date_start:
+                record.year_date_start_s = record.academic_year.date_start.year
+            else:
+                record.year_date_start_s = ''
+
+
+    @api.depends('academic_year.date_stop')
+    def _compute_year_date_stop(self):
+        for record in self:
+            if record.academic_year and record.academic_year.date_stop:
+                record.year_date_stop_s = record.academic_year.date_stop.year
+            else:
+                record.year_date_stop_s = ''
+                      
+    #                         
     #Validation Avertissement si les résultats de l'examen ne sont pas terminés "done"
     @api.constrains("active")
     def check_active(self):
@@ -508,9 +546,9 @@ class ExamExam(models.Model):
     
     session = fields.Selection(
         [
-            ("premier_semestre", "1er semestre"),
-            ("second_semestre", "2ème semestre"),
-            ("troisieme_semestre", "3ème semestre"),  # Ajout de la troisième session
+            ("premier_semestre", "1er Session"), 
+            ("second_semestre", "2e Session"),
+            ("troisieme_semestre", "3e Session"),  # Ajout de la troisième session
         ],
         string="Session",
         required=True,
@@ -759,9 +797,9 @@ class ExamResult(models.Model):
 
     #diw :pour t'entéte
     session = fields.Selection(
-        [("premier_semestre", "1er semestre"),
-            ("second_semestre", "2éme semestre"),
-             ("troisieme_semestre", "3éme semestre"),  # Ajout de la troisième session
+        [("premier_semestre", "1er Session"), 
+            ("second_semestre", "2e Session"),
+            ("troisieme_semestre", "3e Session"),  # Ajout de la troisième session
         ],"session", required=True, default="premier_semestre")
 
     company_id = fields.Many2one(
@@ -775,79 +813,15 @@ class ExamResult(models.Model):
     )
     #fin diw
     
-    
-    
-    """
-    @api.depends(
-        "result_ids", "result_ids.obtain_marks", "result_ids.marks_reeval"
-    )
-    def _compute_total(self):
-        for rec in self:
-            total = 0.0
-            if rec.result_ids:
-                for line in rec.result_ids:
-                    obtain_marks = line.obtain_marks
-                    if line.state == "re-evaluation":
-                        obtain_marks = line.marks_reeval
-                    total += obtain_marks
-            rec.total = total
-   
-
-    @api.depends('total', 'result_ids.obtain_marks', 'result_ids.marks_reeval', 'result_ids.state', 'result_ids.coefficient')
-    def _compute_per(self):
-         
-        for result in self:
-            total = 0.0
-            obtained_total = 0.0
-            per = 0.0
-            coefficient= 0.0
-            result.grade = ""
-            for sub_line in result.result_ids:
-                obtain_marks = sub_line.marks_reeval if sub_line.state == "re-evaluation" else sub_line.obtain_marks
-                coefficient += sub_line.coefficient or 1.0
-                total = (sub_line.maximum_marks or 0) * coefficient
-                obtained_total += obtain_marks or 0
-                
-            if total > 0:
-                per = (obtained_total / total) * 100
-                result.percentage = per
-                if result.grade_system:
-                    grade_found = False
-                    for grade_id in result.grade_system.grade_ids:
-                        if grade_id.from_mark <= per <= grade_id.to_mark:
-                            result.grade = grade_id.grade or ""
-                            grade_found = True
-                            break
-                        else:
-                            result.grade = ""
-                            
-                    if not grade_found:
-                        result.grade = ""
-            else:
-                result.percentage = 0.0
-                result.grade = ""
-                        
-    """
-
-
-    
-
     @api.onchange('total', 'result_ids.obtain_marks', 'result_ids.marks_reeval', 'result_ids.coefficient', 'result_ids.state')
     def _compute_grade(self):
-        """Méthode pour calculer la moyenne, le grade et le percentage en excluant certaines matières du calcul pondéré et en ajustant la moyenne"""
-        niveaux_surérogatoire_eps = ["2nde S", "2nde L", "1ère L1", "1ère L2", "Terminal L1", "Terminal L2", "1ère S1", "1ère S2", "Terminale S1", "Terminale S2"]
-        niveaux_surérogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
-
+        """Méthode pour calculer la moyenne, le grade et le percentage"""
         for result in self:
             moyenne_provisoire = 0.0
             obtained_total = 0.0
             somme_coef = 0.0
             somme_maximum_marks = 0.0
             nombre_matieres = 0
-
-            note_eps = None
-            note_e_a = None
-            note_ec = None
 
             result.somme_obtain_marks = 0.0
             result.somme_coef = 0.0
@@ -856,64 +830,29 @@ class ExamResult(models.Model):
             result.result = ""
             result.percentage = 0.0
 
+            # Calcul simple de la somme des obtain_marks sans traitement spécial pour les matières surérogatoires
             for sub_line in result.result_ids:
-                obtain_marks = sub_line.obtain_marks
-                moyenne_provisoire = sub_line.moyenne_provisoire
+                obtain_marks = sub_line.obtain_marks or 0.0
+                moyenne_provisoire = sub_line.moyenne_provisoire or 0.0
 
-                if result.niveau_id.name in niveaux_surérogatoire_eps and sub_line.subject_id.name.lower() == "eps":
-                    note_eps = moyenne_provisoire or 0.0
-                    continue
-
-                if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "espagnol":
-                    note_e_a = moyenne_provisoire or 0.0
-                    continue
-
-                if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "arabe":
-                    note_e_a = moyenne_provisoire or 0.0
-                    continue
-
-                if result.niveau_id.name in niveaux_surérogatoire_langue and sub_line.subject_id.name.lower() == "ec":
-                    note_ec = moyenne_provisoire or 0.0
-                    continue
-
-                obtained_total += obtain_marks or 0.0
+                obtained_total += obtain_marks
                 somme_coef += sub_line.coefficient or 0.0
                 somme_maximum_marks += sub_line.maximum_marks or 0.0
                 nombre_matieres += 1
 
             result.somme_coef = somme_coef
             result.somme_obtain_marks = obtained_total
+            result.somme_maximum_marks = somme_maximum_marks
 
             if somme_coef > 0 and nombre_matieres > 0:
-                if result.niveau_id.name in niveaux_surérogatoire_eps and note_eps is not None:
-                    if note_eps > 10:
-                        obtained_total += (note_eps - 10)
-                    elif note_eps < 10:
-                        obtained_total -= (10 - note_eps)
-
-                if result.niveau_id.name in niveaux_surérogatoire_langue:
-                    if note_e_a is not None:
-                        if note_e_a > 10:
-                            obtained_total += (note_e_a - 10)
-                        elif note_e_a < 10:
-                            obtained_total -= (10 - note_e_a)
-
-                    if note_ec is not None:
-                        if note_ec > 10:
-                            obtained_total += (note_ec - 10)
-                        elif note_ec < 10:
-                            obtained_total -= (10 - note_ec)
-
-                result.total = obtained_total
+                result.total = obtained_total  # Total est maintenant directement la somme des obtain_marks
 
                 moyenne_total = obtained_total / somme_coef
-
                 maximum_marks_class = somme_maximum_marks / nombre_matieres
 
                 moyenne_norm = (moyenne_total * result.note_maximale_grade) / maximum_marks_class if maximum_marks_class > 0 else 0.0
 
                 result.moyenne = moyenne_norm
-
                 result.percentage = (moyenne_norm / result.note_maximale_grade) * 100
 
                 if result.grade_system:
@@ -932,9 +871,6 @@ class ExamResult(models.Model):
                 result.moyenne = 0.0
                 result.result = "Fail"
                 result.percentage = 0.0
-
-
-
 
             
     @api.onchange("percentage")
@@ -1013,6 +949,10 @@ class ExamResult(models.Model):
     
     moyenne = fields.Float("Moyenne", compute="_compute_grade", digits=(16,2))
     somme_coef = fields.Float("somme coef", compute="_compute_grade")
+    somme_maximum_marks = fields.Float("somme notes", compute="_compute_grade")
+
+    
+
     somme_obtain_marks = fields.Float("somme moyenne", compute="_compute_grade")
     
     state = fields.Selection(
@@ -1177,41 +1117,63 @@ class ExamResult(models.Model):
             rec.state = "done"
 
     rang = fields.Integer(string='Rang', compute='_compute_rang_exam')
-    
-    @api.onchange('total', 's_exam_ids', 'session')  # Déclencher le calcul du rang quand `total`, `s_exam_ids` ou `session` changent
+
+    @api.onchange('total', 's_exam_ids', 'session')
+    @api.depends('total', 's_exam_ids', 'session')
     def _compute_rang_exam(self):
         for rec in self:
-            if rec.s_exam_ids:  
-                # Vérifier que la session et l'examen sont valides
-                if rec.session and rec.s_exam_ids:
-                    # Rechercher tous les résultats pour le même examen et la même session
-                    exam_results = self.env['exam.result'].search([
-                        ('s_exam_ids', '=', rec.s_exam_ids.id),
-                        ('standard_id', '=', rec.standard_id.id)
-                        
-                    ])
-                    
-                    # Vérifier si des résultats existent
-                    if exam_results:
-                        # Trier les résultats par `total` (note obtenue) décroissant
-                        sorted_results = exam_results.sorted(key=lambda r: r.total or 0, reverse=True)
-                        
-                        # Mise à jour des rangs en une seule opération
-                        for idx, result in enumerate(sorted_results, start=1):
-                            result.rang = idx  # Assigner le rang selon la position
-                    else:
-                        rec.rang = 1  # Si aucun résultat, définir rang à 0
-                else:
-                    rec.rang = 0  # Si pas de session ou examen, définir rang à 0
-            else:
-                rec.rang = 0  # Aucun examen associé → rang = 0
+            try:
+                # Vérification des données obligatoires
+                if not rec.s_exam_ids or not rec.session or not rec.total:
+                    rec.rang = 0
+                    continue
+
+                # Recherche tous les résultats du même examen et de la même classe
+                exam_results = self.env['exam.result'].search([
+                    ('s_exam_ids', '=', rec.s_exam_ids.id),
+                    ('standard_id', '=', rec.standard_id.id)
+                ])
+
+                if not exam_results:
+                    rec.rang = 0
+                    continue
+
+                # Trie les résultats par note décroissante
+                sorted_results = exam_results.sorted(key=lambda r: r.total or 0, reverse=True)
+
+                # Initialisation des variables pour le calcul des rangs
+                ranks = {}
+                current_rank = 1
+                
+                # Groupe les élèves par note
+                grouped_students = {}
+                for result in sorted_results:
+                    note = result.total or 0
+                    if note not in grouped_students:
+                        grouped_students[note] = []
+                    grouped_students[note].append(result)
+
+                # Attribution des rangs avec gestion des ex-æquo
+                for note, students in grouped_students.items():
+                    # Attribue le même rang à tous les élèves du groupe
+                    for student in students:
+                        ranks[student.id] = current_rank
+                    # Incrémente le rang pour sauter les places occupées
+                    current_rank += len(students)
+
+                # Affecte le rang calculé à l'enregistrement courant
+                rec.rang = ranks.get(rec.id, 0)
+
+            except Exception as e:
+                _logger.error(f"Erreur dans le calcul du rang pour l'élève {rec.id}: {str(e)}")
+                rec.rang = 0
                 
                     
     moyenne_second_semester = fields.Float(string='Moyenne 2em Semester' , compute='_compute_moyenne_semestre' , digits=(16,2))
 
     moyenne_prem_semester = fields.Float(string='Moyenne 1er Semester', compute='_compute_moyenne_semestre' , digits=(16,2))
 
-    moyenne_troisieme_semester = fields.Float(string='Moyenne 3ème Semester' , compute='_compute_moyenne_semestre' , digits=(16,2))
+    moyenne_troisieme_semester = fields.Float(string='Moyenne 3ième  Semester' , compute='_compute_moyenne_semestre' , digits=(16,2))
     
     moyenne_annuel = fields.Float(string='moyenne des semestres' , compute='_compute_moyenne_semestre' , digits=(16,2))
 
@@ -1281,6 +1243,30 @@ class ExamResult(models.Model):
     
         #diw
 
+
+    moyenne_classe = fields.Float(string="Moyenne de la classe",
+    compute="_compute_moyenne_classe", digits=(16, 2),
+    help="Moyenne générale de la classe pour cette session")  
+
+
+    @api.depends('standard_id', 'session', 'moyenne')
+    def _compute_moyenne_classe(self):
+        for record in self:
+            # Rechercher tous les résultats de la même classe et même session
+            results = self.env['exam.result'].search([
+                ('standard_id', '=', record.standard_id.id),
+                ('session', '=', record.session),
+            ])
+            
+            if results:
+                total_moyennes = sum(res.moyenne for res in results if res.moyenne)
+                record.moyenne_classe = total_moyennes / len(results)
+            else:
+                record.moyenne_classe = 0.0  
+
+    
+                
+
 class ExamGradeLine(models.Model):
     """Defining model for Exam Grade Line."""
 
@@ -1306,8 +1292,7 @@ class ExamSubject(models.Model):
 
     
 
-
-
+    
                    
     
                
@@ -1332,9 +1317,9 @@ class ExamSubject(models.Model):
     
     #add by diw yowit
     session = fields.Selection(
-        [("premier_semestre", "1er semestre"),
-            ("second_semestre", "2éme semestre"),
-             ("troisieme_semestre", "3éme semestre"),  # Ajout de la troisième session
+        [("premier_semestre", "1er Session"), 
+            ("second_semestre", "2e Session"),
+            ("troisieme_semestre", "3e Session"),  # Ajout de la troisième session
         ],"session", required=True, related="exam_id.session")
     
    
@@ -1342,49 +1327,75 @@ class ExamSubject(models.Model):
 
     rang = fields.Integer(string='Rang', compute='_compute_rang')
 
+    # Déclenche le calcul quand ces champs sont modifiés dans l'interface
     @api.onchange('moyenne_provisoire', 'exam_id', 'session')
+    # Recalcule automatiquement quand ces champs changent (même en backend)
     @api.depends('moyenne_provisoire', 'exam_id', 'session', 's_exam_ids', 'standard_subject')
     def _compute_rang(self):
+        # Parcours tous les enregistrements (élèves/matières) à traiter
         for rec in self:
             try:
-                if not rec.exam_id or not rec.s_exam_ids or not rec.standard_subject:
-                    rec.rang = 0
-                    continue
+                # Vérification des données obligatoires
+                if not rec.exam_id or not rec.s_exam_ids or not rec.standard_subject or not rec.moyenne_provisoire:
+                    rec.rang = 0  # Si données manquantes, rang = 0
+                    continue  # Passe à l'élève suivant
                     
-                # Search for all relevant exam results
+                # Recherche tous les examens correspondants :
+                # - Même session d'examen (s_exam_ids)
+                # - Même classe (standard_subject)
                 exam_results = self.env['exam.result'].search([
                     ('s_exam_ids', '=', rec.s_exam_ids.id),
                     ('standard_id', '=', rec.standard_subject.id)
                 ])
                 
+                # Log pour débogage (nombre de résultats trouvés)
                 _logger.info(f"Found {len(exam_results)} exam results for subject {rec.id}")
                 
+                # Si aucun résultat trouvé, rang = 0
                 if not exam_results:
                     rec.rang = 0
                     continue
                     
-                # Get all subjects from these exam results
+                # Récupère toutes les matières de ces examens
+                # et filtre pour garder uniquement la matière actuelle
                 all_subjects = exam_results.mapped('result_ids').filtered(
                     lambda x: x.subject_id.id == rec.subject_id.id
                 )
                 
-                # Sort by moyenne_provisoire
+                # Trie les résultats par moyenne (décroissant)
                 sorted_subjects = all_subjects.sorted(
-                    key=lambda s: s.moyenne_provisoire or 0, 
-                    reverse=True
+                    key=lambda s: s.moyenne_provisoire or 0,  # Si moyenne vide = 0
+                    reverse=True  # Ordre décroissant
                 )
                 
-                # Find current record's position
-                for idx, subject in enumerate(sorted_subjects, start=1):
-                    if subject.id == rec.id:
-                        rec.rang = idx
-                        break
-                else:
-                    rec.rang = 0
+                # Initialisation des variables pour le calcul des rangs
+                ranks = {}  # Dictionnaire {id_élève: rang}
+                current_rank = 1  # Commence au rang 1
+                
+                # Groupe les élèves par leur moyenne
+                grouped_subjects = {}
+                for subject in sorted_subjects:
+                    moyenne = subject.moyenne_provisoire or 0
+                    if moyenne not in grouped_subjects:
+                        grouped_subjects[moyenne] = []  # Crée un nouveau groupe si nouvelle moyenne
+                    grouped_subjects[moyenne].append(subject)  # Ajoute l'élève au groupe
+                
+                # Attribution des rangs
+                for moyenne, subjects in grouped_subjects.items():
+                    # Donne le même rang à tous les élèves du groupe (même moyenne)
+                    for subject in subjects:
+                        ranks[subject.id] = current_rank
+                    # Incrémente le rang pour sauter les places prises par ce groupe
+                    # Ex: 3 élèves à 18/20 → rang 1 → prochain rang = 1 + 3 = 4
+                    current_rank += len(subjects)
+                
+                # Attribue le rang calculé à l'enregistrement actuel
+                rec.rang = ranks.get(rec.id, 0)  # Si non trouvé → 0
                     
+            # Gestion des erreurs
             except Exception as e:
                 _logger.error(f"Error in computing rank for subject {rec.id}: {str(e)}")
-                rec.rang = 0
+                rec.rang = 0  # En cas d'erreur → rang = 0
     
     
     #diw coefficient = fields.Integer("Coefficient", default=1, related="subject_id.coefficient")
@@ -1407,8 +1418,8 @@ class ExamSubject(models.Model):
     "Élémentaire": {
         "Langue et Communication / Français - Ressources": 1,
         "Langue et Communication / Français - Compétence": 1,
-        "Math - Ressources": 1,
-        "Math - Compétence": 1,
+        "Maths - Ressources": 1,
+        "Maths - Compétence": 1,
         "Découverte du Monde – Ressources (HG – IST)": 1,
         "Découverte du Monde - Compétence": 1,
         "Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)": 1,
@@ -1480,7 +1491,7 @@ class ExamSubject(models.Model):
         "Langue Vivante 1": 5,
         "HG": 4,
         "Langue Vivante 2": 3,
-        "EC": 2,
+        "Économie": 2,
         "Maths": 2,
         "SVT": 2,  # SVT ou PC
         "PC": 2,
@@ -1521,7 +1532,7 @@ class ExamSubject(models.Model):
     devoir_3 = fields.Float("Devoir 3")
     
     # Champ calculé pour la moyenne des devoirs
-    devoir = fields.Float("Devoir", compute="_compute_devoir", store=True)
+    devoir = fields.Float("Devoir", compute="_compute_devoir", store=True, digits=(16,2))
     
     @api.depends('devoir_1', 'devoir_2', 'devoir_3', 'count_devoir')
     def _compute_devoir(self):
@@ -1537,7 +1548,7 @@ class ExamSubject(models.Model):
             rec.devoir = total / rec.count_devoir if rec.count_devoir else 0.0
 
     
-    composition = fields.Float("Composition" )
+    composition = fields.Float("Composition" , digits=(16,2))
 
     moyenne_provisoire = fields.Float("moyenne provisoire", compute="_compute_moyenne_prov", digits=(16,2))
     
@@ -1548,41 +1559,89 @@ class ExamSubject(models.Model):
     ) #niveau
     
     
-    @api.onchange("devoir", "composition")
+    @api.depends("devoir", "composition")
     def _compute_moyenne_prov(self):
         for rec in self:
-            # Vérifier si le niveau est CM1 ou CM2
-            if rec.niveau_id in ["CM1", "CM2"]:
-                # Pour CM1/CM2, seule la composition compte
-                moyenne = rec.composition
+            # Gestion des valeurs None
+            devoir = rec.devoir or 0
+            composition = rec.composition or 0
+            
+            # Calcul selon le niveau
+            if rec.niveau_id in ['CM1', 'CM2']:
+                moyenne = composition
             else:
-                # Pour les autres niveaux, calcul normal
-                moyenne = (rec.devoir + rec.composition) / 2
-
-            # Vérification des bornes
-            if moyenne > rec.maximum_marks:
+                moyenne = (devoir + composition) / 2
+            
+            # Arrondi explicite à 2 décimales
+            moyenne_arrondie = round(float(moyenne), 2)
+            
+            # Validation
+            if rec.maximum_marks and moyenne_arrondie > rec.maximum_marks:
                 raise ValidationError(
-                    f"La moyenne provisoire ({moyenne}) ne peut pas dépasser la note maximale ({rec.maximum_marks})."
+                    f"La moyenne ({moyenne_arrondie}) dépasse la note maximale ({rec.maximum_marks})"
+                )
+                
+            if rec.minimum_marks and moyenne_arrondie < rec.minimum_marks:
+                raise ValidationError(
+                    f"La moyenne ({moyenne_arrondie}) est inférieure au minimum ({rec.minimum_marks})"
                 )
             
-            if moyenne < rec.minimum_marks:
-                raise ValidationError(
-                    f"La moyenne provisoire ({moyenne}) ne peut pas être inférieure à la note minimale ({rec.minimum_marks})."
-                )
+            # Assignation avec valeur arrondie
+            rec.moyenne_provisoire = moyenne_arrondie
+    
 
-            rec.moyenne_provisoire = moyenne
+    valeur_sureogatoire = fields.Float(
+        string="Valeur Surérogatoire",
+        compute="_compute_valeur_sureogatoire",
+        store=True,
+        digits=(16,2),
+        help="Valeur à ajouter ou soustraire pour les matières surérogatoires"
+    )
+
+    @api.depends("moyenne_provisoire", "subject_id", "exam_id.niveau_id")
+    def _compute_valeur_sureogatoire(self):
+        niveaux_sureogatoire_eps = [
+            "2nde S", "2nde L", "1ère L1", "1ère L2",
+            "Terminal L1", "Terminal L2", "1ère S1", "1ère S2",
+            "Terminale S1", "Terminale S2"
+        ]
+        niveaux_sureogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
+        
+        for rec in self:
+            valeur = 0.0
+            niveau = rec.exam_id.niveau_id.name if rec.exam_id and rec.exam_id.niveau_id else ""
+            subject_name = rec.subject_id.name if rec.subject_id and isinstance(rec.subject_id.name, str) else ""
+
+            if niveau in niveaux_sureogatoire_eps and subject_name.lower() == "eps":
+                if rec.moyenne_provisoire > 10:
+                    valeur = rec.moyenne_provisoire - 10
+                elif rec.moyenne_provisoire < 10:
+                    valeur = -(10 - rec.moyenne_provisoire)
+
+            elif niveau in niveaux_sureogatoire_langue:
+                if subject_name.lower() in ["espagnol", "arabe", "économie"]:
+                    if rec.moyenne_provisoire > 10:
+                        valeur = rec.moyenne_provisoire - 10
+                    elif rec.moyenne_provisoire < 10:
+                        valeur = -(10 - rec.moyenne_provisoire)
+
+            rec.valeur_sureogatoire = valeur
+
 
         
-    obtain_marks = fields.Float("moyonne obtenue", group_operator="avg", compute="_compute_obtain_marks")
+    obtain_marks = fields.Float("moyonne obtenue", group_operator="avg", compute="_compute_obtain_marks", digits=(16,2))
     
     
-    @api.onchange("moyenne_provisoire")
+    @api.depends("moyenne_provisoire", "coefficient", "valeur_sureogatoire")
     def _compute_obtain_marks(self):
         for rec in self:
-            if rec.moyenne_provisoire != 0:
-                rec.obtain_marks = rec.moyenne_provisoire * rec.coefficient
+            # Pour les matières normales: moyenne * coefficient
+            # Pour les matières surérogatoires: afficher la valeur à ajouter/soustraire
+            if rec.valeur_sureogatoire != 0:
+                rec.obtain_marks = rec.valeur_sureogatoire
             else:
-                rec.obtain_marks = 1
+                rec.obtain_marks = rec.moyenne_provisoire * rec.coefficient
+           
             
            
     
@@ -1602,8 +1661,8 @@ class ExamSubject(models.Model):
     #fin diw
     
     
-    maximum_marks = fields.Float("Maximum marks", related="subject_id.maximum_marks", readonly=True)
-    minimum_marks = fields.Float("Minimum marks", related="subject_id.minimum_marks", readonly=True)
+    maximum_marks = fields.Float("Maximum marks", related="subject_id.maximum_marks", readonly=True, digits=(16,2))
+    minimum_marks = fields.Float("Minimum marks", related="subject_id.minimum_marks", readonly=True, digits=(16,2))
 
     grade = fields.Char(
         "Grade", compute="_compute_grade_subject",  help="Grade Obtained"
@@ -1617,8 +1676,7 @@ class ExamSubject(models.Model):
     string="Note maximale",
     related="exam_id.note_maximale_grade",
     store=True,
-    default=20.0
-)
+    default=20.0, digits=(16,2))
 
     @api.onchange("exam_id", "moyenne_provisoire", "marks_reeval")
     def _compute_grade_subject(self):
