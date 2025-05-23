@@ -18,6 +18,18 @@ class StudentFeesRegister(models.Model):
     _name = "student.fees.register"
     _description = "Student fees Register"
 
+    def unlink(self):
+        """Inherited unlink method to check state at the record deletion"""
+        for rec in self:
+            if rec.state != "draft":
+                raise ValidationError(
+                    _(
+                        """
+            Vous ne pouvez pas supprimer un enregistrement confirmé!"""
+                    )
+                )
+        return super(StudentFeesRegister, self).unlink()
+
     #diw
     academic_year_id = fields.Many2one(
         "academic.year",
