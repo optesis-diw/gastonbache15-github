@@ -25,7 +25,7 @@ class StudentFeesRegister(models.Model):
                 raise ValidationError(
                     _(
                         """
-            Vous ne pouvez pas supprimer un enregistrement confirmé!"""
+            Vous ne pouvez pas supprimer un enregistrement confirmé"""
                     )
                 )
         return super(StudentFeesRegister, self).unlink()
