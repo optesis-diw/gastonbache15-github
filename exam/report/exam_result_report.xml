@@ -27,7 +27,7 @@
               
                 <div class="page">
                 
-                <t t-if="o.niveau_id.name not in ['CM1', 'CM2']">
+                <t t-if="o.niveau_id.name not in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                     <!-- En-tête personnalisé -->
                 <div class="header" style="text-align: center; padding: 10px; border-bottom: 1px solid black;">
                     <table width="100%" style="border-collapse: collapse;">
@@ -95,14 +95,14 @@
                                 
                                 <tr>
                                     <td style="width: 33%; text-align: left;"> 
-                                      <!-- diw à ajouter :<p style="text-align:left;"><strong>Né(le) </strong>
+                                     <p style="text-align:left;"><strong>Né(le) </strong>
                                         <span t-field="result.student_id.date_of_birth"></span>
-                                      </p>  -->
+                                      </p> 
                                     </td>
                                     <td style="width: 33%; text-align: center;"> 
-                                       <!-- diw à ajouter : <p style="text-align:center;"><strong>à </strong>
+                                      <p style="text-align:center;"><strong>à </strong>
                                         <span t-field="result.student_id.lieu_naiss"></span>
-                                      </p> -->
+                                      </p>
                                     </td>
                                     <td style="width: 33%; text-align: right;">
                                      <p style="text-align:right;"><strong>Classe:</strong>
@@ -335,7 +335,7 @@
                         
                         <td style="width:20%"></td>
                            <td style="font-size:14px;height:70px;border: 1px solid;width:50%">
-                              <div t-if="result.session in ['premier_semestre']">
+                              <div>
                                 <p style="text-align:left;"><strong>Moy. 1er semestre....... </strong>
                                     <span t-if="result.moyenne_prem_semester" t-field="result.moyenne_prem_semester"></span>
                                 </p>
@@ -384,7 +384,7 @@
 
 
                  <!-- Primaire -->
-                <t t-else="o.niveau_id.name in ['CM1', 'CM2']">
+                <t t-else="o.niveau_id.name in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                     <!-- En-tête personnalisé -->
                 <div class="header" style="text-align: center; padding: 10px; border-bottom: 1px solid black;">
                     <table width="100%" style="border-collapse: collapse;">
@@ -449,14 +449,14 @@
                                 
                                 <tr>
                                     <td style="width: 33%; text-align: left;"> 
-                                      <!-- diw à ajouter :<p style="text-align:left;"><strong>Né(le) </strong>
+                                      <p style="text-align:left;"><strong>Né(le) </strong>
                                         <span t-field="result.student_id.date_of_birth"></span>
-                                      </p> -->
+                                      </p>
                                     </td>
                                     <td style="width: 33%; text-align: center;"> 
-                                       <!-- diw à ajouter : <p style="text-align:center;"><strong>à </strong>
+                                       <p style="text-align:center;"><strong>à </strong>
                                         <span t-field="result.student_id.lieu_naiss"></span>
-                                      </p> -->
+                                      </p> 
                                     </td>
                                     <td style="width: 33%; text-align: right;">
                                       <p style="text-align:right;"><strong>Classe:</strong>
@@ -701,7 +701,7 @@
                         
                         <td style="width:20%"></td>
                            <td style="font-size:14px;height:70px;border: 1px solid;width:50%">
-                            <div t-if="result.session in ['premier_semestre', 'troisieme_semestre']">
+                            <div>
                                 <p style="text-align:left;"><strong>Moy. 1er Trim/10.......   </strong>
                                     <span t-if="result.moyenne_prem_semester" t-field="result.moyenne_prem_semester"></span>
                                 </p>

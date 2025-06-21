@@ -1567,7 +1567,7 @@ class ExamSubject(models.Model):
             composition = rec.composition or 0
             
             # Calcul selon le niveau
-            if rec.niveau_id in ['CM1', 'CM2']:
+            if rec.niveau_id in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']:
                 moyenne = composition
             else:
                 moyenne = (devoir + composition) / 2
