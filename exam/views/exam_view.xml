@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <odoo>
 
     <!-- Actions Of Form & Tree Views Of Student Result -->
@@ -56,16 +55,17 @@
                 <field name="end_date" string="End Date"/>
                 <field name="session" string="Session"/>
                 <newline />
+                <!-- Filtre pour année courante -->
+                <filter name="current_year" string="Current Year" 
+                        domain="[('academic_year.current','=',True)]"/>
                 <filter name="running" string="Running" domain="[('state','=','running')]" help="Exam is Running"/>
                 <filter name="uncomming" string="Upcoming" domain="[('state','=','draft')]" help="Exam is Upcoming"/>
                 <newline />
                 <group expand="1" string="Group By">
-                    <filter  name="date" string="Date" help="By Date" domain="[]" context="{'group_by':'start_date'}"/>
-                    <filter name="state" string="State"
-                            help="By State" domain="[]" context="{'group_by':'state'}"/>
-
-                            <filter name="session" string="Session"
-                            help="By session" domain="[]" context="{'group_by':'session'}"/>
+                    <filter name="date" string="Date" help="By Date" domain="[]" context="{'group_by':'start_date'}"/>
+                    <filter name="state" string="State" help="By State" domain="[]" context="{'group_by':'state'}"/>
+                    <filter name="session" string="Session" help="By session" domain="[]" context="{'group_by':'session'}"/>
+                    <filter name="year" string="Academic Year" help="By Academic Year" domain="[]" context="{'group_by':'academic_year'}"/>
                 </group>
             </search>
         </field>
@@ -104,30 +104,6 @@
                         <field name="start_date" attrs="{'readonly': [('state','!=','draft')]}" placeholder="Start Date" required="1"/>
                         <field name="end_date" attrs="{'readonly': [('state','!=','draft')]}" placeholder="End Date" required="1"/>
                     </group>
-                    <!--
-                    <group col="4" colspan="4">
-                        <notebook colspan="4" >
-                            <page string="Class">
-                                <field name="standard_id" nolabel="1" colspan="4" attrs="{'readonly': [('state','!=','draft')]}"
-                                    options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
-                            </page>
-                            <page string="Exam Schedule">
-                                <field name="exam_schedule_ids" nolabel="1" colspan="4" attrs="{'readonly': [('state','!=','draft')]}"
-                                        context="{'default_standard_ids':standard_id,'academic_year':academic_year}">
-                                    <tree name="exam_schedule" string="Exam Schedule" editable="top">
-                                        <field name="standard_ids" invisible="1"/>
-                                        <field name="standard_id" domain="[('standard_id', 'in', standard_ids)]"
-                                                required="1" options="{&quot;no_create&quot;: True}" string="Class"/>
-                                        <field name="timetable_id" required="1" domain="[('timetable_type','=','exam'),
-                                                                                         ('year_id','=',context.get('academic_year')),
-                                                                                         ('standard_id','=',standard_id)]"
-                                            options="{&quot;no_create&quot;: True}"/>
-                                    </tree>
-                                </field>
-                            </page>
-
-                        </notebook>
-                    </group>-->
                     <group col="6" colspan="4" attrs="{'readonly': [('state','!=','draft')]}">
                         <field name="create_date" readonly="1" placeholder="Created Date" string="Exam Created Date"/>
                         <field name="write_date" readonly="1" placeholder="Last Update Date" string="Exam Update Date"/>
@@ -154,7 +130,6 @@
         <field name="model">time.table</field>
         <field name="inherit_id" ref="timetable.view_time_table_form"/>
         <field name="arch" type="xml">
-
             <xpath expr="//sheet" position="before"> 
             <br/>
             <!-- Rendre le champ visible mais en lecture seule -->
@@ -165,12 +140,8 @@
                 attrs="{'invisible': [('timetable_type', '!=', 'exam'), ('is_generate', '=', True)]}"/>
         </xpath>
 
-
-
-
             <xpath expr="//form/sheet/group/field[@name='year_id']" position="after">
                 <field name="timetable_type" placeholder= "Select Time Table Type" readonly="1"/>
-                 
             </xpath>
             <field name="timetable_ids" position="attributes">
                 <attribute name="attrs">{'invisible': [('timetable_type','!=','regular')]}</attribute>
@@ -196,6 +167,8 @@
         <field name="name">Regular Exam</field>
         <field name="res_model">exam.exam</field>
         <field name="view_mode">tree,form,calendar</field>
+        <field name="domain">[('academic_year.current','=',True)]</field>
+        <field name="context">{'search_default_current_year':1}</field>
     </record>
 
     <!-- Menu Items Of Exam -->
@@ -284,10 +257,6 @@
         <field name="view_mode">calendar,tree,form</field>
     </record>
 
-    <!-- Menu Item Of Additional Exam -->
-    <!--<menuitem id="additional_exam" name="Additional Exams" parent="menu_exam" sequence="103"/>
-    <menuitem id="menu_additional_exam_sub_form" name="Additional Exam" parent="additional_exam" action="action_additional_exam_form" sequence="104"/>-->
-
     <!-- Tree View Of Result Information -->
     <record id="view_exam_result_tree" model="ir.ui.view">
         <field name="name">exam.result.tree</field>
@@ -352,25 +321,17 @@
                                 'invisible': [
                                     '|',  
                                     '&amp;', 
-                                        ('niveau_id', 'in', ['CM1', 'CM2']),
+                                        ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']),
                                         ('session', '!=', 'troisieme_semestre'),
                                     '&amp;', 
-                                        ('niveau_id', 'not in', ['CM1', 'CM2']),
+                                        ('niveau_id', 'not in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']),
                                         ('session', '!=', 'second_semestre')
                                 ]
                             }"
                         />
 
-
-                       
-
-                
                         <field name="note_maximale_grade"/>
                         <field name="count_devoir" invisible="1"/>
-
-                        
-                      
-                        
                     </group>
                     <field name="result_ids" nolabel="1" colspan="4">
                         <tree string="Subjects" editable="bottom" create="false" delete="false" >
@@ -381,10 +342,10 @@
                             <field name="minimum_marks" readonly="1" />
                             <field name="count_devoir" invisible="1"/>
                             <field name="niveau_id" invisible="1"/>
-                            <field name="devoir_1" attrs="{'invisible': [('niveau_id', 'in', ['CM1', 'CM2'])] }"/>
-                            <field name="devoir_2" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CM1', 'CM2']), ('count_devoir', '!=', 2)]}"/>
-                            <field name="devoir_3" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CM1', 'CM2']), ('count_devoir', '!=', 3)]}"/>
-                            <field name="devoir" attrs="{'invisible': [('niveau_id', 'in', ['CM1', 'CM2'])]}"/>
+                            <field name="devoir_1" attrs="{'invisible': [('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'])] }"/>
+                            <field name="devoir_2" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']), ('count_devoir', '==', 2)]}"/>
+                            <field name="devoir_3" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']), ('count_devoir', '!=', 3)]}"/>
+                            <field name="devoir" attrs="{'invisible': [('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'])]}"/>
                             <field name="composition" />
                             <field name="moyenne_provisoire" readonly="1"/>
                             <field name="obtain_marks" />
@@ -537,6 +498,9 @@
                 <field name="student_id"/>
                 <field name="standard_id"/>
                 <field name="s_exam_ids"/>
+                <!-- Filtre pour année courante -->
+                <filter name="current_year" string="Current Year" 
+                        domain="[('s_exam_ids.academic_year.current','=',True)]"/>
                 <group expand="1" string="Group By">
                     <filter name="student" string="Student" help="By Name" domain="[]"
                             context="{'group_by':'student_id'}" />
@@ -557,7 +521,9 @@
         <field name="name">Exam Results</field>
         <field name="res_model">exam.result</field>
         <field name="view_mode">kanban,tree,form</field>
-         <field name="search_view_id" ref="view_exam_result_search"/>
+        <field name="domain">[('s_exam_ids.academic_year.current','=',True)]</field>
+        <field name="context">{'search_default_current_year':1}</field>
+        <field name="search_view_id" ref="view_exam_result_search"/>
     </record>
 
     <!-- Menu Item Of Result -->
@@ -640,9 +606,5 @@
         <field name="res_model">additional.exam.result</field>
         <field name="view_mode">tree,form</field>
     </record>
-
-    <!-- Menu Item Of Additional Exam Result -->
-   <!-- <menuitem id="menu_additional_exam_result" name="Additional Exam Results" parent="additional_exam"
-              action="action_additional_exam_result_form01" sequence="105"/>-->
 
 </odoo>
