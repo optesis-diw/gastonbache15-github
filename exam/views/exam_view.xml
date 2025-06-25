@@ -343,7 +343,7 @@
                             <field name="count_devoir" invisible="1"/>
                             <field name="niveau_id" invisible="1"/>
                             <field name="devoir_1" attrs="{'invisible': [('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'])] }"/>
-                            <field name="devoir_2" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']), ('count_devoir', '==', 2)]}"/>
+                            <field name="devoir_2" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']), ('count_devoir', '==', 1)]}"/>
                             <field name="devoir_3" attrs="{'invisible': ['|', ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']), ('count_devoir', '!=', 3)]}"/>
                             <field name="devoir" attrs="{'invisible': [('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'])]}"/>
                             <field name="composition" />
