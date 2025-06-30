@@ -330,6 +330,21 @@
                             }"
                         />
 
+                        <field name="rang_annuel"
+                            attrs="{
+                                'invisible': [
+                                    '|',  
+                                    '&amp;', 
+                                        ('niveau_id', 'in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']),
+                                        ('session', '!=', 'troisieme_semestre'),
+                                    '&amp;', 
+                                        ('niveau_id', 'not in', ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']),
+                                        ('session', '!=', 'second_semestre')
+                                ]
+                            }"
+                        />
+                        
+
                         <field name="note_maximale_grade"/>
                         <field name="count_devoir" invisible="1"/>
                     </group>
@@ -608,3 +623,4 @@
     </record>
 
 </odoo>
+

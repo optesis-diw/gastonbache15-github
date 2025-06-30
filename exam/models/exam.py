@@ -1168,6 +1168,72 @@ class ExamResult(models.Model):
                 _logger.error(f"Erreur dans le calcul du rang pour l'élève {rec.id}: {str(e)}")
                 rec.rang = 0
                 
+    
+
+        # Ajouter le nouveau champ dans la classe
+    rang_annuel = fields.Integer(string='Rang Annuel', compute='_compute_rang_annuel')
+
+
+    # Nouvelle méthode pour le calcul du rang annuel
+    @api.depends('moyenne_annuel', 'session', 'niveau_id.name')
+    def _compute_rang_annuel(self):
+        for rec in self:
+            try:
+                primary_levels = ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']
+                is_primary = rec.niveau_id.name in primary_levels if rec.niveau_id and rec.niveau_id.name else False
+
+                # Vérifier si on doit calculer le rang annuel pour cet enregistrement
+                if (is_primary and rec.session != "troisieme_semestre") or \
+                (not is_primary and rec.session != "second_semestre"):
+                    rec.rang_annuel = 0
+                    continue
+
+                # Rechercher les résultats à inclure dans le classement annuel
+                domain = [
+                    ('standard_id', '=', rec.standard_id.id),
+                    ('annee_scolaire', '=', rec.annee_scolaire.id)
+                ]
+                
+                if is_primary:
+                    domain.append(('session', '=', 'troisieme_semestre'))
+                else:
+                    domain.append(('session', '=', 'second_semestre'))
+                    
+                exam_results = self.env['exam.result'].search(domain)
+
+                if not exam_results:
+                    rec.rang_annuel = 0
+                    continue
+
+                # Classement par moyenne annuelle
+                sorted_results = exam_results.sorted(
+                    key=lambda r: r.moyenne_annuel or 0.0, 
+                    reverse=True
+                )
+
+                # Calcul des rangs avec gestion des ex-æquo
+                ranks = {}
+                current_rank = 1
+                grouped_students = {}
+                
+                for result in sorted_results:
+                    note = result.moyenne_annuel or 0.0
+                    if note not in grouped_students:
+                        grouped_students[note] = []
+                    grouped_students[note].append(result)
+
+                for note, students in grouped_students.items():
+                    for student in students:
+                        ranks[student.id] = current_rank
+                    current_rank += len(students)
+
+                rec.rang_annuel = ranks.get(rec.id, 0)
+
+            except Exception as e:
+                _logger.error(f"Erreur dans le calcul du rang annuel: {str(e)}")
+                rec.rang_annuel = 0
+     
+
                     
     moyenne_second_semester = fields.Float(string='Moyenne 2em Semester' , compute='_compute_moyenne_semestre' , digits=(16,2))
 
@@ -1175,7 +1241,7 @@ class ExamResult(models.Model):
 
     moyenne_troisieme_semester = fields.Float(string='Moyenne 3ième  Semester' , compute='_compute_moyenne_semestre' , digits=(16,2))
     
-    moyenne_annuel = fields.Float(string='moyenne des semestres' , compute='_compute_moyenne_semestre' , digits=(16,2))
+    moyenne_annuel = fields.Float(string='moyenne annuelle' , compute='_compute_moyenne_semestre' , digits=(16,2))
 
     
     

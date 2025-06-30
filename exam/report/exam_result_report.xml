@@ -348,13 +348,13 @@
                         
                             
                             <div t-if="result.session in ['second_semestre']">
-                                <p style="text-align:left;"><strong>Moyenne annuel....... </strong>
+                                <p style="text-align:left;"><strong>Moyenne annuelle..... </strong>
                                     <span t-field="result.moyenne_annuel" t-if="result.moyenne_annuel"></span>
                                 </p>
                             </div>
                             <div >
-                                <p style="text-align:left;"><strong>Rang....... </strong>
-                                    <span t-field="result.rang"></span>
+                                <p style="text-align:left;"><strong>Rang annuel....... </strong>
+                                    <span t-field="result.rang_annuel"></span>
                                 </p>
                             </div>
                         </td>
@@ -718,13 +718,13 @@
                             </div>
                            
                              <div t-if="result.session == 'troisieme_semestre'">
-                                <p style="text-align:left;"><strong>Moyenne annuel/10.........   </strong>
+                                <p style="text-align:left;"><strong>Moyenne annuelle/10.........   </strong>
                                     <span t-field="result.moyenne_annuel" t-if="result.moyenne_annuel"></span>
                                 </p>
                             </div>
                             <div >
-                                <p style="text-align:left;"><strong>Rang.........   </strong>
-                                    <span t-field="result.rang"></span>
+                                <p style="text-align:left;"><strong>Rang annuel.........   </strong>
+                                    <span t-field="result.rang_annuel"></span>
                                 </p> 
                             </div>
                         </td>
