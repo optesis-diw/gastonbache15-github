@@ -200,30 +200,28 @@
                                 </form>
                             </field>
                         </page>-->
-                        <page string="Family Info">
-                            <field name="family_con_ids" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',['alumni','terminate'])]}">
+                         <!-- <page string="Family Details">
+                            <field name="family_con_ids" nolabel="1" colspan="4" attrs="{'readonly':[('state','=','alumni')]}">
+                                <tree string="Family  Contact Details">
+                                    <field name="relative_name"/>
+                                    <field name="relation" />
+                                 
+                                </tree>
                                 <form string="Family Contact Details">
                                     <group>
                                         <group>
-                                            <field name="rel_name" />
+                                            <field name="rel_name" placeholder="Name" />
                                             <field name="stu_name" placeholder="Create or Select Name" attrs="{'invisible':[('rel_name','!=','exist')]}"
-                                                    options="{&quot;no_create&quot;: True}"/>
+                                                        options="{&quot;no_create&quot;: True}"/>
                                             <field name="name" placeholder="Name" attrs="{'invisible':[('rel_name','!=','new')]}"/>
                                             <field name="relation" placeholder="Enter or select Relation" />
+                                            <field name="relative_name" invisible="1"/>
                                         </group>
-                                       <!-- <group>
-                                            <field name="phone" placeholder="Phone Number" />
-                                            <field name="email" placeholder="Email ID" />
-                                        </group>-->
+                                    
                                     </group>
                                 </form>
-                                <tree string="Family Contact Details">
-                                    <field name="relative_name"/>
-                                    <field name="relation" />
-                                  <!--  <field name="phone" />-->
-                                </tree>
                             </field>
-                        </page>
+                        </page> -->
                         <page string="Remarks">
                             <field name="description" nolabel="1" colspan="4" attrs="{'readonly':[('state','in',['alumni','terminate'])]}">
                                 <form string="Extra Details">
@@ -513,12 +511,13 @@
                             </group>-->
                         </page>
 
-                        <page string="Family Details">
+                        
+                         <!-- <page string="Family Details">
                             <field name="family_con_ids" nolabel="1" colspan="4" attrs="{'readonly':[('state','=','alumni')]}">
                                 <tree string="Family  Contact Details">
                                     <field name="relative_name"/>
                                     <field name="relation" />
-                                   <!-- <field name="phone" />-->
+                                 
                                 </tree>
                                 <form string="Family Contact Details">
                                     <group>
@@ -530,14 +529,11 @@
                                             <field name="relation" placeholder="Enter or select Relation" />
                                             <field name="relative_name" invisible="1"/>
                                         </group>
-                                       <!-- <group>
-                                            <field name="phone" placeholder="Phone Number" />
-                                            <field name="email" placeholder="Email Address" />
-                                        </group>-->
+                                    
                                     </group>
                                 </form>
                             </field>
-                        </page>
+                        </page> -->
                         <page string="Remarks">
                             <form string="Remarks">
                                 <field name="remark" placeholder="Remark" nolabel="1" colspan="4" attrs="{'readonly':[('state','=','alumni')]}"/>
