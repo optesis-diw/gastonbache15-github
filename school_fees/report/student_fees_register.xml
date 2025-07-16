@@ -28,7 +28,11 @@
                                     <strong>Number :</strong>
                                     <span t-field="o.number"></span></p>
                                 </td>
-                                <td style="width: 33%; text-align: left; padding: 0;"></td>
+                                <td style="width: 33%; text-align: left; padding: 0;">
+                                    <p style="text-align:left; margin: 0;">
+                                    <strong>État :</strong>
+                                    <span t-field="o.state"></span></p>
+                                </td>
                                 <td style="width: 33%; text-align: left; padding: 0;">
                                     <p style="text-align:left; margin: 0;">
                                     <strong>Date:</strong>
@@ -38,7 +42,7 @@
                             <tr>
                                 <td style="width: 33%; text-align: left; padding: 0;">
                                     <p style="text-align:left; margin: 0;">
-                                        <strong>For the month of :</strong>
+                                        <strong>Pour le mois de :</strong>
                                         <span t-esc="get_month(o.date)"></span>
                                     </p>
                                 </td>
@@ -57,11 +61,17 @@
                                     <td width="5%" style="font-family: 'Helvetica';font-size: 18px;" align="center">
                                         <p>#</p>
                                     </td>
-                                    <td width="50%" align="left" style="font-family: 'Helvetica';font-size: 18px;">
-                                        <p>Student Name</p>
+                                    <td width="30%" align="left" style="font-family: 'Helvetica';font-size: 18px;">
+                                        <p>Nom élève</p>
                                     </td>
-                                    <td align="right" width="45%" style="font-family: 'Helvetica';font-size: 18px;">
+                                    <td width="20%" align="right" style="font-family: 'Helvetica';font-size: 18px;">
+                                        <p>Montant Payé</p>
+                                    </td>
+                                    <td width="20%" align="right" style="font-family: 'Helvetica';font-size: 18px;">
                                         <p>Total</p>
+                                    </td>
+                                    <td width="25%" align="center" style="font-family: 'Helvetica';font-size: 18px;">
+                                        <p>État</p>
                                     </td>
                                 </tr>
                             </thead>
@@ -70,16 +80,20 @@
                                 <t t-foreach="o.line_ids" t-as="l">
                                     <t t-set="counter" t-value="counter+1"/>
                                     <tr>
-                                        <td>
+                                        <td align="center">
                                             <span><t t-esc="counter"></t></span>
                                         </td>
-                                        <td width="5%" align="center" style="font-family: 'Helvetica';font-size: 16px;">
-                                        </td>
-                                        <td width="50%" align="left" style="font-family: 'Helvetica';font-size: 16px;">
+                                        <td align="left" style="font-family: 'Helvetica';font-size: 16px;">
                                             <span t-field="l.student_id.name"></span>
                                         </td>
-                                        <td align="right" width="45%" style="font-family: 'Helvetica';font-size: 16px;">
+                                        <td align="right" style="font-family: 'Helvetica';font-size: 16px;">
+                                            <span t-esc="l.paid_amount"></span>
+                                        </td>
+                                        <td align="right" style="font-family: 'Helvetica';font-size: 16px;">
                                             <span t-esc="l.total"></span>
+                                        </td>
+                                        <td align="center" style="font-family: 'Helvetica';font-size: 16px;">
+                                            <span t-field="l.state"></span>
                                         </td>
                                     </tr>
                                 </t>
@@ -88,14 +102,20 @@
                         <br/>
                         <table width="100%">
                             <tr>
-                                
+                                <td width="10%" align="left" style="font-family: 'Helvetica';font-size: 16px;">
+                                    <p>Total Payé : </p>
+                                </td>
+                                <td align="right" width="10%" style="font-family: 'Helvetica';font-size: 16px;">
+                                    <p t-esc="o.total_amount_paid"></p>
+                                </td>
+                                <td width="10%"></td>
                                 <td width="10%" align="left" style="font-family: 'Helvetica';font-size: 16px;">
                                     <p>Total Fees : </p>
                                 </td>
                                 <td align="right" width="10%" style="font-family: 'Helvetica';font-size: 16px;">
                                     <p t-esc="o.total_amount"></p>
                                 </td>
-                                <td width="80%"></td>
+                                <td width="50%"></td>
                             </tr>
                         </table>
 
@@ -112,8 +132,6 @@
                             <span style="font-family: 'Helvetica';font-size: 16px;">Signature</span>
                             <br />
                         </div>
-                       
-                            
                     </div>
                 </t>
             </t>
