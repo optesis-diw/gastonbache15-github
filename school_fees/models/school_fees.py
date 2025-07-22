@@ -140,65 +140,110 @@ class StudentFeesRegister(models.Model):
         """Changes the state to draft"""
         self.state = "draft"
 
+    
     def fees_register_confirm(self):
-        """Method to confirm payslip"""
+        """Méthode pour confirmer la fiche de paie et créer des factures dans les statistiques publiées"""
         stud_obj = self.env["student.student"]
         slip_obj = self.env["student.payslip"]
+        move_obj = self.env["account.move"]
+        
         for rec in self:
             if not rec.journal_id:
                 raise ValidationError(_("Kindly, Select Account Journal!"))
             if not rec.fees_structure:
                 raise ValidationError(_("Kindly, Select Fees Structure!"))
 
-            # Rechercher l'enregistrement de la classe dans school.standard
-            school_std_rec = rec.standard_id
+            # Vérifier si la structure de frais du registre est de type mensualité
+            is_mensualite = rec.fees_structure.type_frais == 'mensualite'
 
-            # Rechercher les étudiants dans le standard
-            students_rec = stud_obj.search(
-                [
-                    ("standard_id", "=", school_std_rec.id),
-                    ("state", "=", "done"),
-                ]
-            )
+            school_std_rec = rec.standard_id
+            students_rec = stud_obj.search([
+                ("standard_id", "=", school_std_rec.id),
+                ("state", "=", "done"),
+            ])
 
             for stu in students_rec:
-                old_slips_rec = slip_obj.search(
-                    [("student_id", "=", stu.id), ("date", "=", rec.date)]
-                )
-                # Check if payslip exist for student
+                old_slips_rec = slip_obj.search([
+                    ("student_id", "=", stu.id),
+                    ("date", "=", rec.date)
+                ])
+                
                 if old_slips_rec:
-                    raise ValidationError(
-                        _(
-                            """
-There is already a Payslip exist for student: %s for same date!"""
-                        )
-                        % stu.name
-                    )
-                else:
-                    rec.number = self.env["ir.sequence"].next_by_code(
-                        "student.fees.register"
-                    ) or _("New")
+                    raise ValidationError(_(
+                        "There is already a Payslip exist for student: %s for same date!"
+                    ) % stu.name)
                     
-                    # Prendre la structure des frais de l'élève si elle est différente
-                    fees_structure_id = stu.type_mens.id if stu.type_mens else rec.fees_structure.id
+                rec.number = self.env["ir.sequence"].next_by_code(
+                    "student.fees.register"
+                ) or _("New")
+                
+                # Prendre la structure des frais de l'élève seulement si:
+                # 1. C'est une mensualité (type_frais = 'mensualite')
+                # 2. L'élève a une structure personnalisée (stu.type_mens)
+                # 3. La structure personnalisée est différente de la structure par défaut
+                if is_mensualite and stu.type_mens and stu.type_mens != rec.fees_structure:
+                    fees_structure_id = stu.type_mens.id
+                else:
+                    fees_structure_id = rec.fees_structure.id
 
-
-                    res = {
-                        "student_id": stu.id,
-                        "register_id": rec.id,
-                        "name": rec.name,
-                        "date": rec.date,
-                        "company_id": rec.company_id.id,
-                        "currency_id": rec.company_id.currency_id.id or False,
-                        "journal_id": rec.journal_id.id,
-                        "fees_structure_id": fees_structure_id or False,
-                    }
-                    slip_rec = slip_obj.create(res)
-                    slip_rec.onchange_student()
+                res = {
+                    "student_id": stu.id,
+                    "register_id": rec.id,
+                    "name": rec.name,
+                    "date": rec.date,
+                    "company_id": rec.company_id.id,
+                    "currency_id": rec.company_id.currency_id.id or False,
+                    "journal_id": rec.journal_id.id,
+                    "fees_structure_id": fees_structure_id or False,
+                }
+                
+                # Créer la fiche de paie
+                slip_rec = slip_obj.create(res)
+                slip_rec.onchange_student()
+                
+                # Confirmer la fiche de paie
+                slip_rec.payslip_confirm()
+                
+                # Créer la facture directement en état posté
+                partner = stu.partner_id
+                invoice_vals = {
+                    'partner_id': partner.id,
+                    'invoice_date': rec.date,
+                    'journal_id': rec.journal_id.id,
+                    'ref': rec.name,
+                    'move_type': 'out_invoice',
+                    'student_payslip_id': slip_rec.id,
+                }
+                
+                # Créer les lignes de facture
+                invoice_lines = []
+                for line in slip_rec.line_ids:
+                    account_id = line.account_id.id if line.account_id else rec.journal_id.default_account_id.id
+                    invoice_lines.append((0, 0, {
+                        'name': line.name,
+                        'account_id': account_id,
+                        'quantity': 1.0,
+                        'price_unit': line.amount,
+                    }))
+                
+                invoice_vals['invoice_line_ids'] = invoice_lines
+                
+                # Créer et valider la facture
+                invoice = move_obj.create(invoice_vals)
+                invoice.action_post()
+                
+                # Lier la facture à la fiche de paie
+                slip_rec.write({
+                    'move_id': invoice.id,
+                    'state': 'pending', 
+                    'paid_amount': slip_rec.total,
+                    'due_amount': 0.0,
+                })
 
             # Calculate the amount
             amount = sum(data.total for data in rec.line_ids)
             rec.write({"total_amount": amount, "state": "confirm"})
+                
 
 
     def action_view_payslips(self):
