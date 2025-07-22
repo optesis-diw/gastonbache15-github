@@ -41,6 +41,7 @@
             <search string="Fees Structure">
                 <field name="name"/>
                 <field name="code"/>
+                <field name="type_frais"/>
                 <group expand="1" string="Group By">
                     <filter string="Code" name="code" context="{'group_by':'code'}"/>
                     <filter string="Structure Name" name="name" context="{'group_by':'name'}"/>
@@ -58,6 +59,13 @@
                     <group col="6" colspan="4">
                         <field name="name" placeholder="Name"/>
                         <field name="code" placeholder="Code"/>
+                       
+
+                    </group>
+                    <group col="6" colspan="4">
+                       
+                        <field name="type_frais" widget="selection"/>
+
                     </group>
                     <notebook colspan="4">
                         <page string="Fees Structure">
@@ -76,6 +84,7 @@
             <tree string="Student Fees Structure">
                 <field name="name"/>
                 <field name="code"/>
+                <field name="type_frais"/>
             </tree>
         </field>
     </record>
@@ -457,9 +466,11 @@
                     </button>
                 </xpath>
 
-                 <xpath expr="//field[@name='standard_id']" position="after">  
-             <field name="type_mens" />
-            </xpath>
+                
+                <xpath expr="//field[@name='standard_id']" position="after">  
+                  <field name="type_frais" invisible="1"/>
+                  <field name="type_mens" domain="[('type_frais','=','mensualite')]" />
+                 </xpath>
 
 
             </data>
@@ -474,11 +485,10 @@
         <field name="arch" type="xml">
             <data>
                 
-
-                 <xpath expr="//field[@name='standard_id']" position="after">  
-             <field name="type_mens" />
+               <xpath expr="//field[@name='standard_id']" position="after">  
+              <field name="type_frais" invisible="1"/>
+              <field name="type_mens" domain="[('type_frais','=','mensualite')]" />
             </xpath>
-
 
             </data>
         </field>

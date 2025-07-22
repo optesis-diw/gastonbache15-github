@@ -320,6 +320,12 @@ class StudentFeesStructure(models.Model):
     _name = "student.fees.structure"
     _description = "Student Fees Structure"
 
+    type_frais = fields.Selection([
+        ('mensualite', 'Mensualité'),
+        ('inscription', 'Inscription'),
+    ], string="Type de structure de frais", default="mensualite")
+    
+
     name = fields.Char("Name", required=True, help="Fee structure name")
     code = fields.Char("Code", required=True, help="Fee structure code")
     line_ids = fields.Many2many(
@@ -969,6 +975,13 @@ class StudentFees(models.Model):
     
     
     type_mens = fields.Many2one('student.fees.structure', 'Type de mensualité')
+
+    
+    type_frais = fields.Selection([
+        ('mensualite', 'Mensualité'),
+        ('inscription', 'Inscription'),
+    ], string="Type de structure de frais", default="mensualite", related="type_mens.type_frais")
+    
 
     def set_alumni(self):
         """Override method to raise warning when fees payment of student is
