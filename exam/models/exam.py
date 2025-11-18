@@ -1497,14 +1497,14 @@ class ExamSubject(models.Model):
         "Anglais Primaire": 1,
     },
     "Collége": {
-        "Expression Ecrite / Rédaction / Dissertation": 2,
+        "Production écrite / Rédaction / Dissertation": 2,
         "Dictée / Orthographe": 1,
         "TSQ": 1,
         "Maths": 3,
         "PC": 2,
         "SVT": 2,
         "Eco Fam": 2,
-        "Anglais": 2,
+        "Anglais": 3,
         "Espagnol": 2,
         "Arabe": 2,
         "EPS": 2,
@@ -1666,32 +1666,47 @@ class ExamSubject(models.Model):
 
     @api.depends("moyenne_provisoire", "subject_id", "exam_id.niveau_id")
     def _compute_valeur_sureogatoire(self):
+
         niveaux_sureogatoire_eps = [
             "2nde S", "2nde L", "1ère L1", "1ère L2",
             "Terminal L1", "Terminal L2", "1ère S1", "1ère S2",
             "Terminale S1", "Terminale S2"
         ]
+
         niveaux_sureogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
-        
+
+        niveaux_ecofam = ["4e", "3e"]
+
         for rec in self:
             valeur = 0.0
             niveau = rec.exam_id.niveau_id.name if rec.exam_id and rec.exam_id.niveau_id else ""
-            subject_name = rec.subject_id.name if rec.subject_id and isinstance(rec.subject_id.name, str) else ""
+            subject_name = rec.subject_id.name.lower() if rec.subject_id and rec.subject_id.name else ""
 
-            if niveau in niveaux_sureogatoire_eps and subject_name.lower() == "eps":
+            # --- EPS surérogatoire ---
+            if niveau in niveaux_sureogatoire_eps and subject_name == "eps":
                 if rec.moyenne_provisoire > 10:
                     valeur = rec.moyenne_provisoire - 10
                 elif rec.moyenne_provisoire < 10:
                     valeur = -(10 - rec.moyenne_provisoire)
 
+            # --- Langues surérogatoires (Espagnol / Arabe / Économie) ---
             elif niveau in niveaux_sureogatoire_langue:
-                if subject_name.lower() in ["espagnol", "arabe", "économie"]:
+                if subject_name in ["espagnol", "arabe", "économie"]:
+                    if rec.moyenne_provisoire > 10:
+                        valeur = rec.moyenne_provisoire - 10
+                    elif rec.moyenne_provisoire < 10:
+                        valeur = -(10 - rec.moyenne_provisoire)
+
+            # --- EcoFam surérogatoire en 4e et 3e ---
+            elif niveau in niveaux_ecofam:
+                if subject_name in ["Eco Fam", "eco fam"]:
                     if rec.moyenne_provisoire > 10:
                         valeur = rec.moyenne_provisoire - 10
                     elif rec.moyenne_provisoire < 10:
                         valeur = -(10 - rec.moyenne_provisoire)
 
             rec.valeur_sureogatoire = valeur
+
 
 
         
