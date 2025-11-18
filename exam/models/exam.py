@@ -1673,6 +1673,7 @@ class ExamSubject(models.Model):
             "Terminale S1", "Terminale S2"
         ]
 
+
         niveaux_sureogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
 
         niveaux_ecofam = ["4e", "3e"]
