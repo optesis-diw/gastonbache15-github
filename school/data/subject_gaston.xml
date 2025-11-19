@@ -1,4 +1,3 @@
-This XML file does not appear to have any style information associated with it. The document tree is shown below.
 <odoo>
 <record id="subject_francais_ressources" model="subject.subject">
 <field name="name">Langue et Communication / Français - Ressources</field>
