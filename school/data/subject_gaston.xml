@@ -1,256 +1,200 @@
-<?xml version="1.0" encoding="UTF-8"?>
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
 <odoo>
-  <record id="subject_francais_ressources" model="subject.subject">
-    <field name="name">Langue et Communication / Français - Ressources</field>
-    <field name="maximum_marks">40</field>
-    <field name="minimum_marks">0</field>
+<record id="subject_francais_ressources" model="subject.subject">
+<field name="name">Langue et Communication / Français - Ressources</field>
+<field name="maximum_marks">40</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_francais_competence" model="subject.subject">
-    <field name="name">Langue et Communication / Français - Compétence</field>
-    <field name="maximum_marks">60</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Langue et Communication / Français - Compétence</field>
+<field name="maximum_marks">60</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_maths_ressources" model="subject.subject">
-    <field name="name">Maths - Ressources</field>
-    <field name="maximum_marks">40</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Maths - Ressources</field>
+<field name="maximum_marks">40</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_maths_competence" model="subject.subject">
-    <field name="name">Maths - Compétence</field>
-    <field name="maximum_marks">60</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Maths - Compétence</field>
+<field name="maximum_marks">60</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_hg_ressources" model="subject.subject">
-    <field name="name">Découverte du Monde – Ressources (HG – IST)</field>
-    <field name="maximum_marks">24</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Découverte du Monde – Ressources (HG – IST)</field>
+<field name="maximum_marks">24</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_hg_competence" model="subject.subject">
-    <field name="name">Découverte du Monde - Compétence</field>
-    <field name="maximum_marks">16</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Découverte du Monde - Compétence</field>
+<field name="maximum_marks">16</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_edd_ressources" model="subject.subject">
-    <field name="name">Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)</field>
-    <field name="maximum_marks">24</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)</field>
+<field name="maximum_marks">24</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_edd_competence" model="subject.subject">
-    <field name="name">Éducation au Développement Durable - Compétence</field>
-    <field name="maximum_marks">16</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Éducation au Développement Durable - Compétence</field>
+<field name="maximum_marks">16</field>
+<field name="minimum_marks">0</field>
 </record>
-
-<record id="subject_eps" model="subject.subject">
-    <field name="name">Éducation Physique et Sportive (EPS)</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
-</record>
-
 <record id="subject_art" model="subject.subject">
-    <field name="name">Éducation Artistique / Dessin / Art Plastique</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Éducation Artistique / Dessin / Art Plastique</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_music" model="subject.subject">
-    <field name="name">Éducation Musicale (Récitation / Chant)</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Éducation Musicale (Récitation / Chant)</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-
-
 <record id="subject_eps_primaire" model="subject.subject">
-    <field name="name">Éducation Physique et Sportive</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Éducation Physique et Sportive</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-
 <record id="subject_arabe_primaire" model="subject.subject">
-    <field name="name">Arabe / Éducation Religieuse</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Arabe / Éducation Religieuse</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
 <record id="subject_anglais_primaire" model="subject.subject">
-    <field name="name">Anglais Primaire</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<field name="name">Anglais Primaire</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-
-
-
-<!-- Nouveau -->
-
-<!-- Découverte du Monde - Histoire -->
-<record id="subject_histoire_ci_cp" model="subject.subject">
-    <field name="name">Découverte du Monde - Histoire</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<!--  Nouveau  -->
+<!--  Découverte du Monde - Histoire  -->
+<record id="subject_histoire" model="subject.subject">
+<field name="name">Découverte du Monde - Histoire</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-<!-- Découverte du Monde - Géographie -->
-<record id="subject_geographie_ci_cp" model="subject.subject">
-    <field name="name">Découverte du Monde - Géographie</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<!--  Découverte du Monde - Géographie  -->
+<record id="subject_geographie" model="subject.subject">
+<field name="name">Découverte du Monde - Géographie</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-<!-- Découverte du Monde - Initiation aux Sciences et Technologies (IST) -->
-<record id="subject_ist_ci_cp" model="subject.subject">
-    <field name="name">Découverte du Monde - Initiation aux Sciences et Technologies (IST)</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<!--  Découverte du Monde - Initiation aux Sciences et Technologies (IST)  -->
+<record id="subject_ist" model="subject.subject">
+<field name="name">Découverte du Monde - Initiation aux Sciences et Technologies (IST)</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-
-<!-- EDD - Vivre ensemble -->
-<record id="subject_edd_vivre_ensemble_ci_cp" model="subject.subject">
-    <field name="name">Éducation au Développement Durable (EDD) - Vivre ensemble</field>
-    <field name="maximum_marks">10</field>
-    <field name="minimum_marks">0</field>
+<!--  EDD - Vivre ensemble  -->
+<record id="subject_edd_vivre_ensemble" model="subject.subject">
+<field name="name">Éducation au Développement Durable (EDD) - Vivre ensemble</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
-
-
-<!--Pour collége et secondaire-->
-   <record id="subject_expression" model="subject.subject"> 
-    <field name="name">Production écrite / Rédaction / Dissertation</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<!--  EDD - Vivre Milieu  -->
+<record id="subject_edd_vivre_milieu" model="subject.subject">
+<field name="name">Éducation au Développement Durable (EDD) - Vivre dans son Milieu</field>
+<field name="maximum_marks">10</field>
+<field name="minimum_marks">0</field>
 </record>
-
+<!--  Pour collége et secondaire  -->
+<record id="subject_expression" model="subject.subject">
+<field name="name">Production écrite / Rédaction / Dissertation</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
+</record>
 <record id="subject_dictee" model="subject.subject">
-    <field name="name">Dictée / Orthographe</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Dictée / Orthographe</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_tsq" model="subject.subject">
-    <field name="name">TSQ</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">TSQ</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_maths" model="subject.subject">
-    <field name="name">Maths</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Maths</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_pc" model="subject.subject">
-    <field name="name">PC</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">PC</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_svt" model="subject.subject">
-    <field name="name">SVT</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">SVT</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_eco_fam" model="subject.subject">
-    <field name="name">Eco Fam</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Eco Fam</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_anglais" model="subject.subject">
-    <field name="name">Anglais</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Anglais</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_espagnol_arabe" model="subject.subject">
-    <field name="name">Espagnol</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Espagnol</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_arabe" model="subject.subject">
-    <field name="name">Arabe</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Arabe</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_eps" model="subject.subject">
-    <field name="name">EPS</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">EPS</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_hg" model="subject.subject">
-    <field name="name">HG</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">HG</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_ec" model="subject.subject">
-    <field name="name">EC</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">EC</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
-
-
 <record id="subject_philo" model="subject.subject">
-    <field name="name">Philo</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Philo</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
-
 <record id="subject_francais" model="subject.subject">
-    <field name="name">Français</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Français</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_lv1" model="subject.subject">
-    <field name="name">Langue Vivante 1</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Langue Vivante 1</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_lv2" model="subject.subject">
-    <field name="name">Langue Vivante 2</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Langue Vivante 2</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
-
 <record id="subject_lv1_e" model="subject.subject">
-    <field name="name">LV1 Ecrit</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">LV1 Ecrit</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
 <record id="subject_lv2_o" model="subject.subject">
-    <field name="name">LV1 Oral</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">LV1 Oral</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
-
-
 <record id="subject_economie" model="subject.subject">
-    <field name="name">Économie</field>
-    <field name="minimum_marks">0</field>
-    <field name="maximum_marks">20</field>
+<field name="name">Économie</field>
+<field name="minimum_marks">0</field>
+<field name="maximum_marks">20</field>
 </record>
-
-
-
-
 </odoo>

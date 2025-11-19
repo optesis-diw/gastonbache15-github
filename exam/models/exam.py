@@ -1495,7 +1495,15 @@ class ExamSubject(models.Model):
         "Éducation Musicale (Récitation / Chant)": 1,
         "Arabe / Éducation Religieuse": 1,
         "Anglais Primaire": 1,
+
+        # Nouveaux sujets additionnels
+        "Découverte du Monde - Histoire": 1,
+        "Découverte du Monde - Géographie": 1,
+        "Découverte du Monde - Initiation aux Sciences et Technologies (IST)": 1,
+        "Éducation au Développement Durable (EDD) - Vivre ensemble": 1,
+        "Éducation au Développement Durable (EDD) - Vivre dans son Milieu": 1,
     },
+    
     "Collége": {
         "Production écrite / Rédaction / Dissertation": 2,
         "Dictée / Orthographe": 1,
