@@ -31,6 +31,9 @@
              'data/cycle_data.xml',
              'data/subject_gaston.xml',
              'data/niveau_data.xml',
+
+             'views/standard_subject_config_views.xml',
+             'data/standard_subject_config.xml',
              
              ],
     'demo': ['demo/school_demo.xml'],

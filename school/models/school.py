@@ -377,6 +377,35 @@ class SchoolStandard(models.Model):
 #          ']') for rec in self]
 
 
+    #diw_new_dev
+    subject_config_ids = fields.One2many(
+        'standard.subject.config', 
+        'standard_id', 
+        'Configuration des Matières par Niveau'
+    )
+    
+    def get_subject_config(self, subject_id):
+        """Récupère la configuration d'une matière pour le niveau de cette classe"""
+        if self.standard_id and subject_id:
+            config = self.env['standard.subject.config'].search([
+                ('standard_id', '=', self.standard_id.id),
+                ('subject_id', '=', subject_id)
+            ], limit=1)
+            return config
+        return None
+    
+    def get_subject_coefficient(self, subject_id):
+        """Récupère le coefficient d'une matière"""
+        config = self.get_subject_config(subject_id)
+        return config.coefficient if config else 1
+    
+    def get_subject_maximum_marks(self, subject_id):
+        """Récupère la note maximale d'une matière"""
+        config = self.get_subject_config(subject_id)
+        return config.maximum_marks if config else 10.0
+    
+    #diw_new_dev
+
 class SchoolSchool(models.Model):
     ''' Defining School Information '''
     _name = 'school.school'

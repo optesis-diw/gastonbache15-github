@@ -154,7 +154,9 @@ class ExtendedTimeTable(models.Model):
                 # Supprimer les lignes précédentes
                 record.exam_timetable_line_ids.unlink()
 
-                subjects = record.standard_id.subject_ids  # Récupérer les matières
+                #subjects = record.standard_id.subject_ids  # Récupérer les matières
+                subjects = record.standard_id.subject_config_ids  # Récupérer les matières
+                
                 time_table_lines = []
                 start_time = 8.0  # Début des cours à 08:00 AM
                 duration = 2  # Durée de chaque cours (2h)
@@ -172,7 +174,7 @@ class ExtendedTimeTable(models.Model):
                 for subject in subjects:
                     teacher_id = teachers[0].id  # Sélectionner le premier enseignant
 
-                    # 🔹 Vérification & Ajustement : Respect des horaires (entre 8h et 18h)
+                    #  Vérification & Ajustement : Respect des horaires (entre 8h et 18h)
                     if start_time < 8.0:
                         start_time = 8.0  # Ajuster au minimum 8h
                     if start_time + duration > 18.0:
@@ -180,7 +182,7 @@ class ExtendedTimeTable(models.Model):
 
                     end_time = start_time + duration  # Calcul de l'heure de fin
 
-                    # 🔹 Vérification & Ajustement : L’heure de début doit être inférieure à l’heure de fin
+                    #  Vérification & Ajustement : L’heure de début doit être inférieure à l’heure de fin
                     if start_time >= end_time:
                         start_time = 8.0  # Réinitialiser au début de la journée
                         end_time = start_time + duration
@@ -616,14 +618,17 @@ class ExamExam(models.Model):
                     result_list.extend(exam_result_rec.ids)
                 else:
                     # Récupérer les matières de la classe sélectionnée
-                    subjects = rec.standard_id.subject_ids  
+                    # subjects = rec.standard_id.configs_  
+                    # Récupérer les matières CONFIGURÉES de la classe sélectionnée
+                    subjects_config = rec.standard_id.subject_config_ids  
                     exam_line = []
                     
-                    for subject in subjects:
+                    for config in subjects_config:
                         sub_vals = {
-                            "subject_id": subject.id,
-                            "minimum_marks": subject.minimum_marks,
-                            "maximum_marks": subject.maximum_marks,
+                            "subject_id": config.subject_id.id,  #  config.subject_id au lieu de subject
+                            "minimum_marks": config.minimum_marks,  #  config.minimum_marks
+                            "maximum_marks": config.maximum_marks,  #  config.maximum_marks
+                            "coefficient": config.coefficient,      #  INCLURE LE COEFFICIENT
                         }
                         exam_line.append((0, 0, sub_vals))
 
@@ -1477,109 +1482,57 @@ class ExamSubject(models.Model):
     subject_name = fields.Char(related="subject_id.name")
 
 
+    #diw_new
+    # Champs calculés 
 
-    coefficient = fields.Integer("Coefficient", compute="_compute_coefficient", required=False )
-
-    COEFFICIENTS = {
-    "Élémentaire": {
-        "Langue et Communication / Français - Ressources": 1,
-        "Langue et Communication / Français - Compétence": 1,
-        "Maths - Ressources": 1,
-        "Maths - Compétence": 1,
-        "Découverte du Monde – Ressources (HG – IST)": 1,
-        "Découverte du Monde - Compétence": 1,
-        "Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)": 1,
-        "Éducation au Développement Durable - Compétence": 1,
-        "Éducation Physique et Sportive": 1,
-        "Éducation Artistique / Dessin / Art Plastique": 1,
-        "Éducation Musicale (Récitation / Chant)": 1,
-        "Arabe / Éducation Religieuse": 1,
-        "Anglais Primaire": 1,
-
-        # Nouveaux sujets additionnels
-        "Découverte du Monde - Histoire": 1,
-        "Découverte du Monde - Géographie": 1,
-        "Découverte du Monde - Initiation aux Sciences et Technologies (IST)": 1,
-        "Éducation au Développement Durable (EDD) - Vivre ensemble": 1,
-        "Éducation au Développement Durable (EDD) - Vivre dans son Milieu": 1,
-    },
+    coefficient = fields.Integer(
+        "Coefficient", 
+        compute="_compute_subject_config",
+       
+        help="Coefficient récupéré depuis la configuration"
+    )
     
-    "Collége": {
-        "Production écrite / Rédaction / Dissertation": 2,
-        "Dictée / Orthographe": 1,
-        "TSQ": 1,
-        "Maths": 3,
-        "PC": 2,
-        "SVT": 2,
-        "Eco Fam": 2,
-        "Anglais": 3,
-        "Espagnol": 2,
-        "Arabe": 2,
-        "EPS": 2,
-        "HG": 2,
-        "EC": 1,
-    },
-    "TL2 et 1ère L2": {
-        "Philo": 6,  # Seulement en Tle
-        "HG": 6,
-        "Français": 5,
-        "Langue Vivante 1": 4,
-        "Langue Vivante 2": 2,
-        "Maths": 2,
-        "SVT": 2,  # SVT OU PC
-        "PC": 2,
-        
-    },
-    "TL1 et 1ère L1": {
-        "Français": 6,
-        "LV1 Ecrit": 4,
-        "LV1 Oral": 2,
-        "Langue Vivante 2": 4,
-        "Philo": 4,  # Seulement en Tle
-        "HG": 2,
-        "Maths": 2,
-        
-    },
-    "TS2 et 1ère S2": {
-        "SVT": 6,
-        "PC": 6,
-        "Maths": 5,
-        "Français": 3,
-        "Philo": 2,  # Seulement en Tle
-        "Anglais": 2,
-        "HG": 2,
-        
-    },
-    "TS1 et 1ère S1": {
-        "Maths": 8,
-        "PC": 8,
-        "Français": 3,
-        "SVT": 2,
-        "Anglais": 2,
-        "Philo": 2,  # Seulement en Tle
-        "HG": 2,
-        
-    },
-    "2nd L": {
-        "Français": 5,
-        "Langue Vivante 1": 5,
-        "HG": 4,
-        "Langue Vivante 2": 3,
-        "Économie": 2,
-        "Maths": 2,
-        "SVT": 2,  # SVT ou PC
-        "PC": 2,
-        
-    },
-    "2nd S": {
-        "SVT": 5,
-        "Maths": 5,
-        "PC": 5,
-        "Français": 3,
-        "Anglais": 2,
-        "HG": 2,
-    },
-}
+    maximum_marks = fields.Float(
+        "Maximum marks", 
+        compute="_compute_subject_config",
+       
+        digits=(16,2),
+        help="Note maximale récupérée depuis la configuration"
+    )
+    
+    minimum_marks = fields.Float(
+        "Minimum marks", 
+        compute="_compute_subject_config",
+       
+        digits=(16,2),
+        help="Note minimale récupérée depuis la configuration"
+    )
+
+    @api.depends('exam_id.standard_id', 'subject_id')
+    def _compute_subject_config(self):
+        """Calcule la configuration depuis standard.subject.config en une seule passe"""
+        for rec in self:
+            # Valeurs par défaut
+            coefficient = 1
+            maximum_marks = 20.0
+            minimum_marks = 0.0
+            
+            if rec.exam_id and rec.exam_id.standard_id and rec.subject_id:
+                # 
+                subjects_config = rec.exam_id.standard_id.subject_config_ids
+                
+                for config in subjects_config:
+                    if config.subject_id.id == rec.subject_id.id:
+                        coefficient = config.coefficient or 1
+                        maximum_marks = config.maximum_marks or 20.0
+                        minimum_marks = config.minimum_marks or 0.0
+                        break  # 
+            
+            rec.coefficient = coefficient
+            rec.maximum_marks = maximum_marks
+            rec.minimum_marks = minimum_marks
+    #diw_new
+
 
 
     @api.onchange('cycle_name', 'subject_name')
@@ -1751,8 +1704,7 @@ class ExamSubject(models.Model):
     #fin diw
     
     
-    maximum_marks = fields.Float("Maximum marks", related="subject_id.maximum_marks", readonly=True, digits=(16,2))
-    minimum_marks = fields.Float("Minimum marks", related="subject_id.minimum_marks", readonly=True, digits=(16,2))
+
 
     grade = fields.Char(
         "Grade", compute="_compute_grade_subject",  help="Grade Obtained"
@@ -1783,7 +1735,7 @@ class ExamSubject(models.Model):
                 continue
 
             # Utiliser note_maximale_grade pour la normalisation
-            max_subject_mark = rec.subject_id.maximum_marks or rec.note_maximale_grade
+            max_subject_mark = rec.maximum_marks
 
             if max_subject_mark != rec.note_maximale_grade:
                 moyenne_norm = (rec.moyenne_provisoire / max_subject_mark) * rec.note_maximale_grade

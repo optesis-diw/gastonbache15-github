@@ -220,6 +220,11 @@
                         <page string="Subjects">
                             <field name="subject_ids" nolabel="1" colspan="4" string="Add Subjects" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
                         </page>
+
+                         <page string="Matiéres Configurations">
+                            <field name="subject_config_ids" />
+                        </page>
+                        
                         <page string="Syllabus" attrs="{'invisible': [('total_no_subjects', '&lt;', 1)]}">
                             <group>
                                 <field name="syllabus_ids" nolabel="1" colspan="4" context="{'default_standard_id':standard_id}">

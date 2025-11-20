@@ -11,3 +11,5 @@ from . import school
 from . import parent
 from . import res_users
 from . import ir_http
+
+from . import standard_subject_config

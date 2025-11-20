@@ -1,0 +1,1471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- ================================================== -->
+        <!-- CONFIGURATION POUR CP1 ET CP2 (ÉLÉMENTAIRE) -->
+        <!-- ================================================== -->
+        
+        <record id="configs_cp1_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">70</field>
+        </record>
+        
+        <record id="configs_cp1_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">30</field>
+        </record>
+        
+        <record id="configs_cp1_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_histoire" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_histoire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_geographie" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_geographie"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_ist" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_ist"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_edd_milieu" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_edd_vivre_milieu"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_edd_ensemble" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_edd_vivre_ensemble"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp1_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cp1_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cp1_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp1"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- Même configuration pour CP2 -->
+        <record id="configs_cp2_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">70</field>
+        </record>
+        
+        <record id="configs_cp2_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">30</field>
+        </record>
+        
+        <record id="configs_cp2_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_histoire" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_histoire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_geographie" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_geographie"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_ist" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_ist"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_edd_milieu" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_edd_vivre_milieu"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_edd_ensemble" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_edd_vivre_ensemble"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cp2_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cp2_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cp2_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cp2"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- ================================================== -->
+        <!-- CONFIGURATION POUR CE1 ET CE2 -->
+        <!-- ================================================== -->
+        
+        <record id="configs_ce1_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">70</field>
+        </record>
+        
+        <record id="configs_ce1_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce1_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_ce1_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce1_hg_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_hg_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">30</field>
+        </record>
+        
+        <record id="configs_ce1_hg_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_hg_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce1_edd_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_edd_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce1_edd_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_edd_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce1_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce1_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce1_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_ce1_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_ce1_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce1"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- Même configuration pour CE2 -->
+        <record id="configs_ce2_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">70</field>
+        </record>
+        
+        <record id="configs_ce2_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce2_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_ce2_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce2_hg_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_hg_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">30</field>
+        </record>
+        
+        <record id="configs_ce2_hg_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_hg_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce2_edd_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_edd_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_ce2_edd_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_edd_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce2_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce2_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_ce2_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_ce2_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_ce2_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_ce2"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- ================================================== -->
+        <!-- CONFIGURATION POUR CM1 ET CM2 -->
+        <!-- ================================================== -->
+        
+        <record id="configs_cm1_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_cm1_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">60</field>
+        </record>
+        
+        <record id="configs_cm1_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_cm1_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">60</field>
+        </record>
+        
+        <record id="configs_cm1_hg_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_hg_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">24</field>
+        </record>
+        
+        <record id="configs_cm1_hg_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_hg_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">16</field>
+        </record>
+        
+        <record id="configs_cm1_edd_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_edd_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">24</field>
+        </record>
+        
+        <record id="configs_cm1_edd_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_edd_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">16</field>
+        </record>
+        
+        <record id="configs_cm1_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cm1_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cm1_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cm1_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cm1_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm1"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- Même configuration pour CM2 -->
+        <record id="configs_cm2_fr_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_francais_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_cm2_fr_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_francais_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">60</field>
+        </record>
+        
+        <record id="configs_cm2_maths_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_maths_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">40</field>
+        </record>
+        
+        <record id="configs_cm2_maths_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_maths_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">60</field>
+        </record>
+        
+        <record id="configs_cm2_hg_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_hg_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">24</field>
+        </record>
+        
+        <record id="configs_cm2_hg_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_hg_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">16</field>
+        </record>
+        
+        <record id="configs_cm2_edd_ressources" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_edd_ressources"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">24</field>
+        </record>
+        
+        <record id="configs_cm2_edd_competence" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_edd_competence"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">16</field>
+        </record>
+        
+        <record id="configs_cm2_art" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_art"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cm2_music" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_music"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+        
+        <record id="configs_cm2_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_arabe_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cm2_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_anglais_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <record id="configs_cm2_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_cm2"/>
+            <field name="subject_id" ref="school.subject_eps_primaire"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">10</field>
+        </record>
+
+        <!-- ================================================== -->
+        <!-- CONFIGURATION POUR COLLÈGE (6e, 5e, 4e, 3e) -->
+        <!-- ================================================== -->
+        
+        <!-- 6ème -->
+        <record id="configs_6e_expression" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_expression"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_dictee" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_dictee"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_tsq" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_tsq"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_eco_fam" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_eco_fam"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_espagnol" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_espagnol_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_eps"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_6e_ec" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_6e"/>
+            <field name="subject_id" ref="school.subject_ec"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 5ème -->
+        <record id="configs_5e_expression" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_expression"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_dictee" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_dictee"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_tsq" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_tsq"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_eco_fam" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_eco_fam"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_espagnol" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_espagnol_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_eps"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_5e_ec" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_5e"/>
+            <field name="subject_id" ref="school.subject_ec"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 4ème -->
+        <record id="configs_4e_expression" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_expression"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_dictee" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_dictee"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_tsq" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_tsq"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_eco_fam" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_eco_fam"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_espagnol" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_espagnol_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_eps"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_4e_ec" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_4e"/>
+            <field name="subject_id" ref="school.subject_ec"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 3ème -->
+        <record id="configs_3e_expression" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_expression"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_dictee" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_dictee"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_tsq" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_tsq"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_eco_fam" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_eco_fam"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_espagnol" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_espagnol_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_arabe" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_arabe"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_eps" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_eps"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_3e_ec" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_3e"/>
+            <field name="subject_id" ref="school.subject_ec"/>
+            <field name="coefficient">1</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- ================================================== -->
+        <!-- CONFIGURATION POUR SECONDAIRE -->
+        <!-- ================================================== -->
+        
+        <!-- 2nde S -->
+        <record id="configs_2nde_s_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_s_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_s_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_s_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_s_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_s_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_s"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 2nde L -->
+        <record id="configs_2nde_l_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_lv1" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_lv1"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_lv2" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_lv2"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_economie" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_economie"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_2nde_l_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_2nde_l"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 1ère S1 -->
+        <record id="configs_1ere_s1_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">8</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">8</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s1_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s1"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 1ère S2 -->
+        <record id="configs_1ere_s2_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_s2_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_s2"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 1ère L1 -->
+        <record id="configs_1ere_l1_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_lv1_ecrit" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_lv1_e"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_lv1_oral" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_lv2_o"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_lv2" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_lv2"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l1_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l1"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- 1ère L2 -->
+        <record id="configs_1ere_l2_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_lv1" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_lv1"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_lv2" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_lv2"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_1ere_l2_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_1ere_l2"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- Terminale S1 -->
+        <record id="configs_terminale_s1_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">8</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">8</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s1_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s1"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- Terminale S2 -->
+        <record id="configs_terminale_s2_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">3</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_anglais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_anglais"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminale_s2_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminale_s2"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- Terminal L1 -->
+        <record id="configs_terminal_l1_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_lv1_ecrit" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_lv1_e"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_lv1_oral" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_lv2_o"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_lv2" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_lv2"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l1_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l1"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+        <!-- Terminal L2 -->
+        <record id="configs_terminal_l2_philo" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_philo"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_hg" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_hg"/>
+            <field name="coefficient">6</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_francais" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_francais"/>
+            <field name="coefficient">5</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_lv1" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_lv1"/>
+            <field name="coefficient">4</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_lv2" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_lv2"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_maths" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_maths"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_svt" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_svt"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+        
+        <record id="configs_terminal_l2_pc" model="standard.subject.config">
+            <field name="standard_id" ref="school.standard_N_terminal_l2"/>
+            <field name="subject_id" ref="school.subject_pc"/>
+            <field name="coefficient">2</field>
+            <field name="maximum_marks">20</field>
+        </record>
+
+    </data>
+</odoo>
