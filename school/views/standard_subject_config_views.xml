@@ -12,6 +12,7 @@
                     <field name="coefficient"/>
                     <field name="maximum_marks"/>
                     <field name="minimum_marks"/>
+                   <field name="class_ids" widget="many2many_tags" options="{'no_create': True}" />
                 </tree>
             </field>
         </record>
@@ -27,6 +28,7 @@
                             <group>
                                 <field name="standard_id"/>
                                 <field name="subject_id"/>
+                                <field name="class_ids" widget="many2many_tags" options="{'no_create': True}" />
                             </group>
                             <group>
                                 <field name="coefficient"/>

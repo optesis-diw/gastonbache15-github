@@ -4,30 +4,45 @@ from odoo.exceptions import ValidationError
 class StandardSubjectConfig(models.Model):
     _name = 'standard.subject.config'
     _description = 'Configuration Matière par Classe'
+
+    class_ids = fields.Many2many(
+    'school.standard',
+    'standard_config_class_rel',
+    'config_id',
+    'class_id',
+    string="Classes concernées",
+    compute='_compute_class_ids',
+    store=True,
+    readonly=True,
+)
+
     
     standard_id = fields.Many2one(
         'standard.standard', 
         'Niveau', 
-        required=True,
+        required=False,
+        help="Niveau académique"
     )
+    
     subject_id = fields.Many2one(
         'subject.subject', 
         'Matière', 
-        required=True,
         help="Matière académique"
     )
+    
     coefficient = fields.Integer(
         "Coefficient", 
-        required=True, 
         default=1,
         help="Coefficient de la matière pour cette classe"
     )
+    
     maximum_marks = fields.Float(
         "Note Maximale", 
-        required=True,
+        required=False,
         digits=(16, 2),
         help="Note maximale pour cette matière dans cette classe"
     )
+    
     minimum_marks = fields.Float(
         "Note Minimale", 
         default=0,
@@ -39,6 +54,18 @@ class StandardSubjectConfig(models.Model):
         ('unique_standard_subject', 'unique(standard_id, subject_id)', 
          'Une matière ne peut avoir qu\'une configuration par niveau!')
     ]
+
+    @api.depends('standard_id')
+    def _compute_class_ids(self):
+        for rec in self:
+            if rec.standard_id:
+                classes = self.env['school.standard'].search([
+                    ('standard_id', '=', rec.standard_id.id)
+                ])
+                rec.class_ids = classes
+            else:
+                rec.class_ids = False
+
 
     @api.constrains("maximum_marks", "minimum_marks")
     def check_marks(self):

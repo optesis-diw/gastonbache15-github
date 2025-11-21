@@ -181,6 +181,8 @@
         <field name="model">school.standard</field>
         <field name="arch" type="xml">
             <form string="Standard Information">
+
+           
                 <sheet>
                     <separator string="Standard Information" />
                     <group col="4" colspan="4">
@@ -222,7 +224,26 @@
                         </page>
 
                          <page string="Matiéres Configurations">
-                            <field name="subject_config_ids" />
+                            <field name="subject_config_ids">
+                              <tree string="Configurations des Matières" editable="bottom">
+                                <field name="subject_id"/>
+                                <field name="coefficient"/>
+                                <field name="maximum_marks"/>
+                                <field name="minimum_marks"/>
+                                <field name="standard_id" invisible="1"/>
+                            </tree>
+
+                              <form string="Syllabus">
+                                 <group>
+                                    <field name="subject_id"/>
+                                    <field name="coefficient"/>
+                                    <field name="maximum_marks"/>
+                                    <field name="minimum_marks"/>
+                                    <field name="standard_id" invisible="1"/>
+                                  </group>
+                                        
+                                </form>
+                            </field>
                         </page>
                         
                         <page string="Syllabus" attrs="{'invisible': [('total_no_subjects', '&lt;', 1)]}">
