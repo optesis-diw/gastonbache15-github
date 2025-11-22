@@ -1513,7 +1513,7 @@ class ExamSubject(models.Model):
         """Calcule la configuration depuis standard.subject.config en une seule passe"""
         for rec in self:
             # Valeurs par défaut
-            coefficient = 1
+            coefficient = 0
             maximum_marks = 20.0
             minimum_marks = 0.0
             
@@ -1523,7 +1523,7 @@ class ExamSubject(models.Model):
                 
                 for config in subjects_config:
                     if config.subject_id.id == rec.subject_id.id:
-                        coefficient = config.coefficient or 1
+                        coefficient = config.coefficient or 0
                         maximum_marks = config.maximum_marks or 20.0
                         minimum_marks = config.minimum_marks or 0.0
                         break  # 
