@@ -39,6 +39,10 @@ access_domaine_subject_admin,domaine.subject,model_domaine_subject,group_school_
 
 access_standard_serie_admin,standard.serie,model_standard_serie,group_school_administration,1,1,1,1
 
+access_standard_subject_config_admin,standard.subject.config,model_standard_subject_config,group_school_administration,1,1,1,1
+
+
+
 
 access_academic_year_parent,academic.year,model_academic_year,group_school_parent,1,0,0,0
 access_academic_month_parent,academic.month,model_academic_month,group_school_parent,1,0,0,0
@@ -77,6 +81,9 @@ access_res_users_parents,res.users,base.model_res_users,group_school_parent,1,0,
 access_domaine_subject_parent,domaine.subject,model_domaine_subject,group_school_parent,1,1,1,1
 
 access_standard_serie_parent,standard.serie,model_standard_serie,group_school_parent,1,1,1,1
+
+
+access_standard_subject_config_parent,standard.subject.config,model_standard_subject_config,group_school_parent,1,1,1,1
 
 
 
@@ -120,6 +127,9 @@ access_domaine_subject_parent,domaine.subject,model_domaine_subject,group_school
 access_standard_serie_parent,standard.serie,model_standard_serie,group_school_comptable,1,0,0,0
 
 
+access_standard_subject_config_compt,standard.subject.config,model_standard_subject_config,group_school_comptable,1,1,1,1
+
+
 
 access_academic_year_surveillant,academic.year,model_academic_year,group_school_surveillant,1,0,0,0
 access_academic_month_surveillant,academic.month,model_academic_month,group_school_surveillant,1,0,0,0
@@ -159,6 +169,7 @@ access_domaine_subject_surveillant,domaine.subject,model_domaine_subject,group_s
 
 access_standard_serie_surveillant,standard.serie,model_standard_serie,group_school_surveillant,1,0,0,0
 
+access_standard_subject_config_surveillant,standard.subject.config,model_standard_subject_config,group_school_surveillant,1,1,1,1
 
 
 
@@ -203,6 +214,9 @@ access_subject_syllabus_student,subject.syllabus,model_subject_syllabus,group_sc
 
 
 access_standard_serie_student,standard.serie,model_standard_serie,group_school_student,1,1,1,1
+
+access_standard_subject_config_stu,standard.subject.config,model_standard_subject_config,group_school_student,1,1,1,1
+
 
 
 access_domaine_subject_school_teacher,domaine.subject,model_domaine_subject,group_school_teacher,1,1,1,1
@@ -281,4 +295,8 @@ access_parent_relation_parent_grp,parent.relation,school.model_parent_relation,g
 access_parent_relation_teacher_grp,parent.relation,school.model_parent_relation,group_school_teacher,1,0,0,0
 
 access_standard_serie_teacher,standard.serie,model_standard_serie,group_school_teacher,1,1,1,1
+
+access_standard_subject_config_tea,standard.subject.config,model_standard_subject_config,group_school_teacher,1,1,1,1
+
+
 
