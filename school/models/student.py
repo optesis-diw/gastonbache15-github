@@ -25,6 +25,9 @@ class StudentStudent(models.Model):
     _table = "student_student"
     _description = 'Student Information'
 
+
+    
+
     #diw: utilisé pour le repport
     company_id = fields.Many2one(
         "res.company",

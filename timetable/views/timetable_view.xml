@@ -65,6 +65,7 @@
                         <filter name="class" string="Academic Class" help="By class"
                                 context="{'group_by':'standard_id'}"/>
                         <filter name="year" string="Year" help="By year" context="{'group_by':'year_id'}"/>
+                       <filter name="current_year" string="Current Year" domain="[('year_id.current','=',True)]" help="academic year"/>
                     </group>
                 </search>
             </field>
@@ -75,7 +76,7 @@
             <field name="res_model">time.table</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('timetable_type','=','regular')]</field>
-            <field name="context">{'default_timetable_type':'regular'}</field>
+             <field name="context">{'default_timetable_type':'regular', 'search_default_current_year':1}</field>
         </record>
         <!-- Menu items of Timetable -->
         <menuitem id="menu_timetable_1" name="Emploi du temps" parent="school.menu_ems" groups="school.group_school_administration,school.group_school_comptable,school.group_school_surveillant,school.group_school_teacher,school.group_school_student,school.group_school_parent" sequence="4"/>

@@ -26,6 +26,25 @@
             </form>
         </field>
     </record>
+
+
+    <record id="student_reminder_search" model="ir.ui.view">
+            <field name="name">student.reminder.search</field>
+            <field name="model">student.reminder</field>
+            <field name="arch" type="xml">
+                <search string="rappel">
+                  
+                    <field name="year_id"/>
+                    <newline/>
+                    <group expand="1" string="Group By">
+                       
+                        <filter name="year" string="Year" help="By year" context="{'group_by':'year_id'}"/>
+
+                        <filter name="current_year" string="Current Year" domain="[('year_id.current','=',True)]" help="academic year"/>
+                    </group>
+                </search>
+            </field>
+        </record>
     <!-- Kanban View Of Student Reminder -->
     <record id="student_reminder_kanban_view" model="ir.ui.view">
         <field name="name">Student KANBAN</field>
@@ -848,6 +867,7 @@
         <field name="name">Students Reminder</field>
         <field name="res_model">student.reminder</field>
         <field name="view_mode">kanban,form</field>
+         <field name="context">{'search_default_current_year':1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to add a new Reminder.

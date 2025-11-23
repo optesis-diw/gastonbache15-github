@@ -832,6 +832,9 @@ class StudentReminder(models.Model):
     _name = 'student.reminder'
     _description = "Student Reminder"
 
+
+    
+
     @api.model
     def check_user(self):
         '''Méthode pour obtenir la valeur par défaut de l'étudiant connecté'''
@@ -844,6 +847,27 @@ class StudentReminder(models.Model):
     date = fields.Date('Date')
     description = fields.Text('Description')
     color = fields.Integer('Color Index', default=0)
+
+
+     
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+
+
+    
 
 
 class StudentCast(models.Model):

@@ -296,6 +296,7 @@
                 </group>
                 <newline />
                 <group expand="0" string="Group By..." colspan="12" col="10">
+                      <filter name="current_year" string="Current Year" domain="[('year.current','=',True)]" help="Students from current academic year"/>
                     <filter name="class" string="Class" help="By Class" context="{'group_by':'standard_id'}" />
                     <filter name="gender" string="Gender" help="By Gender" context="{'group_by':'gender'}" />
                     <!--<filter name="gender" string="Type de scolarite" context="{'group_by':'mens_id'}" />-->
@@ -617,8 +618,8 @@
     <!-- Action Of Form, Tree & Kanban Views Of Student Information -->
     <record id="action_student_student_form_12" model="ir.actions.act_window">
         <field name="name">Students</field>
-        <field name="domain">[('state', '=', 'done')]</field>
-        <field name="context">{'search_default_done_student':1}</field>
+          <field name="domain">[('state', '=', 'done'), ('year.current', '=', True)]</field>
+    <field name="context">{'search_default_current_year':1}</field>
         <field name="res_model">student.student</field>
         <field name="view_id" ref="" />
         <field name="search_view_id" ref="view_student_student_search_1" />

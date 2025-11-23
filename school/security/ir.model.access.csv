@@ -83,6 +83,8 @@ access_domaine_subject_parent,domaine.subject,model_domaine_subject,group_school
 access_standard_serie_parent,standard.serie,model_standard_serie,group_school_parent,1,1,1,1
 
 
+
+
 access_standard_subject_config_parent,standard.subject.config,model_standard_subject_config,group_school_parent,1,1,1,1
 
 

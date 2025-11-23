@@ -12,9 +12,25 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">  
              <field name="trigger_payslip_update" invisible="1"/>
-               <field name="mois_paiement"/>
+              <field name="mois_paiement"/>
+            
+
             </xpath>
         </field>
+    </record>
+
+
+    <record id="view_account_move_filter_inherit" model="ir.ui.view">
+    <field name="name">account.move.search.inherit</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+    <field name="arch" type="xml">
+        <xpath expr="//filter[@name='invoice_date']" position="before">
+            <filter string="Année académique" name="academic_year" domain="[]" context="{'group_by':'academic_year_id'}"/>
+            
+            <filter string="Date de paiement" name="student_payslip_id.date" domain="[]" context="{'group_by':'mois_paiement'}"/>
+        </xpath>
+    </field>
     </record>
 
 
@@ -30,6 +46,7 @@
                     <field name="code"/>
                     <field name="type"/>
                 </group>
+                    
             </search>
         </field>
     </record>
@@ -41,7 +58,8 @@
             <search string="Fees Structure">
                 <field name="name"/>
                 <field name="code"/>
-                <field name="type_frais"/>
+                 <field name="type_frais" widget="selection"/>
+
                 <group expand="1" string="Group By">
                     <filter string="Code" name="code" context="{'group_by':'code'}"/>
                     <filter string="Structure Name" name="name" context="{'group_by':'name'}"/>
@@ -49,6 +67,7 @@
             </search>
         </field>
     </record>
+    
     <!-- Form View Of Student Fees Structure Information -->
     <record id="view_student_fees_structure_form" model="ir.ui.view">
         <field name="name">student.fees.structure.form</field>
@@ -85,6 +104,7 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="type_frais"/>
+
             </tree>
         </field>
     </record>
@@ -200,7 +220,7 @@
         <field name="name">student.payslip.form</field>
         <field name="model">student.payslip</field>
         <field name="arch" type="xml">
-            <form string="Student Payslip">
+            <form string="Student Payslip" create="false" edit="false">
                 <header>
                     <button name="payslip_confirm" class="fa fa-check" string="Confirm" states="draft" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
                     <button name="student_pay_fees" class="fa fa-share" string="Payment" states="confirm" type="object" groups="school.group_school_administration,school.group_school_comptable"/>
@@ -263,7 +283,7 @@
         <field name="name">student.payslip.tree</field>
         <field name="model">student.payslip</field>
         <field name="arch" type="xml">
-            <tree string="Fees Payslip" decoration-danger="state in '[draft,pending]'" decoration-info="state == 'paid'">
+            <tree string="Fees Payslip" decoration-danger="state in '[draft,pending]'" decoration-info="state == 'paid'" create="false" edit="false">
                 <field name="name"/>
                 <field name="number"/>
                 <field name="student_id"/>
@@ -291,7 +311,11 @@
                     <field name="student_id"/>
                     <field name="number"/>
                     <field name="date"/>
+                     <filter name="current_year" string="Current Year" 
+                        domain="[('academic_year_id.current','=',True)]"/>
                 </group>
+               
+                 
                 <newline/>
                 <group expand="0" string="Group By..." colspan="12" col="10">
                     <filter string="Student" name="student_id" context="{'group_by':'student_id'}"/>
@@ -299,6 +323,8 @@
                     <filter string="Register" name="register_id" context="{'group_by':'register_id'}"/>
                     <separator orientation="vertical"/>
                     <filter string="States" name="state" context="{'group_by':'state'}"/>
+                    <separator orientation="vertical"/>
+                    <filter name="year" string="Academic Year" help="By Academic Year" domain="[]" context="{'group_by':'academic_year_id'}"/>
                 </group>
             </search>
         </field>
@@ -330,7 +356,7 @@
                         <field name="date" attrs="{'readonly':[('state','not in','draft')]}"/>
                         <field name="journal_id" placeholder="Journal" domain="[('type','=','sale')]" attrs="{'readonly':[('state','not in','draft')]}" options="{&quot;no_create&quot;: True}"/>
                         <!-- <field name="period_id" placeholder="Force Period"/> -->
-                        <field name="company_id" string = "School" placeholder="School Name" attrs="{'readonly':[('state','not in','draft')]}" options="{&quot;no_create&quot;: True}"/>
+                        <field name="company_id" string = "Société" placeholder="School Name" attrs="{'readonly':[('state','not in','draft')]}" options="{&quot;no_create&quot;: True}"/>
                     </group>
                     <group string="Fees Register for" col="4" colspan="4">
                         <field name="fees_structure" placeholder="Fee structure" attrs="{'readonly':[('state','not in','draft')]}" options="{&quot;no_create&quot;: True}"/>
@@ -404,10 +430,14 @@
                     <field name="name"/>
                     <field name="number"/>
                     <field name="date"/>
+                    <!-- Filtre pour année courante -->
+                <filter name="current_year" string="Current Year" 
+                        domain="[('academic_year_id.current','=',True)]"/>
                 </group>
                 <newline/>
                 <group expand="0" string="Group By..." colspan="12" col="10">
                     <filter string="States" name="state" context="{'group_by':'state'}"/>
+                     <filter name="year" string="Academic Year" help="By Academic Year" domain="[]" context="{'group_by':'academic_year_id'}"/>
                 </group>
             </search>
         </field>
@@ -430,6 +460,8 @@
     <record id="action_student_payslip_form" model="ir.actions.act_window">
         <field name="name">Fees Receipt</field>
         <field name="res_model">student.payslip</field>
+         <field name="domain">[('academic_year_id.current','=',True)]</field>
+        <field name="context">{'search_default_current_year':1}</field>
         <field name="view_mode">tree,form</field>
     </record>
     <!-- Action Of Form & Tree Views Of Student Fees Register Information -->
@@ -438,6 +470,8 @@
         <field name="res_model">student.fees.register</field>
         <field name="view_id" ref="view_student_fees_register_tree"/>
         <field name="search_view_id" ref="view_student_fees_register_search"/>
+         <field name="domain">[('academic_year_id.current','=',True)]</field>
+        <field name="context">{'search_default_current_year':1}</field>
         <field name="view_mode">tree,form</field>
     </record>
     <!-- Action Of Form & Tree Views Of Student View's Fees Button -->
@@ -446,7 +480,7 @@
         <field name="res_model">student.payslip</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'default_student_id': active_id}</field>
-        <field name="domain">[('student_id', '=', active_id)]</field>
+        <field name="domain">[('student_id', '=', active_id), ('academic_year_id.current','=',True)]</field>
     </record>
 
 
@@ -466,11 +500,12 @@
                     </button>
                 </xpath>
 
-                
                 <xpath expr="//field[@name='standard_id']" position="after">  
+    
                   <field name="type_frais" invisible="1"/>
                   <field name="type_mens" domain="[('type_frais','=','mensualite')]" />
-                 </xpath>
+
+                </xpath>
 
 
             </data>
@@ -485,10 +520,14 @@
         <field name="arch" type="xml">
             <data>
                 
-               <xpath expr="//field[@name='standard_id']" position="after">  
-              <field name="type_frais" invisible="1"/>
-              <field name="type_mens" domain="[('type_frais','=','mensualite')]" />
-            </xpath>
+
+                <xpath expr="//field[@name='standard_id']" position="after">  
+             
+                    <field name="type_frais" invisible="1"/>
+                    <field name="type_mens" domain="[('type_frais','=','mensualite')]" />
+
+                </xpath>
+
 
             </data>
         </field>
