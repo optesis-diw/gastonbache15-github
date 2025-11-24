@@ -5,6 +5,8 @@ from odoo import models, fields, api
 import logging
 _logger = logging.getLogger(__name__)
 
+from odoo.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
 
 class ParentRelation(models.Model):
     '''Defining a Parent relation with child.'''
@@ -92,3 +94,24 @@ class SchoolParent(models.Model):
         self.country_id = False
         if self.state_id:
             self.country_id = self.state_id.country_id.id
+
+
+
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+
+
+    

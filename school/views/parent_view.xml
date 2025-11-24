@@ -8,9 +8,14 @@
             <field name="model">school.parent</field>
             <field name="arch" type="xml">
                 <search string="Search Parent">
+                     <field name="year_id"/>
                    <field name="name" filter_domain="['|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self)]"/>
                    <separator/>
                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+
+                    <filter name="year" string="Year" help="By year" context="{'group_by':'year_id'}"/>
+
+                    <filter name="current_year" string="Current Year" domain="[('year_id.current','=',True)]" help="academic year"/>
                </search>
             </field>
         </record>
@@ -102,6 +107,7 @@
             <field name="name">Parent Profile</field>
             <field name="res_model">school.parent</field>
             <field name="view_mode">tree,form</field>
+             <field name="context">{'search_default_current_year':1}</field>
         </record>
 
         <menuitem id="menu_res_partner_form" name="Parents" parent="menu_students_parents"

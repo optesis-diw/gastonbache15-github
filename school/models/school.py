@@ -145,8 +145,22 @@ class AcademicMonth(models.Model):
                              help='Starting of academic month')
     date_stop = fields.Date('End of Period', required=True,
                             help='Ending of academic month')
-    year_id = fields.Many2one('academic.year', 'Academic Year', required=True,
-                              help="Related academic year ")
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+    
     description = fields.Text('Description')
 
     _sql_constraints = [
@@ -256,6 +270,7 @@ class StandardStandard(models.Model):
         return False
 
 
+
 class SchoolStandard(models.Model):
     ''' Defining a standard related to school '''
     _name = 'school.standard'
@@ -281,18 +296,49 @@ class SchoolStandard(models.Model):
                                "Enseignants")
     
 
-    @api.depends('standard_id', 'school_id', 'division_id', 'medium_id',
-                 'school_id')
+  
+
+    year_id = fields.Many2one(
+        'academic.year', 
+        'Academic Year', 
+        readonly=True, 
+        default=lambda self: self.check_current_year()
+    )
+
+    @api.depends('standard_id', 'school_id', 'division_id', 'medium_id', 'year_id')
     def _compute_student(self):
-        '''Compute student of done state'''
+        '''Compute student of done state with current academic year'''
         student_obj = self.env['student.student']
         for rec in self:
-            rec.student_ids = student_obj. \
-                search([('standard_id', '=', rec.id),
-                        ('school_id', '=', rec.school_id.id),
-                        ('division_id', '=', rec.division_id.id),
-                        ('medium_id', '=', rec.medium_id.id),
-                        ('state', '=', 'done')])
+            # Recherche de l'année académique en cours
+            current_year = self.env['academic.year'].search([('current', '=', True)], limit=1)
+            
+            if current_year:
+                rec.student_ids = student_obj.search([
+                    ('standard_id', '=', rec.id),
+                    ('school_id', '=', rec.school_id.id),
+                    ('division_id', '=', rec.division_id.id),
+                    ('medium_id', '=', rec.medium_id.id),
+                    ('year', '=', current_year.id),  # Filtre sur l'année académique en cours
+                    ('state', '=', 'done')
+                ])
+            else:
+                rec.student_ids = student_obj.search([
+                    ('standard_id', '=', rec.id),
+                    ('school_id', '=', rec.school_id.id),
+                    ('division_id', '=', rec.division_id.id),
+                    ('medium_id', '=', rec.medium_id.id),
+                    ('state', '=', 'done')
+                ])
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
 
     #  @api.onchange('standard_id', 'division_id')
     # def onchange_combine(self):
@@ -328,7 +374,7 @@ class SchoolStandard(models.Model):
     user_id = fields.Many2one('school.teacher', 'Class Teacher')
     student_ids = fields.One2many('student.student', 'standard_id',
                                   'Student In Class',
-                                  compute='_compute_student', store=True
+                                  compute='_compute_student'
                                   )
     color = fields.Integer('Color Index')
     cmp_id = fields.Many2one('res.company', 'Company Name',
@@ -604,8 +650,24 @@ class StudentHistory(models.Model):
     _description = "Student History"
 
     student_id = fields.Many2one('student.student', 'Student')
-    academice_year_id = fields.Many2one('academic.year', 'Academic Year',
-                                        )
+    
+    academice_year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+    
+
     standard_id = fields.Many2one('school.standard', 'Standard')
     percentage = fields.Float("Percentage", readonly=True)
     result = fields.Char('Result', readonly=True)

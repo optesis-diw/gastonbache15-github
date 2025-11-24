@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+
+  <record id="report_attendance_sheet_combined_qweb" model="ir.actions.report">
+    <field name="name">Feuille de Présence Quotidienne</field>
+    <field name="model">daily.attendance</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">school_attendance.daily_attendance_combined</field>
+    <field name="report_file">school_attendance.daily_attendance_combined</field>
+    <field name="binding_model_id" ref="school_attendance.model_daily_attendance"/>
+    <field name="binding_type">report</field>
+    <field name="print_report_name">'Feuille de Présence Quotidienne - %s - %s' % (object.standard_id.name, object.date)</field>
+  </record>
+
+
+   
+    <template id="daily_attendance_combined">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, sans-serif;">
+                    <!-- En-tête centré -->
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <h2 style="margin-bottom: 5px; font-size: 16pt;">Feuille de Présence Quotidienne</h2>
+                        <h3 style="margin-top: 0; font-size: 14pt;">
+                            Classe: <span t-esc="class_name"/> - Date: <span t-esc="date"/>
+                        </h3>
+                    </div>
+
+                    <!-- Tableau avec style spécifique -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
+                        <!-- Ligne d'en-tête -->
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px; width: 25%; text-align: center; font-weight: bold; background-color: #f2f2f2;">
+                                Liste élèves
+                            </td>
+                            <t t-foreach="students_data[0]['courses']" t-as="course">
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f2f2f2;">
+                                    <div><span t-esc="course['subject']"/></div>
+                                    <div style="font-weight: normal;">
+                                        <span t-esc="course['start_time']"/>-<span t-esc="course['end_time']"/>
+                                    </div>
+                                </td>
+                            </t>
+                        </tr>
+
+                        <!-- Lignes des élèves -->
+                        <t t-foreach="students_data" t-as="student">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">
+                                    <span t-esc="student['student_name']"/>
+                                </td>
+                                <t t-foreach="student['courses']" t-as="course">
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        <span t-if="course['status'] == 'Présent'" t-esc="'P'"/>
+                                        <span t-if="course['status'] != 'Présent'" style="color: red;" t-esc="'A'"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </t>
+                    </table>
+
+                   
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -45,7 +45,7 @@
                     </tr>
                     <tr>
                         <td style="width: 33%; text-align: left; padding: 0;">
-                            <p style="text-align:left; margin: 0;"><strong>Date: </strong>
+                            <p style="text-align:left; margin: 0;"><strong>Date de début: </strong>
                             <span t-field="result.date"></span></p>
                         </td>
                         <td style="width: 33%; text-align: center; padding: 0;"></td>
@@ -54,6 +54,24 @@
                             <span t-field="result.standard_id"></span></p>
                         </td>
                     </tr>
+
+                     <tr>
+                        <td style="width: 33%; text-align: left; padding: 0;">
+                            <p style="text-align:left; margin: 0;"><strong>Heure de début :</strong>
+                            <span t-field="result.start_time"></span></p>
+                        </td>
+                         <td style="width: 33%; text-align: right; padding: 0;">
+                            <p style="text-align:right; margin: 0;"><strong>Heure de fin :</strong>
+                            <span t-field="result.end_time"></span></p>
+                        </td>
+                       <td style="width: 33%; text-align: right; padding: 0;">
+                            <p style="text-align:right; margin: 0;"><strong>Matière: </strong>
+                            <span t-field="result.subject_id"></span></p>
+                        </td>
+                       
+                    </tr>
+
+                    
                 </table>    
             </t>  
             <br/> 
@@ -105,6 +123,14 @@
     </t>
     </t>
 </template>
+
+
+
+
+
+
+
+
 
     
 </odoo>

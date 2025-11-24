@@ -14,14 +14,20 @@
     "data": [
         "security/attendance_security.xml",
         "security/ir.model.access.csv",
+        
+        
         "views/school_attendance_view.xml",
-        "views/month_attendance.xml",
+
+        #"views/month_attendance.xml",
         #"views/report_view.xml",
-        "wizard/attendance_sheet_wizard_view.xml",
-        "wizard/student_attendance_by_month_view.xml",
-        "wizard/monthly_attendance_wizard_view.xml",
-        "report/monthly_attendance_report_view.xml",
+
+        #"wizard/attendance_sheet_wizard_view.xml",
+        #"wizard/student_attendance_by_month_view.xml",
+        #"wizard/monthly_attendance_wizard_view.xml",
+        #"report/monthly_attendance_report_view.xml",
+
         "report/sheet_attendance_report.xml",
+        "report/repport_feuille_presence.xml"
     ],
     "demo": ["demo/school_attendance_demo.xml"],
     "installable": True,

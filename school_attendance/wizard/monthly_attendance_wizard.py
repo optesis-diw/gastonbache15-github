@@ -241,521 +241,205 @@ class DailyAttendanceStudentRemark(models.TransientModel):
 
     def print_report(self):
         attch_obj = self.env["ir.attachment"]
-        # fp = StringIO()
         fp = io.BytesIO()
+        
         for rec in self:
             months = {
-                "1": "January",
-                "2": "February",
-                "3": "March",
-                "4": "April",
-                "5": "May",
-                "6": "June",
-                "7": "July",
-                "8": "August",
-                "9": "September",
-                "10": "October",
-                "11": "November",
-                "12": "December",
+                "1": "January", "2": "February", "3": "March",
+                "4": "April", "5": "May", "6": "June",
+                "7": "July", "8": "August", "9": "September",
+                "10": "October", "11": "November", "12": "December"
             }
-            days_of_month = calendar.monthrange(
-                int(rec.academic_year_id.code), int(rec.month)
-            )[1]
-            month_days = range(1, days_of_month + 1)
-            # Obtenir le dernier jour du mois spécifié dans l'année académique.
-            last_day_month = calendar.monthrange(
-                int(rec.academic_year_id.code), int(rec.month)
-            )[1]
+            
+            year = int(rec.academic_year_id.code)
+            month = int(rec.month)
+            days_in_month = calendar.monthrange(year, month)[1]
+            month_days = range(1, days_in_month + 1)
+            
+            # Date range for the query
+            start_date = f"{year}-{str(month).zfill(2)}-01"
+            end_date = f"{year}-{str(month).zfill(2)}-{days_in_month} 23:59:59"
 
-            # Obtenir l'année en cours à partir de stop_date.
-            year_current = rec.academic_year_id.date_stop.year
+            # Get validated attendance records
+            self._cr.execute("""
+                SELECT id FROM daily_attendance
+                WHERE state = 'validate'
+                AND standard_id = %s
+                AND date >= %s 
+                AND date <= %s
+                ORDER BY user_id, date
+            """, (rec.course_id.id, start_date, end_date))
             
-            # Créer la chaîne de date pour le début du mois (1er jour du mois) au format "YYYY-MM-01". exemple: 2024-08-01
-            start_date_str = f"{year_current}-{str(rec.month).zfill(2)}-01"
+            attendance_ids = [x[0] for x in self._cr.fetchall() if x and x[0]]
             
-            # Créer la chaîne de date pour la fin du mois (dernier jour du mois) au format "YYYY-MM-DD 23:00:00".ex:2024-08-31
-            end_date_str = f"{year_current}-{str(rec.month).zfill(2)}-{str(last_day_month).zfill(2)} 23:00:00"
-            #Exécution d'une requête SQL pour récupérer les feuilles d présences
-        #validées pour la période donnée. Les résultats sont stockés dans records.
-            self._cr.execute(
-                """
-                SELECT
-                    id
-                FROM
-                    daily_attendance
-                WHERE
-                    state = 'validate' and
-                    standard_id = %s and
-                    date >= %s and
-                    date <= %s ORDER BY user_id,date
-                    """,
-                (rec.course_id.id, start_date_str, end_date_str),
-            )
-            all_att_data = self._cr.fetchall()
-            records = []
-            if not all_att_data:
-                raise ValidationError(_("Data Not Found"))
-            for record in all_att_data:
-                if record and record[0]:
-                    records.append(record[0])
+            if not attendance_ids:
+                raise ValidationError(_("No attendance data found for this period"))
+
+            # Group attendance by user and date
             group_data = []
-            #On parcourt chaq feuille de présence 
-            for att in self.env["daily.attendance"].browse(records):
-                date = datetime.strptime(
-                    str(att.date), DEFAULT_SERVER_DATE_FORMAT
-                )
-                day_date = date.strftime("%Y-%m-%d")
-                if not group_data:
-                    group_data.append(
-                        {
-                            "user": att.user_id,
-                            "att_ids": [{"date": day_date, "att": [att]}],
-                        }
-                    )
-                else:
-                    flag = False
-                    for gdata in group_data:
-                        if gdata.get("user").id == att.user_id.id:
-                            flag = True
-                            flag_date = False
-                            for att_id in gdata.get("att_ids"):
-                                if att_id.get("date") == day_date:
-                                    flag_date = True
-                                    att_id.get("att").append(att)
-                                    break
-                            if not flag_date:
-                                gdata.get("att_ids").append(
-                                    {"date": day_date, "att": [att]}
-                                )
-                    if not flag:
-                        group_data.append(
-                            {
-                                "user": att.user_id,
-                                "att_ids": [{"date": day_date, "att": [att]}],
-                            }
-                        )
-            res_data = []
-            for gdata in group_data:
-                result_data = []
-                att_data = {}
-                data = []
-                for attdata in gdata.get("att_ids"):
-                    date = datetime.strptime(attdata.get("date"), "%Y-%m-%d")
-                    day_date = int(date.strftime("%d"))
-                    for att in attdata.get("att"):
-                        no_of_class = 1
-                        self._cr.execute(
-                            """select id
-                                from daily_attendance_line WHERE
-                                standard_id = %s ORDER BY roll_no
-                            """,
-                            (att.id,),
-                        )
-                        lines = []
-                        for line in self._cr.fetchall():
-                            if line and line[0]:
-                                lines.append(line[0])
-                        matched_dates = []
-                        for student in self.env[
-                            "daily.attendance.line"
-                        ].browse(lines):
-                            for att_count in range(1, days_of_month + 1):
-                                if day_date == att_count:
-                                    status = "A"
-                                    if student.is_present:
-                                        status = no_of_class
-                                        if (
-                                            day_date in matched_dates
-                                            or not matched_dates
-                                        ):
-                                            if att_data.get(
-                                                student.stud_id.name
-                                            ) and att_data.get(
-                                                student.stud_id.name
-                                            ).get(
-                                                att_count
-                                            ):
-                                                if (
-                                                    att_data.get(
-                                                        student.stud_id.name
-                                                    ).get(att_count)
-                                                    != "A"
-                                                ):
-                                                    status = (
-                                                        int(
-                                                            att_data.get(
-                                                                student.stud_id.name
-                                                            ).get(att_count)
-                                                        )
-                                                        + no_of_class
-                                                    )
-                                    else:
-                                        if day_date in matched_dates:
-                                            if att_data.get(
-                                                student.stud_id.name
-                                            ) and att_data.get(
-                                                student.stud_id.name
-                                            ).get(
-                                                att_count
-                                            ):
-                                                if (
-                                                    att_data.get(
-                                                        student.stud_id.name
-                                                    ).get(att_count)
-                                                    != "A"
-                                                ):
-                                                    status = int(
-                                                        att_data.get(
-                                                            student.stud_id.name
-                                                        ).get(att_count)
-                                                    )
-                                    if not att_data.get(student.stud_id.name):
-                                        total_absent = 0
-                                        if not student.is_present:
-                                            total_absent = no_of_class
-                                        att_data.update(
-                                            {
-                                                student.stud_id.name: {
-                                                    att_count: str(status)
-                                                }
-                                            }
-                                        )
-                                        data.append(
-                                            {
-                                                "roll_no": student.stud_id.roll_no,
-                                                "student_code": student.stud_id.student_code,
-                                                "school_name": student.stud_id.school_id.name,
-                                                "divisions": gdata.get(
-                                                    "divisions"
-                                                ),
-                                                "total_absent": total_absent,
-                                                "name": student.stud_id.name,
-                                                "att": {
-                                                    att_count: str(status)
-                                                },
-                                            }
-                                        )
-                                    else:
-                                        att_data.get(
-                                            student.stud_id.name
-                                        ).update({att_count: str(status)})
-                                        for stu in data:
-                                            if (
-                                                stu.get("name")
-                                                == student.stud_id.name
-                                            ):
-                                                if not student.is_present:
-                                                    stu.update(
-                                                        {
-                                                            "total_absent": stu.get(
-                                                                "total_absent"
-                                                            )
-                                                            + no_of_class
-                                                        }
-                                                    )
-                                                stu.get("att").update(
-                                                    {att_count: str(status)}
-                                                )
-                                else:
-                                    status = ""
-                                    if not att_data.get(student.stud_id.name):
-                                        att_data.update(
-                                            {
-                                                student.stud_id.name: {
-                                                    att_count: status
-                                                }
-                                            }
-                                        )
-                                        data.append(
-                                            {
-                                                "roll_no": student.stud_id.roll_no,
-                                                "student_code": student.stud_id.student_code,
-                                                "school_name": student.stud_id.school_id.name,
-                                                "divisions": gdata.get(
-                                                    "divisions"
-                                                ),
-                                                "total_absent": 0,
-                                                "name": student.stud_id.name,
-                                                "att": {att_count: status},
-                                            }
-                                        )
-                                    else:
-                                        if (
-                                            att_data.get(
-                                                student.stud_id.name
-                                            ).get("att_count")
-                                            == ""
-                                        ):
-                                            att_data.get(
-                                                student.stud_id.name
-                                            ).update({att_count: status})
-                                            for stu in data:
-                                                if (
-                                                    stu.get("name")
-                                                    == student.stud_id.name
-                                                ):
-                                                    stu.get("att").update(
-                                                        {att_count: status}
-                                                    )
-                            if day_date not in matched_dates:
-                                matched_dates.append(day_date)
-                roll_no_list = []
-                for stu in data:
-                    roll_no_list.append(stu.get("roll_no"))
-                roll_no_list.sort()
-                for roll_no in roll_no_list:
-                    for stu in data:
-                        if stu.get("roll_no") == roll_no:
-                            result_data.append(stu)
-                            data.remove(stu)
-                res_data.append(
-                    {
-                        "user": gdata.get("user").name,
-                        "month": months.get(rec.month)
-                        + "-"
-                        + rec.academic_year_id.code,
-                        "semester": rec.course_id.name,
-                        "result_data": result_data,
-                        "school_name": result_data,
-                    }
+            for att in self.env["daily.attendance"].browse(attendance_ids):
+                date_str = att.date.strftime("%Y-%m-%d")
+                
+                # Find or create user group
+                user_group = next(
+                    (g for g in group_data if g["user"].id == att.user_id.id), 
+                    None
                 )
                 
+                if not user_group:
+                    user_group = {
+                        "user": att.user_id,
+                        "att_ids": [],
+                        "divisions": att.standard_id.division_id.name if att.standard_id.division_id else ""
+                    }
+                    group_data.append(user_group)
+                
+                # Find or create date entry
+                date_entry = next(
+                    (d for d in user_group["att_ids"] if d["date"] == date_str),
+                    None
+                )
+                
+                if not date_entry:
+                    date_entry = {"date": date_str, "att": []}
+                    user_group["att_ids"].append(date_entry)
+                
+                date_entry["att"].append(att)
 
-            # Create Work Book
+            # Process attendance data for each student
+            res_data = []
+            for gdata in group_data:
+                student_data = {}
+                
+                for attdata in gdata["att_ids"]:
+                    day = int(attdata["date"].split("-")[2])
+                    
+                    for att in attdata["att"]:
+                        for line in att.line_ids:
+                            if line.stud_id.id not in student_data:
+                                student_data[line.stud_id.id] = {
+                                    "roll_no": line.stud_id.roll_no,
+                                    "student_code": line.stud_id.student_code,
+                                    "name": line.stud_id.name,
+                                    "school_name": line.stud_id.school_id.name,
+                                    "divisions": gdata["divisions"],
+                                    "att": {},
+                                    "total_present": 0,
+                                    "total_absent": 0
+                                }
+                            
+                            # Mark attendance for this day
+                            status = "P" if line.is_present else "A"
+                            student_data[line.stud_id.id]["att"][day] = status
+                            
+                            # Update totals
+                            if line.is_present:
+                                student_data[line.stud_id.id]["total_present"] += 1
+                            else:
+                                student_data[line.stud_id.id]["total_absent"] += 1
+
+                # Sort students by roll number
+                sorted_students = sorted(
+                    student_data.values(), 
+                    key=lambda x: x["roll_no"]
+                )
+                
+                res_data.append({
+                    "user": gdata["user"].name,
+                    "month": f"{months[rec.month]}-{year}",
+                    "semester": rec.course_id.name,
+                    "result_data": sorted_students,
+                    "school_name": sorted_students[0]["school_name"] if sorted_students else ""
+                })
+
+            # Excel file generation
             workbook = xlsxwriter.Workbook(fp)
-            # Set Table Header format
-            tbl_data_fmt = workbook.add_format(
-                {
-                    "border": 1,
-                    "font_name": "Calibri",
-                    "align": "center",
-                    "font_size": 10,
-                }
-            )
-            tbl_data_fmt.set_bg_color("#D3D3D3")
-            tbl_data_fmt_left = workbook.add_format(
-                {"border": 1, "font_name": "Calibri", "font_size": 10}
-            )
-            tbl_data_fmt_p = workbook.add_format(
-                {
-                    "border": 1,
-                    "font_name": "Calibri",
-                    "align": "center",
-                    "font_size": 10,
-                }
-            )
-            # sub header format
-            head_fmt = workbook.add_format(
-                {
-                    "border": 1,
-                    "font_name": "Calibri",
-                    "font_size": 10,
-                    "align": "center",
-                    "bold": True,
-                }
-            )
-            head_fmt_left = workbook.add_format(
-                {
-                    "border": 1,
-                    "font_name": "Calibri",
-                    "font_size": 10,
-                    "bold": True,
-                }
-            )
-            # Main head format
-            main_head_fmt = workbook.add_format(
-                {
-                    "border": 1,
-                    "font_name": "Calibri",
-                    "align": "center",
-                    "font_size": 14,
-                    "bold": True,
-                }
-            )
-            main_head_fmt.set_bg_color("#DCDCDC")
-            # print the data of students
+            
+            # Formats
+            header_format = workbook.add_format({
+                "bold": True, "border": 1, "align": "center", 
+                "bg_color": "#D3D3D3", "font_size": 10
+            })
+            
+            cell_format = workbook.add_format({
+                "border": 1, "font_size": 10, "align": "center"
+            })
+            
+            name_format = workbook.add_format({
+                "border": 1, "font_size": 10
+            })
+            
+            title_format = workbook.add_format({
+                "bold": True, "align": "center", "font_size": 14,
+                "bg_color": "#DCDCDC", "border": 1
+            })
+
             for data in res_data:
-                count = 1
-                row = 5
-                #Add Sheet
-                user_name = data.get("user")
-                if not isinstance(user_name, str):
-                    raise ValidationError(_("Assurez-vous que user est une chaîne de caractères valide"))
+                sheet = workbook.add_worksheet(data["user"][:31])  # Limit sheet name length
+                
+                # Set column widths
+                sheet.set_column(0, 0, 5)    # Sn.
+                sheet.set_column(1, 1, 30)   # Name
+                sheet.set_column(2, 2, 10)   # Reg. No
+                sheet.set_column(3, days_in_month + 2, 3)  # Day columns
+                
+                # Headers
+                sheet.merge_range(
+                    0, 0, 0, days_in_month + 3,
+                    data["school_name"], title_format
+                )
+                
+                sheet.write(1, 0, f"Teacher: {data['user']}", header_format)
+                sheet.write(1, 10, f"Month: {data['month']}", header_format)
+                sheet.write(1, 20, "Key: P=Present, A=Absent", header_format)
+                sheet.write(1, 30, f"Class: {data['semester']}", header_format)
+                
+                # Column headers
+                sheet.write(3, 0, "Sn.", header_format)
+                sheet.write(3, 1, "Name", header_format)
+                sheet.write(3, 2, "Reg. No", header_format)
+                
+                for day in month_days:
+                    sheet.write(3, 2 + day, day, header_format)
+                
+                sheet.write(3, days_in_month + 3, "P", header_format)
+                sheet.write(3, days_in_month + 4, "A", header_format)
 
-                sheet = workbook.add_worksheet(user_name)
-                sheet.freeze_panes(5, 0)
-                # Main Header
-                sheet.merge_range(
-                    0,
-                    0,
-                    0,
-                    len(month_days) + 4,
-                    data.get("result_data")[0].get("school_name"),
-                    main_head_fmt,
-                )
-                sheet.set_column(0, 0, 3)
-                sheet.set_column(3, len(month_days) + 4, 3)
-                sheet.set_column(1, 1, 25)
-                # Sub Headers
-                sheet.merge_range(
-                    1,
-                    0,
-                    1,
-                    8,
-                    "Name of the Teacher:" + str(data.get("user")),
-                    head_fmt_left,
-                )
-                sheet.merge_range(
-                    1,
-                    9,
-                    1,
-                    19,
-                    "Month:"
-                    + str(months.get(rec.month))
-                    + "-"
-                    + str(rec.academic_year_id.date_stop.year),
-                    head_fmt,
-                )
-                sheet.merge_range(
-                    1, 29, 1, 34, "Classe:" + str(rec.course_id.name), head_fmt
-                )
-                sheet.merge_range(
-                    1, 20, 1, 28, "key P=Present, A=Absent", head_fmt
-                )
-                sheet.write(4, 0, "Sn.", head_fmt)
-                sheet.write(4, 1, "Name", head_fmt)
-                sheet.write(4, 2, "Reg. No", head_fmt)
-                col = 3
-                for mday in month_days:
-                    sheet.write(4, col, mday, head_fmt)
-                    col += 1
-                sheet.write(4, col, "P", head_fmt)
-                sheet.write(4, col + 1, "A", head_fmt)
-                for line in data.get("result_data"):
-                    present_no = 0
-                    present = 0
-                    absent = 0
-                    col = 0
-                    if line.get("divisions") or data.get("elective"):
-                        sheet.write(row, col, count, tbl_data_fmt)
-                    else:
-                        sheet.write(
-                            row, col, line.get("student_code"), tbl_data_fmt
-                        )
-                    sheet.write(
-                        row, col + 1, line.get("name"), tbl_data_fmt_left
-                    )
-                    sheet.write(
-                        row,
-                        col + 2,
-                        line.get("stud_reg_code"),
-                        tbl_data_fmt_left,
-                    )
+                # Student data
+                for row, student in enumerate(data["result_data"], 4):
+                    sheet.write(row, 0, row - 3, cell_format)  # Serial number
+                    sheet.write(row, 1, student["name"], name_format)
+                    sheet.write(row, 2, student["student_code"], cell_format)
+                    
+                    # Daily attendance
+                    for day in month_days:
+                        status = student["att"].get(day, "")
+                        sheet.write(row, 2 + day, status, cell_format)
+                    
+                    # Totals - CORRECTION PRINCIPALE ICI
+                    sheet.write(row, days_in_month + 3, student["total_present"], cell_format)
+                    sheet.write(row, days_in_month + 4, student["total_absent"], cell_format)
 
-                    col = col + 3
-                    for date in month_days:
-                        if line.get("att").get(date):
-                            if line.get("att").get(date) not in ["A", False]:
-                                present_no = present + int(
-                                    line.get("att").get(date)
-                                )
-                                present = present + int(
-                                    line.get("att").get(date)
-                                )
-                                
-                            if line.get("att").get(date) == "A":
-                                absent += 1
-                                sheet.write(
-                                    row,
-                                    col,
-                                    line.get("att").get(date),
-                                    tbl_data_fmt,
-                                )
-                            #afficher "P" si l'étudiant est marqué comme présent   
-                            elif line.get("att").get(date) != "A":
-                                sheet.write(
-                                    #diw :row, col, present_no, tbl_data_fmt_p
-                                    row, col, "P", tbl_data_fmt_p
-                                )
-                        col += 1
-                    sheet.write(row, col, present, tbl_data_fmt_p)
-                    absent_res = absent
-                    self._cr.execute(
-                        """
-                            SELECT
-                                id,
-                                standard_id
-                            FROM
-                                student_student
-                            WHERE
-                                roll_no = %s
-                        """,
-                        (line.get("roll_no"),),
-                    )
-                    student = self._cr.fetchone()
-                    if student:
-                        total_class_att = self.get_total_class(
-                            rec, data.get("user"), data.get("subject_id")
-                        )[1]
-                        if not total_class_att.get("total"):
-                            if student[1] == 3:
-                                if present + absent != total_class_att.get(
-                                    "A"
-                                ):
-                                    absent_res = (
-                                        total_class_att.get("A") - present
-                                    )
-                            elif student[1] == 4:
-                                if present + absent != total_class_att.get(
-                                    "B"
-                                ):
-                                    absent_res = (
-                                        total_class_att.get("B") - present
-                                    )
-                    if total_class_att.get("A") == 0:
-                        sheet.write(
-                            row,
-                            col + 1,
-                            total_class_att.get("total") - present_no,
-                            tbl_data_fmt,
-                        )
-                    else:
-                        sheet.write(
-                            row,
-                            col + 1,
-                            line.get("total_absent"),
-                            tbl_data_fmt,
-                        )
-                    row += 1
-                    count += 1
-            # Workbook save and end
             workbook.close()
-            data = base64.b64encode(fp.getvalue())
+            
+            # Save and return the file
+            file_data = base64.b64encode(fp.getvalue())
             fp.close()
-            # Deleting existing attachment files
-            attach_ids = attch_obj.search(
-                [("res_model", "=", "monthly.attendance.wizard")]
-            )
-            if attach_ids:
-                try:
-                    attach_ids.unlink()
-                except BaseException:
-                    pass
-            # Creating Attachment
-            doc_id = attch_obj.create(
-                {
-                    "name": str(months.get(rec.month))
-                    + " "
-                    + str(rec.course_id.name)
-                    + " "
-                    + "Monthly Attendance.xlsx",
-                    "datas": data,
-                    "res_model": "monthly.attendance.wizard",
-                }
-            )
-            # Downloading the file
+            
+            # Clean up old attachments
+            self.env["ir.attachment"].search([
+                ("res_model", "=", "monthly.attendance.wizard")
+            ]).unlink()
+            
+            # Create new attachment
+            doc_id = attch_obj.create({
+                "name": f"{months[rec.month]} {rec.course_id.name} Monthly Attendance.xlsx",
+                "datas": file_data,
+                "res_model": "monthly.attendance.wizard",
+            })
+            
             return {
                 "type": "ir.actions.act_url",
-                "url": "web/content/%s?download=true" % (doc_id.id),
+                "url": f"web/content/{doc_id.id}?download=true",
                 "target": "current",
             }

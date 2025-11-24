@@ -2,7 +2,9 @@
 
 import json
 import time
-from datetime import date, datetime
+
+
+from datetime import datetime, date,  time  # Add this import at the top of your file
 
 from dateutil.relativedelta import relativedelta as rd
 from lxml import etree
@@ -13,6 +15,19 @@ from odoo.exceptions import ValidationError, Warning as UserError
 DEFAULT_SERVER_DATE_FORMAT = "%Y-%m-%d"
 
 
+from urllib.parse import quote
+import requests
+import json
+import logging
+
+from requests.structures import CaseInsensitiveDict
+
+
+
+import logging
+
+
+_logger = logging.getLogger(__name__)
 
 
 class AttendanceSheet(models.Model):
@@ -31,7 +46,27 @@ class AttendanceSheet(models.Model):
     month_id = fields.Many2one(
         "academic.month", "Month", required=True, help="Select Academic Month"
     )
-    year_id = fields.Many2one("academic.year", "Year", required=True)
+
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+
+    
+
+
+    
     attendance_ids = fields.One2many(
         "attendance.sheet.line",
         "standard_id",
@@ -152,7 +187,7 @@ class AttendanceSheet(models.Model):
     
     
         
-       
+     
            
 
 class StudentleaveRequest(models.Model):
@@ -162,6 +197,24 @@ class StudentleaveRequest(models.Model):
     _description = "Student Leave Request"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
+
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+
+    
     def _update_vals(self, student_id):
         student_obj = self.env["student.student"]
         student = student_obj.browse(student_id)
@@ -226,14 +279,21 @@ class StudentleaveRequest(models.Model):
             ("draft", "Draft"),
             ("toapprove", "To Approve"),
             ("reject", "Reject"),
-            ("approve", "Approved"),
+            ("approve", "Valider"),
         ],
         "Status",
         default="draft",
         tracking=True,
     )
-    start_date = fields.Date("Start Date")
-    end_date = fields.Date("End Date")
+
+    #diw :feuille de présence par matière
+    #start_date = fields.Date("Start Date")
+    #end_date = fields.Date("End Date")
+    start_date = fields.Datetime("Start Date")
+    end_date = fields.Datetime("End Date")
+
+    #diw
+
     teacher_id = fields.Many2one(
         "res.users", "Utilisateur",
         help="Select Surveillant",
@@ -263,13 +323,12 @@ class StudentleaveRequest(models.Model):
             raise ValidationError(
                 _("Start date should be less than end date!")
             )
-        if self.start_date < date.today():
+        #if self.start_date <= date.today():
+        if self.start_date.date() < date.today():
             raise ValidationError(
-                _(
-                    "Your leave request start date should be greater than "
-                    "current date!"
-                )
+                _("La date de début de votre demande de congé doit être supérieure ou égale à la date actuelle !")
             )
+
 
 
 class AttendanceSheetLine(models.Model):
@@ -403,6 +462,23 @@ class DailyAttendance(models.Model):
     _name = "daily.attendance"
     _rec_name = "standard_id"
 
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id
+
+    
    
 
     @api.depends("student_ids")
@@ -443,8 +519,50 @@ class DailyAttendance(models.Model):
     date = fields.Date(
         "Date",
         help="Current Date",
-        default=lambda *a: time.strftime("%Y-%m-%d"),
+        default=lambda self: date.today() ,
     )
+
+    # diw: feuille de présence par matière
+    
+    start_time = fields.Float(
+    "Heure de début",
+    help="Heure de début du cours (en heures)",
+    default=8.0  # 8h00 par défaut
+    )
+
+    end_time = fields.Float(
+        "Heure de fin", 
+        help="Heure de fin du cours (en heures)",
+        default=10.0  # 9h00 par défaut
+    )
+    
+    # domaine dynamique pour le champ subject_id
+    subject_id = fields.Many2one(
+    "subject.subject",
+    "Matière",
+    required=True,
+    help="Sélectionnez la matière",
+    states={"validate": [("readonly", True)]},
+    domain="[('id', 'in', available_subject_ids)]"
+)
+
+    available_subject_ids = fields.Many2many(
+        'subject.subject',
+        string="Matières disponibles",
+        compute='_compute_available_subjects'
+    )
+
+    @api.depends('standard_id')
+    def _compute_available_subjects(self):
+        for rec in self:
+            if rec.standard_id:
+                rec.available_subject_ids = rec.standard_id.subject_ids
+            else:
+                rec.available_subject_ids = False
+
+   
+    
+    #
     
     student_ids = fields.One2many(
         "daily.attendance.line",
@@ -514,121 +632,113 @@ class DailyAttendance(models.Model):
     )
     is_generate = fields.Boolean("Generate?")
 
-    _sql_constraints = [
-        (
-            "attend_unique",
-            "unique(standard_id,user_id,date)",
-            "Attendance should be unique!",
-        )
-    ]
+   
+
+  
+    
+    #contrainte
+    @api.constrains('standard_id', 'date', 'start_time', 'end_time', 'subject_id')
+    def _check_overlapping_attendance(self):
+        for rec in self:
+            # Convertir les heures float en time pour la comparaison
+            start_time = time(hour=int(rec.start_time), minute=int((rec.start_time % 1) * 60))
+            end_time = time(hour=int(rec.end_time), minute=int((rec.end_time % 1) * 60))
+            
+            # Chercher les feuilles de présence qui se chevauchent
+            overlapping = self.search([
+                ('id', '!=', rec.id),
+                ('standard_id', '=', rec.standard_id.id),
+                ('date', '=', rec.date),
+                '|', '|',
+                '&',  # Cas 1: La nouvelle plage commence pendant une plage existante
+                    ('start_time', '<=', rec.start_time),
+                    ('end_time', '>', rec.start_time),
+                '&',  # Cas 2: La nouvelle plage se termine pendant une plage existante
+                    ('start_time', '<', rec.end_time),
+                    ('end_time', '>=', rec.end_time),
+                '&',  # Cas 3: La nouvelle plage englobe complètement une plage existante
+                    ('start_time', '>=', rec.start_time),
+                    ('end_time', '<=', rec.end_time),
+            ])
+            
+            if overlapping:
+                raise ValidationError(_(
+                    "Une feuille de présence existe déjà pour cette classe et plage horaire (%s - %s) à cette date!" % 
+                    (start_time.strftime('%H:%M'), end_time.strftime('%H:%M'))))
+            
+
 
     #Réinitialise le champ student_ids(studiants) et is_generate à False
     def do_regenerate(self):
         self.is_generate = False
         self.student_ids = False
 
-    #button générer: permet de sélectionner ls étudiants de la class selectionné  et d'initialiser leur présence ou absence en fonction des requêtes de congé approuvées
+    
+    #
     def get_students(self):
-        # Étudiants
         stud_obj = self.env["student.student"]
-        # Congé
         leave_req_obj = self.env["studentleave.request"]
         
         for rec in self:
-            student_list = []
-            # Classe
-            if rec.standard_id:
-                # Parcourir les étudiants de la classe sélectionnée
-                students = stud_obj.search([("standard_id", "=", rec.standard_id.id)])
-                if not students:
-                    raise ValidationError(_("Aucun étudiant n'est trouvé pour la classe sélectionnée!"))
-    
-                for stud in students:
-                    # Création des valeurs de présence et d'absence pour chaque étudiant
-                    stud_vals_abs = (0, 0, {
-                        "roll_no": stud.roll_no,
-                        "stud_id": stud.id,
-                        "is_absent": True,
-                    })
-                    stud_vals = (0, 0, {
-                        "roll_no": stud.roll_no,
-                        "stud_id": stud.id,
-                        "is_present": True,
-                    })
-    
-                    # Vérification si l'étudiant a une demande de congé approuvée pour la date spécifiée
-                    leave_approved = leave_req_obj.search_count([
-                        ("state", "=", "approve"),
-                        ("student_id", "=", stud.id),
-                        ("standard_id", "=", rec.standard_id.id),
-                        ("start_date", "<=", rec.date),
-                        ("end_date", ">=", rec.date),
-                    ]) > 0
-    
-                    if leave_approved:
-                        #Si l'étudiant est en congé, il le marque comme absent
-                        student_list.append(stud_vals_abs)
-                    else:
-                        #sinon, il le marque comme présent
-                        student_list.append(stud_vals)
-    
-                # Réinitialiser la liste des étudiants et ajouter les nouveaux
-                rec.student_ids = [(5, 0, 0)] 
-                rec.student_ids = student_list 
-    
-                # Mise à jour 'is_generate'
-                rec.is_generate = bool(rec.student_ids)
-                
-            else:
+            # Validation des champs
+            if not rec.standard_id:
                 raise ValidationError(_("Veuillez sélectionner une classe!"))
-    
-            if not rec.student_ids:
-                raise ValidationError(_("Aucun étudiant n'est trouvé pour les critères sélectionnés!"))
-                
+            if not rec.date:
+                raise ValidationError(_("Veuillez spécifier une date!"))
+            
+            students = stud_obj.search([("standard_id", "=", rec.standard_id.id)])
+            if not students:
+                raise ValidationError(_("Aucun étudiant trouvé pour cette classe!"))
+            
+            student_list = []
+            for stud in students:
+                # Convertir les heures en datetime
+                start_cours = datetime.combine(
+                    rec.date,
+                    time(hour=int(rec.start_time), minute=int((rec.start_time % 1) * 60))
+                )
+                end_cours = datetime.combine(
+                    rec.date,
+                    time(hour=int(rec.end_time), minute=int((rec.end_time % 1) * 60))
+                )
 
-    """
-    Désigner les élèves de la classe sélectionnés en les marquant comme présents ou absents en fonction de leurs requêtes de congé approuvées
-    """
-    @api.model
-    def create(self, vals):
-        student_list = []
-        #studients
-        stud_obj = self.env["student.student"]
-        #class
-        standard_id = vals.get("standard_id")
-        date = vals.get("date")
-
-        # Recherche des étudiants du niveau(classe spécifié)et dont l'état est 'done'
-        stud_ids = stud_obj.search([
-            ("standard_id", "=", standard_id),
-            ("state", "=", "done"),
-        ])
-
-        for stud in stud_ids:
-            line_vals = {
-                "roll_no": stud.roll_no,
-                "stud_id": stud.id,
-                "is_present": True,
-            }
-
-            # Vérification si une liste des présences/absences est fournie et la gestion des congés étudiants
-            if vals.get("student_ids") and not vals.get("student_ids")[0][2].get("present_absentcheck"):
-                student_leave = self.env["studentleave.request"].search_count([
+                # Domaine de recherche pour les congés
+                base_domain = [
                     ("state", "=", "approve"),
                     ("student_id", "=", stud.id),
-                    ("standard_id", "=", standard_id),
-                    ("start_date", "<=", date),
-                    ("end_date", ">=", date),
-                ]) > 0
+                    ("standard_id", "=", rec.standard_id.id)
+                ]
+                
+                # Check if there are any approved leaves for this student
+                leaves = leave_req_obj.search(base_domain)
+                leave_approved = False
+                
+                for leave in leaves:
+                    if leave.days > 1:
+                        # For multi-day leaves, check if the date falls within the leave period
+                        if (leave.start_date.date() <= rec.date and 
+                            leave.end_date.date() >= rec.date):
+                            leave_approved = True
+                            break
+                    else:
+                        # For single-day leaves, check if it overlaps with the course time
+                        leave_start = leave.start_date
+                        leave_end = leave.end_date
+                        if (leave_start <= start_cours and leave_end > start_cours):
+                            leave_approved = True
+                            break
+                
+                student_list.append((0, 0, {
+                    "roll_no": stud.roll_no,
+                    "stud_id": stud.id,
+                    "is_present": not leave_approved,
+                    "is_absent": leave_approved,
+                }))
 
-                if student_leave:
-                    line_vals.update({"is_absent": True, "is_present": False})
+            rec.student_ids = [(5, 0, 0)] + student_list
+            rec.is_generate = bool(student_list)
 
-            student_list.append((0, 0, line_vals))
 
-        vals.update({"student_ids": student_list})
-
-        return super(DailyAttendance, self).create(vals)
 
     def attendance_draft(self):
         """Changer l'état de présence en brouillon"""
@@ -701,449 +811,10 @@ class DailyAttendance(models.Model):
             rec.state = "draft"
         return True
 
-    def attendance_validate(self):
-        """Method to validate attendance."""
-        sheet_line_obj = self.env["attendance.sheet.line"]
-        acadmic_year_obj = self.env["academic.year"]
-        acadmic_month_obj = self.env["academic.month"]
-        attendance_sheet_obj = self.env["attendance.sheet"]
+    
+    
 
-        for line in self:
-            year_ids = acadmic_year_obj.search(
-                [
-                    ("date_start", "<=", line.date),
-                    ("date_stop", ">=", line.date),
-                ]
-            )
-            month_ids = acadmic_month_obj.search(
-                [
-                    ("date_start", "<=", line.date),
-                    ("date_stop", ">=", line.date),
-                    ("year_id", "in", year_ids.ids),
-                ]
-            )
-            if month_ids:
-                month_data = month_ids
-                att_sheet_ids = attendance_sheet_obj.search(
-                    [
-                        ("month_id", "in", month_ids.ids),
-                        ("year_id", "in", year_ids.ids),
-                    ]
-                )
-                attendance_sheet_id = (
-                    att_sheet_ids and att_sheet_ids[0] or False
-                )
-                date = line.date
-                if not attendance_sheet_id:
-                    sheet = {
-                        "name": (month_data.name + "-" + str(line.date.year)),
-                        "standard_id": line.standard_id.id,
-                        "user_id": line.user_id.id,
-                        "month_id": month_data.id,
-                        "year_id": year_ids and year_ids.id or False,
-                    }
-                    attendance_sheet_id = attendance_sheet_obj.create(sheet)
-                    for student_id in line.student_ids:
-                        line_dict = {
-                            "roll_no": student_id.roll_no,
-                            "standard_id": attendance_sheet_id.id,
-                            "name": student_id.stud_id.student_name,
-                        }
-                        sheet_line_obj.create(line_dict)
-                        for student_id in line.student_ids:
-                            search_id = sheet_line_obj.search(
-                                [("roll_no", "=", student_id.roll_no)]
-                            )
-                            # compute attendance of each day
-                            if date.day == 1 and student_id.is_absent:
-                                val = {"one": False}
 
-                            elif date.day == 1 and not student_id.is_absent:
-                                val = {"one": True}
-
-                            elif date.day == 2 and student_id.is_absent:
-                                val = {"two": False}
-
-                            elif date.day == 2 and not student_id.is_absent:
-                                val = {"two": True}
-
-                            elif date.day == 3 and student_id.is_absent:
-                                val = {"three": False}
-
-                            elif date.day == 3 and not student_id.is_absent:
-                                val = {"three": True}
-
-                            elif date.day == 4 and student_id.is_absent:
-                                val = {"four": False}
-
-                            elif date.day == 4 and not student_id.is_absent:
-                                val = {"four": True}
-
-                            elif date.day == 5 and student_id.is_absent:
-                                val = {"five": False}
-
-                            elif date.day == 5 and not student_id.is_absent:
-                                val = {"five": True}
-
-                            elif date.day == 6 and student_id.is_absent:
-                                val = {"six": False}
-
-                            elif date.day == 6 and not student_id.is_absent:
-                                val = {"six": True}
-
-                            elif date.day == 7 and student_id.is_absent:
-                                val = {"seven": False}
-
-                            elif date.day == 7 and not student_id.is_absent:
-                                val = {"seven": True}
-
-                            elif date.day == 8 and student_id.is_absent:
-                                val = {"eight": False}
-
-                            elif date.day == 8 and not student_id.is_absent:
-                                val = {"eight": True}
-
-                            elif date.day == 9 and student_id.is_absent:
-                                val = {"nine": False}
-
-                            elif date.day == 9 and not student_id.is_absent:
-                                val = {"nine": True}
-
-                            elif date.day == 10 and student_id.is_absent:
-                                val = {"ten": False}
-
-                            elif date.day == 10 and not student_id.is_absent:
-                                val = {"ten": True}
-
-                            elif date.day == 11 and student_id.is_absent:
-                                val = {"one_1": False}
-
-                            elif date.day == 11 and not student_id.is_absent:
-                                val = {"one_1": True}
-
-                            elif date.day == 12 and student_id.is_absent:
-                                val = {"one_2": False}
-
-                            elif date.day == 12 and not student_id.is_absent:
-                                val = {"one_2": True}
-
-                            elif date.day == 13 and student_id.is_absent:
-                                val = {"one_3": False}
-
-                            elif date.day == 13 and not student_id.is_absent:
-                                val = {"one_3": True}
-
-                            elif date.day == 14 and student_id.is_absent:
-                                val = {"one_4": False}
-
-                            elif date.day == 14 and not student_id.is_absent:
-                                val = {"one_4": True}
-
-                            elif date.day == 15 and student_id.is_absent:
-                                val = {"one_5": False}
-
-                            elif date.day == 15 and not student_id.is_absent:
-                                val = {"one_5": True}
-
-                            elif date.day == 16 and student_id.is_absent:
-                                val = {"one_6": False}
-
-                            elif date.day == 16 and not student_id.is_absent:
-                                val = {"one_6": True}
-
-                            elif date.day == 17 and student_id.is_absent:
-                                val = {"one_7": False}
-
-                            elif date.day == 17 and not student_id.is_absent:
-                                val = {"one_7": True}
-
-                            elif date.day == 18 and student_id.is_absent:
-                                val = {"one_8": False}
-
-                            elif date.day == 18 and not student_id.is_absent:
-                                val = {"one_8": True}
-
-                            elif date.day == 19 and student_id.is_absent:
-                                val = {"one_9": False}
-
-                            elif date.day == 19 and not student_id.is_absent:
-                                val = {"one_9": True}
-
-                            elif date.day == 20 and student_id.is_absent:
-                                val = {"one_0": False}
-
-                            elif date.day == 20 and not student_id.is_absent:
-                                val = {"one_0": True}
-
-                            elif date.day == 21 and student_id.is_absent:
-                                val = {"two_1": False}
-
-                            elif date.day == 21 and not student_id.is_absent:
-                                val = {"two_1": True}
-
-                            elif date.day == 22 and student_id.is_absent:
-                                val = {"two_2": False}
-
-                            elif date.day == 22 and not student_id.is_absent:
-                                val = {"two_2": True}
-
-                            elif date.day == 23 and student_id.is_absent:
-                                val = {"two_3": False}
-
-                            elif date.day == 23 and not student_id.is_absent:
-                                val = {"two_3": True}
-
-                            elif date.day == 24 and student_id.is_absent:
-                                val = {"two_4": False}
-
-                            elif date.day == 24 and not student_id.is_absent:
-                                val = {"two_4": True}
-
-                            elif date.day == 25 and student_id.is_absent:
-                                val = {"two_5": False}
-
-                            elif date.day == 25 and not student_id.is_absent:
-                                val = {"two_5": True}
-
-                            elif date.day == 26 and student_id.is_absent:
-                                val = {"two_6": False}
-
-                            elif date.day == 26 and not student_id.is_absent:
-                                val = {"two_6": True}
-
-                            elif date.day == 27 and student_id.is_absent:
-                                val = {"two_7": False}
-
-                            elif date.day == 27 and not student_id.is_absent:
-                                val = {"two_7": True}
-
-                            elif date.day == 28 and student_id.is_absent:
-                                val = {"two_8": False}
-
-                            elif date.day == 28 and not student_id.is_absent:
-                                val = {"two_8": True}
-
-                            elif date.day == 29 and student_id.is_absent:
-                                val = {"two_9": False}
-
-                            elif date.day == 29 and not student_id.is_absent:
-                                val = {"two_9": True}
-
-                            elif date.day == 30 and student_id.is_absent:
-                                val = {"two_0": False}
-
-                            elif date.day == 30 and not student_id.is_absent:
-                                val = {"two_0": True}
-
-                            elif date.day == 31 and student_id.is_absent:
-                                val = {"three_1": False}
-
-                            elif date.day == 31 and not student_id.is_absent:
-                                val = {"three_1": True}
-                            else:
-                                val = {}
-                            if search_id:
-                                search_id.write(val)
-                else:
-                    for student_id in line.student_ids:
-                        search_id = sheet_line_obj.search(
-                            [
-                                ("roll_no", "=", student_id.roll_no),
-                                ("standard_id", "=", attendance_sheet_id.id),
-                            ]
-                        )
-
-                        if date.day == 1 and student_id.is_absent:
-                            val = {"one": False}
-
-                        elif date.day == 1 and not student_id.is_absent:
-                            val = {"one": True}
-
-                        elif date.day == 2 and student_id.is_absent:
-                            val = {"two": False}
-
-                        elif date.day == 2 and not student_id.is_absent:
-                            val = {"two": True}
-
-                        elif date.day == 3 and student_id.is_absent:
-                            val = {"three": False}
-
-                        elif date.day == 3 and not student_id.is_absent:
-                            val = {"three": True}
-
-                        elif date.day == 4 and student_id.is_absent:
-                            val = {"four": False}
-
-                        elif date.day == 4 and not student_id.is_absent:
-                            val = {"four": True}
-
-                        elif date.day == 5 and student_id.is_absent:
-                            val = {"five": False}
-
-                        elif date.day == 5 and not student_id.is_absent:
-                            val = {"five": True}
-
-                        elif date.day == 6 and student_id.is_absent:
-                            val = {"six": False}
-
-                        elif date.day == 6 and not student_id.is_absent:
-                            val = {"six": True}
-
-                        elif date.day == 7 and student_id.is_absent:
-                            val = {"seven": False}
-
-                        elif date.day == 7 and not student_id.is_absent:
-                            val = {"seven": True}
-
-                        elif date.day == 8 and student_id.is_absent:
-                            val = {"eight": False}
-
-                        elif date.day == 8 and not student_id.is_absent:
-                            val = {"eight": True}
-
-                        elif date.day == 9 and student_id.is_absent:
-                            val = {"nine": False}
-
-                        elif date.day == 9 and not student_id.is_absent:
-                            val = {"nine": True}
-
-                        elif date.day == 10 and student_id.is_absent:
-                            val = {"ten": False}
-
-                        elif date.day == 10 and not student_id.is_absent:
-                            val = {"ten": True}
-
-                        elif date.day == 11 and student_id.is_absent:
-                            val = {"one_1": False}
-
-                        elif date.day == 11 and not student_id.is_absent:
-                            val = {"one_1": True}
-
-                        elif date.day == 12 and student_id.is_absent:
-                            val = {"one_2": False}
-
-                        elif date.day == 12 and not student_id.is_absent:
-                            val = {"one_2": True}
-
-                        elif date.day == 13 and student_id.is_absent:
-                            val = {"one_3": False}
-
-                        elif date.day == 13 and not student_id.is_absent:
-                            val = {"one_3": True}
-
-                        elif date.day == 14 and student_id.is_absent:
-                            val = {"one_4": False}
-
-                        elif date.day == 14 and not student_id.is_absent:
-                            val = {"one_4": True}
-
-                        elif date.day == 15 and student_id.is_absent:
-                            val = {"one_5": False}
-
-                        elif date.day == 15 and not student_id.is_absent:
-                            val = {"one_5": True}
-
-                        elif date.day == 16 and student_id.is_absent:
-                            val = {"one_6": False}
-
-                        elif date.day == 16 and not student_id.is_absent:
-                            val = {"one_6": True}
-
-                        elif date.day == 17 and student_id.is_absent:
-                            val = {"one_7": False}
-
-                        elif date.day == 17 and not student_id.is_absent:
-                            val = {"one_7": True}
-
-                        elif date.day == 18 and student_id.is_absent:
-                            val = {"one_8": False}
-
-                        elif date.day == 18 and not student_id.is_absent:
-                            val = {"one_8": True}
-
-                        elif date.day == 19 and student_id.is_absent:
-                            val = {"one_9": False}
-
-                        elif date.day == 19 and not student_id.is_absent:
-                            val = {"one_9": True}
-
-                        elif date.day == 20 and student_id.is_absent:
-                            val = {"one_0": False}
-
-                        elif date.day == 20 and not student_id.is_absent:
-                            val = {"one_0": True}
-
-                        elif date.day == 21 and student_id.is_absent:
-                            val = {"two_1": False}
-
-                        elif date.day == 21 and not student_id.is_absent:
-                            val = {"two_1": True}
-
-                        elif date.day == 22 and student_id.is_absent:
-                            val = {"two_2": False}
-
-                        elif date.day == 22 and not student_id.is_absent:
-                            val = {"two_2": True}
-
-                        elif date.day == 23 and student_id.is_absent:
-                            val = {"two_3": False}
-
-                        elif date.day == 23 and not student_id.is_absent:
-                            val = {"two_3": True}
-
-                        elif date.day == 24 and student_id.is_absent:
-                            val = {"two_4": False}
-
-                        elif date.day == 24 and not student_id.is_absent:
-                            val = {"two_4": True}
-
-                        elif date.day == 25 and student_id.is_absent:
-                            val = {"two_5": False}
-
-                        elif date.day == 25 and not student_id.is_absent:
-                            val = {"two_5": True}
-
-                        elif date.day == 26 and student_id.is_absent:
-                            val = {"two_6": False}
-
-                        elif date.day == 26 and not student_id.is_absent:
-                            val = {"two_6": True}
-
-                        elif date.day == 27 and student_id.is_absent:
-                            val = {"two_7": False}
-
-                        elif date.day == 27 and not student_id.is_absent:
-                            val = {"two_7": True}
-
-                        elif date.day == 28 and student_id.is_absent:
-                            val = {"two_8": False}
-
-                        elif date.day == 28 and not student_id.is_absent:
-                            val = {"two_8": True}
-
-                        elif date.day == 29 and student_id.is_absent:
-                            val = {"two_9": False}
-
-                        elif date.day == 29 and not student_id.is_absent:
-                            val = {"two_9": True}
-
-                        elif date.day == 30 and student_id.is_absent:
-                            val = {"two_0": False}
-
-                        elif date.day == 30 and not student_id.is_absent:
-                            val = {"two_0": True}
-
-                        elif date.day == 31 and student_id.is_absent:
-                            val = {"three_1": False}
-
-                        elif date.day == 31 and not student_id.is_absent:
-                            val = {"three_1": True}
-                        else:
-                            val = {}
-                        if search_id:
-                            search_id.write(val)
-        self.state = "validate"
-        return True
 
     #diw pour l'entéte du report 
     company_id = fields.Many2one(
@@ -1188,6 +859,164 @@ class DailyAttendance(models.Model):
         ],"session", invisible="1")
     
     #
+
+    #Valider
+    def attendance_validate(self):
+        """Method to validate attendance and send notifications for absent students."""
+        success_count = 0
+        total_count = 0
+
+        for rec in self:
+            absent_students = rec.student_ids.filtered(lambda s: s.is_absent)
+
+            total_count += len(absent_students)
+
+            for student in absent_students:
+                if not student.stud_id.parent_id:
+                    continue
+
+                parent = student.stud_id.parent_id
+                phone = parent.phone or parent.mobile
+                if not phone:
+                    _logger.warning("Parent %s (%s) sans numéro de téléphone", parent.name, parent.id)
+                    continue
+
+                # Préparer les infos
+                matiere_name = rec.subject_id.name or "Cours"
+                start_time = time(hour=int(rec.start_time), minute=int((rec.start_time % 1) * 60))
+                end_time = time(hour=int(rec.end_time), minute=int((rec.end_time % 1) * 60))
+                time_range = f"{start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}"
+                date_str = rec.date.strftime('%d/%m/%Y')
+
+                student_name = student.stud_id.name
+                class_name = rec.standard_id.name or "Classe"
+
+                message1 = parent.name
+                message2 = rec.standard_id.school_id.name or "École"
+                message3 = (
+                    f"votre enfant {student_name} "
+                    f"({class_name}) était absent au cours de {matiere_name} "
+                    f"le {date_str} de {time_range}. "
+                    f"Veuillez contacter l'administration pour plus d'informations."
+                )
+
+                if rec._send_whatsapp_notification(parent, message1, message2, message3):
+                    success_count += 1
+
+            # Valider la feuille de présence
+            rec.state = "validate"
+
+        # Messages à retourner
+        if total_count == 0:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _("Aucune absence détectée"),
+                    'message': _("Aucun étudiant absent, aucune notification envoyée."),
+                    'type': 'info',
+                    'sticky': False,
+                }
+            }
+        elif success_count == 0:
+            raise UserError(_("Aucune notification n'a pu être envoyée"))
+        elif success_count < total_count:
+            return {
+                'warning': {
+                    'title': _("Envoi partiel"),
+                    'message': _("%d notifications sur %d ont été envoyées avec succès") % (success_count, total_count)
+                }
+            }
+        else:
+            return {
+                'effect': {
+                    'fadeout': 'slow',
+                    'message': _("Toutes les notifications (%d) ont été envoyées avec succès") % success_count,
+                    'type': 'rainbow_man',
+                }
+            }
+
+
+    def _send_whatsapp_notification(self, parent, message1, message2, message3):
+        """Helper method to send WhatsApp notification using existing code."""
+        # Utiliser le même code que dans student.reminder
+        phone_number = parent.mobile or parent.phone
+        clean_number = self._format_phone_number(phone_number)
+        #raise ValidationError(_(clean_number))
+        
+        if not clean_number:
+            _logger.warning(f"Numéro invalide pour le parent {parent.name}")
+            return False
+        
+        url = "https://graph.facebook.com/v22.0/675362892332288/messages"
+        token = "EAARpM6c9dT4BPAa66jfdeP9A2EJhvjZBiDUp19HsmZC5J51jRTx8aqAx2ZBle7EEK8QzrA2iZAjRKbnXiwAZBjJUtmP3JoQX1fX6WiUhQyGO02ZAhFKkF5edWvm7VNtmFUvnTZAsMhQJ6xUrAGy2LUVyXvkn7HY9l5dCJ5ZBOD2SZCqeGdEUwogFz7wQ3zcg9tQJQjnQ4pHjX0mDQP29Bt4Y49stP1BERNVSzywheZBBfg"
+
+        data_message = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": clean_number,
+            "type": "template",
+            "template": {
+                "name": "yowschool_notif",
+                "language": {"code":"fr"},
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [
+                            {
+                                "type": "text",
+                                "text": message1
+                            },
+                            {
+                                "type": "text",
+                                "text": message3
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        headers_api = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}"
+        }
+
+        try:
+            response = requests.post(url, json=data_message, headers=headers_api, timeout=20)
+            if response.status_code == 200:
+                _logger.info(f"Notification envoyée avec succès à {parent.name}")
+                return True
+            else:
+                _logger.error(f"Échec d'envoi à {parent.name}: {response.text}")
+                return False
+        except Exception as e:
+            _logger.error(f"Erreur lors de l'envoi à {parent.name}: {str(e)}")
+            return False
+        
+
+        
+
+    def _format_phone_number(self, phone):
+        """Formatage d'un numéro pour WhatsApp avec indicatif Sénégal (+221)"""
+        if not phone:
+            return None
+
+        digits = ''.join(filter(str.isdigit, str(phone)))
+
+        if len(digits) < 9:
+            return None
+
+        if digits.startswith('0') and len(digits) == 9:
+            return '+221' + digits[1:]
+        elif digits.startswith('221') and len(digits) == 12:
+            return '+' + digits
+        elif len(digits) == 9:
+            return '+221' + digits
+        elif digits.startswith('+221') and len(digits) == 13:
+            return digits
+
+        return None
 
 class DailyAttendanceLine(models.Model):
     """Defining Daily Attendance Sheet Line Information."""

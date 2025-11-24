@@ -619,7 +619,7 @@
     <record id="action_student_student_form_12" model="ir.actions.act_window">
         <field name="name">Students</field>
           <field name="domain">[('state', '=', 'done'), ('year.current', '=', True)]</field>
-    <field name="context">{'search_default_current_year':1}</field>
+        <field name="context">{'search_default_current_year':1}</field>
         <field name="res_model">student.student</field>
         <field name="view_id" ref="" />
         <field name="search_view_id" ref="view_student_student_search_1" />
