@@ -50,10 +50,7 @@ class StandardSubjectConfig(models.Model):
         help="Note minimale pour cette matière dans cette classe"
     )
     
-    _sql_constraints = [
-        ('unique_standard_subject', 'unique(standard_id, subject_id)', 
-         'Une matière ne peut avoir qu\'une configuration par niveau!')
-    ]
+   
 
     @api.depends('standard_id')
     def _compute_class_ids(self):
@@ -79,3 +76,31 @@ class StandardSubjectConfig(models.Model):
                 raise ValidationError(
                     _("La note maximale doit être supérieure à la note minimale!")
                 )
+
+
+
+
+
+    year_id = fields.Many2one(
+    'academic.year', 
+    'Academic Year', 
+    readonly=True, 
+    default=lambda self: self.check_current_year()
+)
+    
+    current = fields.Boolean(
+        string="Année en cours",
+        related='year_id.current',
+        store=True,
+        readonly=True,
+        help="Indique si c'est l'année académique en cours"
+    )
+
+    @api.model
+    def check_current_year(self):
+        res = self.env['academic.year'].search([('current', '=', True)], limit=1)
+        if not res:
+            raise ValidationError(_(
+                "Il n'y a pas d'année académique en cours défini ! Veuillez contacter l'administrateur !"
+            ))
+        return res.id

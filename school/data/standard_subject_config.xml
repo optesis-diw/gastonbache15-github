@@ -634,7 +634,7 @@
        <record id="configs_6e_anglais" model="standard.subject.config">
             <field name="standard_id" ref="school.standard_N_6e"/>
             <field name="subject_id" ref="school.subject_anglais"/>
-            <field name="coefficient">3</field>
+            <field name="coefficient">2</field>
             <field name="maximum_marks">20</field>
         </record>
         
@@ -726,7 +726,7 @@
         <record id="configs_5e_anglais" model="standard.subject.config">
             <field name="standard_id" ref="school.standard_N_5e"/>
             <field name="subject_id" ref="school.subject_anglais"/>
-            <field name="coefficient">3</field>
+            <field name="coefficient">2</field>
             <field name="maximum_marks">20</field>
         </record>
         
@@ -819,7 +819,7 @@
         <record id="configs_4e_anglais" model="standard.subject.config">
             <field name="standard_id" ref="school.standard_N_4e"/>
             <field name="subject_id" ref="school.subject_anglais"/>
-            <field name="coefficient">3</field>
+            <field name="coefficient">2</field>
             <field name="maximum_marks">20</field>
         </record>
         
@@ -911,7 +911,7 @@
         <record id="configs_3e_anglais" model="standard.subject.config">
             <field name="standard_id" ref="school.standard_N_3e"/>
             <field name="subject_id" ref="school.subject_anglais"/>
-            <field name="coefficient">3</field>
+            <field name="coefficient">2</field>
             <field name="maximum_marks">20</field>
         </record>
         
@@ -1469,5 +1469,10 @@
             <field name="maximum_marks">20</field>
         </record>
 
+
+
+
+
+    
     </data>
 </odoo>

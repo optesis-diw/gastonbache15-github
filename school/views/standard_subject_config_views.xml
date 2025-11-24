@@ -41,12 +41,29 @@
             </field>
         </record>
 
+
+
+        <record id="standard_subject_parent_search" model="ir.ui.view">
+            <field name="name">standard.subject.config.search</field>
+            <field name="model">standard.subject.config</field>
+            <field name="arch" type="xml">
+                <search string="Search Standard Subject Configuration">
+                     <field name="year_id"/>
+                   <separator/>
+                  
+
+                    <filter name="current_year" string="Current Year" domain="[('year_id.current','=',True)]" help="academic year"/>
+               </search>
+            </field>
+        </record>
+
+
         <!-- Action -->
         <record id="action_standard_subject_config" model="ir.actions.act_window">
             <field name="name">Configuration Matières par Niveau</field>
             <field name="res_model">standard.subject.config</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_standard_subject_config_tree"/>
+            <field name="context">{'search_default_current_year':1}</field>
         </record>
 
         <!-- Menu -->

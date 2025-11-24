@@ -339,6 +339,73 @@ class ExamExam(models.Model):
     _name = "exam.exam"
     _description = "Exam Information"
 
+
+
+    config_loaded = fields.Boolean(
+        "Configuration chargée", 
+        default=False,
+        help="Indique si la configuration des matières a été chargée"
+    )
+    
+    def action_load_subject_config(self):
+        """Charge la configuration des matières depuis standard.subject.config"""
+        for exam in self:
+            if not exam.standard_id:
+                raise ValidationError(_("Veuillez sélectionner une classe d'abord."))
+            
+            # Récupérer les configurations de matières pour cette classe
+            configs = self.env['standard.subject.config'].search([
+                ('standard_id', '=', exam.standard_id.id)
+            ])
+            
+            if not configs:
+                raise ValidationError(_(
+                    f"Aucune configuration de matière trouvée pour la classe {exam.standard_id.name}."
+                ))
+            
+            # Récupérer tous les résultats d'examen associés à cet examen
+            exam_results = self.env['exam.result'].search([
+                ('s_exam_ids', '=', exam.id)
+            ])
+            
+            updated_count = 0
+            for result in exam_results:
+                for subject_line in result.result_ids:
+                    # Trouver la configuration correspondante
+                    config = configs.filtered(
+                        lambda c: c.subject_id.id == subject_line.subject_id.id
+                    )
+                    
+                    if config:
+                        # Mettre à jour avec les valeurs de la configuration
+                        subject_line.write({
+                            'coefficient': config.coefficient,
+                            'maximum_marks': config.maximum_marks,
+                            'minimum_marks': config.minimum_marks,
+                        })
+                        updated_count += 1
+            
+            # Marquer l'examen comme configuré
+            exam.write({'config_loaded': True})
+            
+            # Message de confirmation
+            if updated_count > 0:
+                message = f"Configuration chargée avec succès! {updated_count} matières mises à jour."
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Succès',
+                        'message': message,
+                        'type': 'success',
+                        'sticky': False,
+                    }
+                }
+            else:
+                raise ValidationError(_(
+                    "Aucune matière n'a pu être mise à jour. Vérifiez la configuration des matières."
+                ))
+
     
 
     """
@@ -1484,68 +1551,39 @@ class ExamSubject(models.Model):
 
     #diw_new
     # Champs calculés 
-        
+
     coefficient = fields.Integer(
     "Coefficient", 
-    compute="_compute_subject_config",
-    inverse="_inverse_coefficient", 
-    store=True,  # IMPORTANT
-    readonly=False,
-    help="Coefficient récupéré depuis la configuration"
+    store=True,
 )
-
+    
     maximum_marks = fields.Float(
         "Maximum marks", 
-        compute="_compute_subject_config",
-        inverse="_inverse_maximum_marks",  # Ajouter inverse
-        store=True,  # IMPORTANT
-        readonly=False,
+       
+       store=True,
         digits=(16,2),
         help="Note maximale récupérée depuis la configuration"
     )
-
+    
     minimum_marks = fields.Float(
         "Minimum marks", 
-        compute="_compute_subject_config",
-        inverse="_inverse_minimum_marks",  # Ajouter inverse
-        store=True,  # IMPORTANT
-        readonly=False,
+       
+       store=True,
         digits=(16,2),
         help="Note minimale récupérée depuis la configuration"
     )
 
-    # Champ pour tracker les modifications
-    config_modified = fields.Boolean("Config modifiée manuellement", default=False)
-
-    def _inverse_coefficient(self):
-        """Marque comme modifié quand le coefficient est changé"""
-        for rec in self:
-            rec.config_modified = True
-
-    def _inverse_maximum_marks(self):
-        """Marque comme modifié quand maximum_marks est changé"""
-        for rec in self:
-            rec.config_modified = True
-
-    def _inverse_minimum_marks(self):
-        """Marque comme modifié quand minimum_marks est changé"""
-        for rec in self:
-            rec.config_modified = True
-
     @api.depends('exam_id.standard_id', 'subject_id')
     def _compute_subject_config(self):
-        """Calcule la configuration seulement si pas modifié manuellement"""
+        """Calcule la configuration depuis standard.subject.config en une seule passe"""
         for rec in self:
-            # Si déjà modifié manuellement, on ne fait rien
-            if rec.config_modified:
-                continue
-                
             # Valeurs par défaut
             coefficient = 0
             maximum_marks = 20.0
             minimum_marks = 0.0
             
             if rec.exam_id and rec.exam_id.standard_id and rec.subject_id:
+                # 
                 subjects_config = rec.exam_id.standard_id.subject_config_ids
                 
                 for config in subjects_config:
@@ -1553,13 +1591,13 @@ class ExamSubject(models.Model):
                         coefficient = config.coefficient or 0
                         maximum_marks = config.maximum_marks or 20.0
                         minimum_marks = config.minimum_marks or 0.0
-                        break
+                        break  # 
             
             rec.coefficient = coefficient
             rec.maximum_marks = maximum_marks
             rec.minimum_marks = minimum_marks
-            
     #diw_new
+
 
 
 

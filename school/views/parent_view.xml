@@ -8,7 +8,6 @@
             <field name="model">school.parent</field>
             <field name="arch" type="xml">
                 <search string="Search Parent">
-                     <field name="year_id"/>
                    <field name="name" filter_domain="['|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self)]"/>
                    <separator/>
                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
