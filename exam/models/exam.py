@@ -1484,41 +1484,68 @@ class ExamSubject(models.Model):
 
     #diw_new
     # Champs calculés 
-
+        
     coefficient = fields.Integer(
-        "Coefficient", 
-        compute="_compute_subject_config",
-       
-        help="Coefficient récupéré depuis la configuration"
-    )
-    
+    "Coefficient", 
+    compute="_compute_subject_config",
+    inverse="_inverse_coefficient", 
+    store=True,  # IMPORTANT
+    readonly=False,
+    help="Coefficient récupéré depuis la configuration"
+)
+
     maximum_marks = fields.Float(
         "Maximum marks", 
         compute="_compute_subject_config",
-       
+        inverse="_inverse_maximum_marks",  # Ajouter inverse
+        store=True,  # IMPORTANT
+        readonly=False,
         digits=(16,2),
         help="Note maximale récupérée depuis la configuration"
     )
-    
+
     minimum_marks = fields.Float(
         "Minimum marks", 
         compute="_compute_subject_config",
-       
+        inverse="_inverse_minimum_marks",  # Ajouter inverse
+        store=True,  # IMPORTANT
+        readonly=False,
         digits=(16,2),
         help="Note minimale récupérée depuis la configuration"
     )
 
+    # Champ pour tracker les modifications
+    config_modified = fields.Boolean("Config modifiée manuellement", default=False)
+
+    def _inverse_coefficient(self):
+        """Marque comme modifié quand le coefficient est changé"""
+        for rec in self:
+            rec.config_modified = True
+
+    def _inverse_maximum_marks(self):
+        """Marque comme modifié quand maximum_marks est changé"""
+        for rec in self:
+            rec.config_modified = True
+
+    def _inverse_minimum_marks(self):
+        """Marque comme modifié quand minimum_marks est changé"""
+        for rec in self:
+            rec.config_modified = True
+
     @api.depends('exam_id.standard_id', 'subject_id')
     def _compute_subject_config(self):
-        """Calcule la configuration depuis standard.subject.config en une seule passe"""
+        """Calcule la configuration seulement si pas modifié manuellement"""
         for rec in self:
+            # Si déjà modifié manuellement, on ne fait rien
+            if rec.config_modified:
+                continue
+                
             # Valeurs par défaut
             coefficient = 0
             maximum_marks = 20.0
             minimum_marks = 0.0
             
             if rec.exam_id and rec.exam_id.standard_id and rec.subject_id:
-                # 
                 subjects_config = rec.exam_id.standard_id.subject_config_ids
                 
                 for config in subjects_config:
@@ -1526,25 +1553,15 @@ class ExamSubject(models.Model):
                         coefficient = config.coefficient or 0
                         maximum_marks = config.maximum_marks or 20.0
                         minimum_marks = config.minimum_marks or 0.0
-                        break  # 
+                        break
             
             rec.coefficient = coefficient
             rec.maximum_marks = maximum_marks
             rec.minimum_marks = minimum_marks
+            
     #diw_new
 
 
-
-    @api.onchange('cycle_name', 'subject_name')
-    def _compute_coefficient(self):
-        for subject_rec in self:
-            cycle = subject_rec.cycle_name
-            subject = subject_rec.subject_name
-
-            if not cycle or not subject:
-                subject_rec.coefficient = 0  # Coefficient par défaut
-            else:
-                subject_rec.coefficient = self.COEFFICIENTS.get(cycle, {}).get(subject, 0)
 
     count_devoir = fields.Integer("Nombre de devoir", related="exam_id.count_devoir") 
     
