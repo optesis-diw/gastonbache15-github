@@ -278,7 +278,7 @@
         <field name="arch" type="xml">
             <form string="Daily Attendance Information">
                 <header>
-                    <button name="attendance_validate" string="notification" states="draft" type="object"
+                    <button name="attendance_validate" string="notification" states="draft" type="object" invisible="1"
                             groups="school.group_school_administration,school.group_school_surveillant,school.group_school_teacher"/>
                     <button name="attendance_draft" string="Reset To Draft" states="validate" type="object"
                             groups="school.group_school_administration,school.group_school_surveillant"/>
