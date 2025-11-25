@@ -93,7 +93,7 @@
                             groups="school.group_school_teacher,school.group_school_administration"/>
                     
                           <button name="action_update_coefficients_from_dict" 
-                            string="Mettre à jour les coefficients" 
+                            string="Mettre à jour les coefficients"  invisible="1"
                             type="object" 
                             class="btn-primary"/>
                     </div>
