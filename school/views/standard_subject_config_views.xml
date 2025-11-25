@@ -11,7 +11,8 @@
                     <field name="subject_id"/>
                     <field name="coefficient"/>
                     <field name="maximum_marks"/>
-                    <field name="minimum_marks"/>
+                    <field name="surerogatoire"/>
+                    
                    <field name="class_ids" widget="many2many_tags" options="{'no_create': True}" />
                 </tree>
             </field>
@@ -34,6 +35,8 @@
                                 <field name="coefficient"/>
                                 <field name="maximum_marks"/>
                                 <field name="minimum_marks"/>
+                                 <field name="surerogatoire"/>
+                    
                             </group>
                         </group>
                     </sheet>

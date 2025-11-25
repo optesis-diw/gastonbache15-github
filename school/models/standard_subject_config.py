@@ -49,6 +49,14 @@ class StandardSubjectConfig(models.Model):
         digits=(16, 2),
         help="Note minimale pour cette matière dans cette classe"
     )
+
+
+
+    surerogatoire = fields.Boolean(
+        string="Surérogatoire",
+        default=False,
+        help="Cochez si cette matière est surérogatoire"
+    )
     
    
 

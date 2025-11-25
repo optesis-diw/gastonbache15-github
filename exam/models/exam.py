@@ -341,73 +341,184 @@ class ExamExam(models.Model):
 
 
 
-    config_loaded = fields.Boolean(
-        "Configuration chargée", 
-        default=False,
-        help="Indique si la configuration des matières a été chargée"
-    )
-    
-    def action_load_subject_config(self):
-        """Charge la configuration des matières depuis standard.subject.config"""
+  
+
+    # Dictionnaire des coefficients
+    COEFFICIENTS = {
+        "Élémentaire": {
+            "Langue et Communication / Français - Ressources": 1,
+            "Langue et Communication / Français - Compétence": 1,
+            "Maths - Ressources": 1,
+            "Maths - Compétence": 1,
+            "Découverte du Monde – Ressources (HG – IST)": 1,
+            "Découverte du Monde - Compétence": 1,
+            "Éducation au Développement Durable - Ressources (Vivre Ensemble – Vivre dans son Milieu)": 1,
+            "Éducation au Développement Durable - Compétence": 1,
+            "Éducation Physique et Sportive": 1,
+            "Éducation Artistique / Dessin / Art Plastique": 1,
+            "Éducation Musicale (Récitation / Chant)": 1,
+            "Arabe / Éducation Religieuse": 1,
+            "Anglais Primaire": 1,
+        },
+        "Collége": {
+            "Expression Ecrite / Rédaction / Dissertation": 2,
+            "Dictée / Orthographe": 1,
+            "TSQ": 1,
+            "Maths": 3,
+            "PC": 2,
+            "SVT": 2,
+            "Eco Fam": 2,
+            "Anglais": 2,
+            "Espagnol": 2,
+            "Arabe": 2,
+            "EPS": 2,
+            "HG": 2,
+            "EC": 1,
+        },
+        "TL2 et 1ère L2": {
+            "Philo": 6,
+            "HG": 6,
+            "Français": 5,
+            "Langue Vivante 1": 4,
+            "Langue Vivante 2": 2,
+            "Maths": 2,
+            "SVT": 2,
+            "PC": 2,
+            "EPS": 0,
+        },
+        "TL1 et 1ère L1": {
+            "Français": 6,
+            "LV1 Ecrit": 4,
+            "LV1 Oral": 2,
+            "Langue Vivante 2": 4,
+            "Philo": 4,
+            "HG": 2,
+            "Maths": 2,
+            "EPS": 0,
+        },
+        "TS2 et 1ère S2": {
+            "SVT": 6,
+            "PC": 6,
+            "Maths": 5,
+            "Français": 3,
+            "Philo": 2,
+            "Anglais": 2,
+            "HG": 2,
+            "EPS": 0,
+            "Espagnol": 0,
+            "Économie": 0,
+        },
+        "TS1 et 1ère S1": {
+            "Maths": 8,
+            "PC": 8,
+            "Français": 3,
+            "SVT": 2,
+            "Anglais": 2,
+            "Philo": 2,
+            "HG": 2,
+            "EPS": 0,
+            "Espagnol": 0,
+            "Économie": 0,
+        },
+        "2nd L": {
+            "Français": 5,
+            "Langue Vivante 1": 5,
+            "HG": 4,
+            "Langue Vivante 2": 3,
+            "Économie": 2,
+            "Maths": 2,
+            "SVT": 2,
+            "PC": 2,
+            "EPS": 0,
+        },
+        "2nd S": {
+            "SVT": 5,
+            "Maths": 5,
+            "PC": 5,
+            "Français": 3,
+            "Anglais": 2,
+            "HG": 2,
+            "EPS": 0,
+            "Espagnol": 0,
+            "Économie": 0,
+            
+        },
+    }
+
+    def action_update_coefficients_from_dict(self):
+        """Met à jour les coefficients des matières dans les résultats d'examen"""
         for exam in self:
-            if not exam.standard_id:
-                raise ValidationError(_("Veuillez sélectionner une classe d'abord."))
-            
-            # Récupérer les configurations de matières pour cette classe
-            configs = self.env['standard.subject.config'].search([
-                ('standard_id', '=', exam.standard_id.id)
-            ])
-            
-            if not configs:
+            if not exam.standard_id or not exam.standard_id.standard_id:
                 raise ValidationError(_(
-                    f"Aucune configuration de matière trouvée pour la classe {exam.standard_id.name}."
+                    "Veuillez sélectionner une classe avec un niveau défini."
                 ))
             
-            # Récupérer tous les résultats d'examen associés à cet examen
+            # Récupérer le nom du niveau (cycle)
+            niveau_name = exam.standard_id.medium_id.name
+            coefficients_dict = self.COEFFICIENTS.get(niveau_name)
+            
+            if not coefficients_dict:
+                available_cycles = ", ".join(self.COEFFICIENTS.keys())
+                raise ValidationError(_(
+                    f"Aucune configuration de coefficients trouvée pour le cycle '{niveau_name}'. "
+                    f"Niveaux disponibles : {available_cycles}"
+                ))
+            
+            # Récupérer tous les résultats d'examen associés
             exam_results = self.env['exam.result'].search([
                 ('s_exam_ids', '=', exam.id)
             ])
             
+            if not exam_results:
+                raise ValidationError(_(
+                    "Aucun résultat d'examen trouvé pour cet examen. "
+                    "Générez d'abord les résultats."
+                ))
+            
             updated_count = 0
+            subjects_not_found = []
+            
+            # Parcourir tous les résultats et mettre à jour les coefficients
             for result in exam_results:
                 for subject_line in result.result_ids:
-                    # Trouver la configuration correspondante
-                    config = configs.filtered(
-                        lambda c: c.subject_id.id == subject_line.subject_id.id
-                    )
+                    subject_name = subject_line.subject_id.name
                     
-                    if config:
-                        # Mettre à jour avec les valeurs de la configuration
+                    # Chercher le coefficient dans le dictionnaire
+                    coefficient = coefficients_dict.get(subject_name)
+                    
+                    if coefficient is not None:
+                        # Mettre à jour le coefficient
                         subject_line.write({
-                            'coefficient': config.coefficient,
-                            'maximum_marks': config.maximum_marks,
-                            'minimum_marks': config.minimum_marks,
+                            'coefficient': coefficient
                         })
                         updated_count += 1
+                    else:
+                        # Ajouter aux matières non trouvées
+                        if subject_name not in subjects_not_found:
+                            subjects_not_found.append(subject_name)
             
-            # Marquer l'examen comme configuré
-            exam.write({'config_loaded': True})
+            # Préparer le message de résultat
+            message = f"✅ Mise à jour terminée ! {updated_count} coefficients mis à jour."
             
-            # Message de confirmation
-            if updated_count > 0:
-                message = f"Configuration chargée avec succès! {updated_count} matières mises à jour."
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Succès',
-                        'message': message,
-                        'type': 'success',
-                        'sticky': False,
+            if subjects_not_found:
+                message += f"\n\n⚠️ Matières non trouvées dans le dictionnaire :\n"
+                message += "\n".join([f"• {subject}" for subject in subjects_not_found])
+                message += f"\n\nVérifiez l'orthographe dans le dictionnaire COEFFICIENTS."
+            
+            # Afficher la notification
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Mise à jour des coefficients',
+                    'message': message,
+                    'type': 'info' if subjects_not_found else 'success',
+                    'sticky': True,  # Le message reste affiché jusqu'à fermeture manuelle
+                    'next': {
+                        'type': 'ir.actions.act_window_close'
                     }
                 }
-            else:
-                raise ValidationError(_(
-                    "Aucune matière n'a pu être mise à jour. Vérifiez la configuration des matières."
-                ))
-
-    
-
+            }
     """
     @api.constrains("start_date", "end_date")
     def check_date_exam(self):
@@ -1554,13 +1665,13 @@ class ExamSubject(models.Model):
 
     coefficient = fields.Integer(
     "Coefficient", 
-    store=True,
+   
 )
     
     maximum_marks = fields.Float(
         "Maximum marks", 
        
-       store=True,
+      
         digits=(16,2),
         help="Note maximale récupérée depuis la configuration"
     )
@@ -1568,7 +1679,7 @@ class ExamSubject(models.Model):
     minimum_marks = fields.Float(
         "Minimum marks", 
        
-       store=True,
+      
         digits=(16,2),
         help="Note minimale récupérée depuis la configuration"
     )
@@ -1672,6 +1783,32 @@ class ExamSubject(models.Model):
             rec.moyenne_provisoire = moyenne_arrondie
     
 
+
+    # NOUVEAU CHAMP - Récupérer la valeur surérogatoire depuis la configuration
+    surerogatoire = fields.Boolean(
+        string="Surérogatoire",
+        compute="_compute_surerogatoire",
+        store=True,
+        help="Indique si la matière est surérogatoire"
+    )
+    
+    @api.depends('subject_id', 'exam_id.standard_id')
+    def _compute_surerogatoire(self):
+        """Calcule si la matière est surérogatoire depuis la configuration"""
+        for rec in self:
+            surerogatoire = False
+            if rec.subject_id and rec.exam_id and rec.exam_id.standard_id:
+                # Chercher la configuration pour cette matière et cette classe
+                config = self.env['standard.subject.config'].search([
+                    ('subject_id', '=', rec.subject_id.id),
+                    ('standard_id', '=', rec.exam_id.standard_id.standard_id.id)
+                ], limit=1)
+                
+                if config:
+                    surerogatoire = config.surerogatoire
+            
+            rec.surerogatoire = surerogatoire
+
     valeur_sureogatoire = fields.Float(
         string="Valeur Surérogatoire",
         compute="_compute_valeur_sureogatoire",
@@ -1680,48 +1817,19 @@ class ExamSubject(models.Model):
         help="Valeur à ajouter ou soustraire pour les matières surérogatoires"
     )
 
-    @api.depends("moyenne_provisoire", "subject_id", "exam_id.niveau_id")
+    @api.depends("moyenne_provisoire", "surerogatoire")
     def _compute_valeur_sureogatoire(self):
-
-        niveaux_sureogatoire_eps = [
-            "2nde S", "2nde L", "1ère L1", "1ère L2",
-            "Terminal L1", "Terminal L2", "1ère S1", "1ère S2",
-            "Terminale S1", "Terminale S2"
-        ]
-
-
-        niveaux_sureogatoire_langue = ["2nde S", "1ère S1", "1ère S2"]
-
-        niveaux_ecofam = ["4e", "3e"]
-
+        """Calcule la valeur surérogatoire en utilisant le champ de configuration"""
         for rec in self:
             valeur = 0.0
-            niveau = rec.exam_id.niveau_id.name if rec.exam_id and rec.exam_id.niveau_id else ""
-            subject_name = rec.subject_id.name.lower() if rec.subject_id and rec.subject_id.name else ""
-
-            # --- EPS surérogatoire ---
-            if niveau in niveaux_sureogatoire_eps and subject_name == "eps":
+            
+            # Utiliser directement le champ surérogatoire de la configuration
+            if rec.surerogatoire:
                 if rec.moyenne_provisoire > 10:
                     valeur = rec.moyenne_provisoire - 10
                 elif rec.moyenne_provisoire < 10:
                     valeur = -(10 - rec.moyenne_provisoire)
-
-            # --- Langues surérogatoires (Espagnol / Arabe / Économie) ---
-            elif niveau in niveaux_sureogatoire_langue:
-                if subject_name in ["espagnol", "arabe", "économie"]:
-                    if rec.moyenne_provisoire > 10:
-                        valeur = rec.moyenne_provisoire - 10
-                    elif rec.moyenne_provisoire < 10:
-                        valeur = -(10 - rec.moyenne_provisoire)
-
-            # --- EcoFam surérogatoire en 4e et 3e ---
-            elif niveau in niveaux_ecofam:
-                if subject_name in ["Eco Fam", "eco fam"]:
-                    if rec.moyenne_provisoire > 10:
-                        valeur = rec.moyenne_provisoire - 10
-                    elif rec.moyenne_provisoire < 10:
-                        valeur = -(10 - rec.moyenne_provisoire)
-
+            
             rec.valeur_sureogatoire = valeur
 
 
