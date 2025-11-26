@@ -238,8 +238,8 @@
                                 </form>
                             </field>
                         </page>
-                        <page string="Subjects">
-                            <field name="subject_ids" nolabel="1" colspan="4" invisible="1" string="Add Subjects" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        <page string="Subjects" invisible="1">
+                            <field name="subject_ids" nolabel="1" colspan="4"  string="Add Subjects" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
                         </page>
 
                          <page string="Matiéres Configurations">

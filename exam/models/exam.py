@@ -361,7 +361,7 @@ class ExamExam(models.Model):
             "Anglais Primaire": 1,
         },
         "Collége": {
-            "Expression Ecrite / Rédaction / Dissertation": 2,
+            "Production écrite / Rédaction / Dissertation": 2,
             "Dictée / Orthographe": 1,
             "TSQ": 1,
             "Maths": 3,
@@ -1684,29 +1684,7 @@ class ExamSubject(models.Model):
         help="Note minimale récupérée depuis la configuration"
     )
 
-    @api.depends('exam_id.standard_id', 'subject_id')
-    def _compute_subject_config(self):
-        """Calcule la configuration depuis standard.subject.config en une seule passe"""
-        for rec in self:
-            # Valeurs par défaut
-            coefficient = 0
-            maximum_marks = 20.0
-            minimum_marks = 0.0
-            
-            if rec.exam_id and rec.exam_id.standard_id and rec.subject_id:
-                # 
-                subjects_config = rec.exam_id.standard_id.subject_config_ids
-                
-                for config in subjects_config:
-                    if config.subject_id.id == rec.subject_id.id:
-                        coefficient = config.coefficient or 0
-                        maximum_marks = config.maximum_marks or 20.0
-                        minimum_marks = config.minimum_marks or 0.0
-                        break  # 
-            
-            rec.coefficient = coefficient
-            rec.maximum_marks = maximum_marks
-            rec.minimum_marks = minimum_marks
+   
     #diw_new
 
 
