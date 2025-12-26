@@ -18,8 +18,9 @@ class StudentFeesRegister(models.Model):
     _name = "student.fees.register"
     _description = "Student fees Register"
 
+    """
     def unlink(self):
-        """Inherited unlink method to check state at the record deletion"""
+       
         for rec in self:
             if rec.state != "draft":
                 raise ValidationError(
@@ -29,6 +30,7 @@ class StudentFeesRegister(models.Model):
                 )
         return super(StudentFeesRegister, self).unlink()
 
+    """
     #diw
     academic_year_id = fields.Many2one(
         "academic.year",
