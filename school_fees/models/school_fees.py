@@ -21,7 +21,7 @@ class StudentFeesRegister(models.Model):
     def unlink(self):
         """Inherited unlink method to check state at the record deletion"""
         for rec in self:
-            if rec.state in ("draft","confirm", "pending"):
+            if rec.state != "draft":
                 raise ValidationError(
                     _(
                         "Vous ne pouvez pas supprimer un enregistrement confirmé ou en attente"
@@ -568,12 +568,9 @@ class StudentPayslip(models.Model):
     def unlink(self):
         """Inherited unlink method to check state at the record deletion"""
         for rec in self:
-            if rec.state in ("draft","confirm", "pending"):
+            if rec.state not in ("draft", "confirm", "pending"):
                 raise ValidationError(
-                    _(
-                        """
-            You can delete record in unconfirm state only!"""
-                    )
+                    _("You can only delete records in draft, confirm or pending state!")
                 )
         return super(StudentPayslip, self).unlink()
 
