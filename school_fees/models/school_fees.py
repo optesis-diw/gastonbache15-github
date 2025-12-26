@@ -21,11 +21,10 @@ class StudentFeesRegister(models.Model):
     def unlink(self):
         """Inherited unlink method to check state at the record deletion"""
         for rec in self:
-            if rec.state != "draft":
+            if rec.state in ("confirm", "pending"):
                 raise ValidationError(
                     _(
-                        """
-            Vous ne pouvez pas supprimer un enregistrement confirmé"""
+                        "Vous ne pouvez pas supprimer un enregistrement confirmé ou en attente"
                     )
                 )
         return super(StudentFeesRegister, self).unlink()
@@ -157,9 +156,16 @@ class StudentFeesRegister(models.Model):
             is_mensualite = rec.fees_structure.type_frais == 'mensualite'
 
             school_std_rec = rec.standard_id
+            # Recherche de l'année académique en cours
+            current_year = self.env['academic.year'].search([('current', '=', True)], limit=1)
+            if not current_year:
+                raise ValidationError(_("No current academic year is set. Please configure an academic.year with current=True."))
+
+            # Chercher les étudiants de la classe et de l'année académique courante
             students_rec = stud_obj.search([
                 ("standard_id", "=", school_std_rec.id),
                 ("state", "=", "done"),
+                ("year", "=", current_year.id),
             ])
 
             for stu in students_rec:

@@ -40,13 +40,13 @@
                                 <span t-field="exam.year_date_stop_s" /><br />
                                  <h3>Classe: <span t-field="exam.standard_id.name"/></h3>
                                 
-                                     <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">  
+                                     <t t-if="exam.niveau_id.name not in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">  
                                         <t t-if="exam.session == 'second_semestre'">2e Semestre</t>
                                         <t t-elif="exam.session == 'premier_semestre'">1er Semestre</t>
                                         <t t-elif="exam.session == 'troisieme_semestre'">3e Semestre</t>
                                      </t>
 
-                                      <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">  
+                                      <t t-if="exam.niveau_id.name in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">  
                                         <t t-if="exam.session == 'second_semestre'">2e Trimestre</t>
                                         <t t-elif="exam.session == 'premier_semestre'">1er Trimestre</t>
                                         <t t-elif="exam.session == 'troisieme_semestre'">3e Trimestre</t>
@@ -66,10 +66,10 @@
                             <tr>
                                 <td style="border: 1px solid black; padding: 5px; font-weight: bold; width: 15%;">Liste des élèves</td>
                                 <t t-foreach="results['subjects']" t-as="subject">
-                                    <td t-if="exam.niveau_id.name not in ['CM1', 'CM2']" colspan="2" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                    <td t-if="exam.niveau_id.name not in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']" colspan="2" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
                                         <span t-esc="subject"/>
                                     </td>
-                                    <td t-if="exam.niveau_id.name in ['CM1', 'CM2']" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
+                                    <td t-if="exam.niveau_id.name in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']" style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold;">
                                         <span t-esc="subject"/>
                                     </td>
                                 </t>
@@ -85,11 +85,11 @@
                                 </td>
                                 
                                 <t t-foreach="results['subjects']" t-as="subject">
-                                    <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">
+                                    <t t-if="exam.niveau_id.name not in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                                         <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">D</td>
                                         <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">C</td>
                                     </t>
-                                    <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">
+                                    <t t-if="exam.niveau_id.name in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                                         <td style="border: 1px solid black; padding: 5px; text-align: center; font-weight: bold; width: 4%;">C</td>
                                     </t>
                                 </t>
@@ -106,7 +106,7 @@
                                         <span t-esc="student['name']"/>
                                     </td>
                                     <t t-foreach="results['subjects']" t-as="subject">
-                                        <t t-if="exam.niveau_id.name not in ['CM1', 'CM2']">
+                                        <t t-if="exam.niveau_id.name not in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                                             <td style="border: 1px solid black; padding: 5px; text-align: center;">
                                                 <span t-esc="student['marks'][subject]['D']"/>
                                             </td>
@@ -114,7 +114,7 @@
                                                 <span t-esc="student['marks'][subject]['C']"/>
                                             </td>
                                         </t>
-                                        <t t-if="exam.niveau_id.name in ['CM1', 'CM2']">
+                                        <t t-if="exam.niveau_id.name in ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2']">
                                             <td style="border: 1px solid black; padding: 5px; text-align: center;">
                                                 <span t-esc="student['marks'][subject]['C']"/>
                                             </td>
